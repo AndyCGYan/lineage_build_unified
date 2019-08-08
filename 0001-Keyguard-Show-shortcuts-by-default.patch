@@ -1,0 +1,30 @@
+From 5629fd17b7498c753bc7194fdb6e05000a72a5a7 Mon Sep 17 00:00:00 2001
+From: AndyCGYan <GeForce8800Ultra@gmail.com>
+Date: Thu, 27 Dec 2018 16:38:19 +0800
+Subject: [PATCH] Keyguard: Show shortcuts by default
+
+Change-Id: I5655e0be26cec61214735719dffcda810286cd41
+---
+ packages/SystemUI/res/values/config.xml | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/packages/SystemUI/res/values/config.xml b/packages/SystemUI/res/values/config.xml
+index ce7f929..a61bce3 100644
+--- a/packages/SystemUI/res/values/config.xml
++++ b/packages/SystemUI/res/values/config.xml
+@@ -74,10 +74,10 @@
+     <integer translatable="false" name="config_search_panel_view_vibration_duration">20</integer>
+ 
+     <!-- Show mic or phone affordance on Keyguard -->
+-    <bool name="config_keyguardShowLeftAffordance">false</bool>
++    <bool name="config_keyguardShowLeftAffordance">true</bool>
+ 
+     <!-- Show camera affordance on Keyguard -->
+-    <bool name="config_keyguardShowCameraAffordance">false</bool>
++    <bool name="config_keyguardShowCameraAffordance">true</bool>
+ 
+     <!-- Whether we should use SRC drawing mode when drawing the scrim behind. If this flag is set,
+          we change the canvas opacity so libhwui doesn't call glClear on our surface, and then we
+-- 
+2.7.4
+

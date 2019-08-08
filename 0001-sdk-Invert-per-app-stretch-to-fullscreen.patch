@@ -1,0 +1,26 @@
+From 95ef97f5aa82c15e47f9313eca4899d89dba5dd0 Mon Sep 17 00:00:00 2001
+From: Andy CrossGate Yan <GeForce8800Ultra@gmail.com>
+Date: Wed, 4 Jul 2018 17:59:14 +0800
+Subject: [PATCH] sdk: Invert per-app stretch-to-fullscreen implementation
+
+Change-Id: Idf7dab4e1e0c79953fa672f33ec65fecffb37c83
+---
+ sdk/src/java/org/lineageos/internal/applications/LongScreen.java | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sdk/src/java/org/lineageos/internal/applications/LongScreen.java b/sdk/src/java/org/lineageos/internal/applications/LongScreen.java
+index 7fe0d68..26ea349 100644
+--- a/sdk/src/java/org/lineageos/internal/applications/LongScreen.java
++++ b/sdk/src/java/org/lineageos/internal/applications/LongScreen.java
+@@ -57,7 +57,7 @@ public class LongScreen {
+     }
+ 
+     public boolean shouldForceLongScreen(String packageName) {
+-        return isSupported() && mApps.contains(packageName);
++        return isSupported() && !(mApps.contains(packageName));
+     }
+ 
+     public Set<String> getApps() {
+-- 
+2.7.4
+

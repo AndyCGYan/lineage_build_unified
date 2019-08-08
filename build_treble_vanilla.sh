@@ -26,6 +26,7 @@ cd ../../..
 echo ""
 
 echo "Applying GSI-specific patches"
+bash ~/treble_experimentations/apply-patches.sh treble_patches
 cd build/make
 git am ../../0001-Revert-Enable-dyanmic-image-size-for-GSI.patch
 cd ../..

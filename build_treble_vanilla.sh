@@ -6,6 +6,7 @@ cd device/phh/treble
 git clean -fdx
 bash generate.sh lineage
 cd ../../..
+bash ~/treble_experimentations/apply-patches.sh treble_patches
 
 echo "Setting up build environment"
 source build/envsetup.sh &> /dev/null
@@ -26,7 +27,6 @@ cd ../../..
 echo ""
 
 echo "Applying GSI-specific patches"
-bash ~/treble_experimentations/apply-patches.sh treble_patches
 cd build/make
 git am ../../0001-Revert-Enable-dyanmic-image-size-for-GSI.patch
 cd ../..

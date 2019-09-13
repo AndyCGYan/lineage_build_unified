@@ -8,7 +8,7 @@ cd device/phh/treble
 git clean -fdx
 bash generate.sh lineage
 cd ../../..
-bash ~/$rootdir/treble_experimentations/apply-patches.sh treble_patches
+bash $rootdir/treble_experimentations/apply-patches.sh treble_patches
 
 echo "Setting up build environment"
 source build/envsetup.sh &> /dev/null

@@ -1,12 +1,14 @@
 #!/bin/bash
 
+rootdir="$PWD"
+
 repo sync -c --force-sync --no-clone-bundle --no-tags -j$(nproc --all)
 rm -f device/*/sepolicy/common/private/genfs_contexts
 cd device/phh/treble
 git clean -fdx
 bash generate.sh lineage
 cd ../../..
-bash ~/treble_experimentations/apply-patches.sh treble_patches
+bash ~/$rootdir/treble_experimentations/apply-patches.sh treble_patches
 
 echo "Setting up build environment"
 source build/envsetup.sh &> /dev/null

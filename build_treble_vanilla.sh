@@ -1,6 +1,11 @@
 #!/bin/bash
 
 repo sync -c --force-sync --no-clone-bundle --no-tags -j$(nproc --all)
+
+cd frameworks/base
+git revert 817541a8353014e40fa07a1ee27d9d2f35ea2c16 --no-edit #Initial support for in-display fingerprint sensors
+cd ../..
+
 rm -f device/*/sepolicy/common/private/genfs_contexts
 cd device/phh/treble
 git clean -fdx
@@ -24,6 +29,9 @@ cd ..
 cd packages/apps/LineageParts
 git am ../../../0001-LineageParts-Invert-per-app-stretch-to-fullscreen.patch
 cd ../../..
+cd vendor/lineage
+git am ../../0001-vendor_lineage-Log-privapp-permissions-whitelist-vio.patch
+cd ../..
 echo ""
 
 echo "Applying GSI-specific patches"
@@ -34,6 +42,8 @@ cd device/phh/treble
 git revert 82b15278bad816632dcaeaed623b569978e9840d --no-edit #Update lineage.mk for LineageOS 16.0
 git revert df25576594f684ed35610b7cc1db2b72bc1fc4d6 --no-edit #exfat fsck/mkfs selinux label
 git am ../../../0001-treble-Add-overlay-lineage.patch
+git am ../../../0001-treble-Don-t-specify-config_wallpaperCropperPackage.patch
+git am ../../../0001-Increase-system-partition-size-for-arm_ab.patch
 cd ../../..
 cd external/tinycompress
 git revert fbe2bd5c3d670234c3c92f875986acc148e6d792 --no-edit #tinycompress: Use generated kernel headers

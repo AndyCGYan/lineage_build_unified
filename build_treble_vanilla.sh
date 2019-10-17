@@ -3,6 +3,7 @@
 repo sync -c --force-sync --no-clone-bundle --no-tags -j$(nproc --all)
 
 cd frameworks/base
+git revert e0a5469cf5a2345fae7e81d16d717d285acd3a6e --no-edit #FODCircleView: defer removal to next re-layout
 git revert 817541a8353014e40fa07a1ee27d9d2f35ea2c16 --no-edit #Initial support for in-display fingerprint sensors
 cd ../..
 

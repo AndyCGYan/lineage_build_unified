@@ -3,6 +3,8 @@
 repo sync -c --force-sync --no-clone-bundle --no-tags -j$(nproc --all)
 
 cd frameworks/base
+git revert 9213b9f5aa79d25a9633df99a7922c4c7f72dfda --no-edit #FODCircleView: rewrite and simplify implementation
+git revert 71e6d97d3fe05ebd2fe3dc7f5eee846b13b88131 --no-edit #FODCircleView: place above other UI elements
 git revert 6077075200cce9f66a688012786b054d0843ed6c --no-edit #fw/b: Fix systemui tests with in-display fingerprint
 git revert 737170f406d850c79efc961e9d4026dd10db4f88 --no-edit #FODCircleView: defer removal to next re-layout
 git revert 471cf7dc1478fce893e77ac1fb97dfbeeb5af2e7 --no-edit #Initial support for in-display fingerprint sensors
@@ -20,11 +22,8 @@ source build/envsetup.sh &> /dev/null
 echo ""
 
 echo "Picking temporary stuff"
-repopick -Q "(topic:"ten-vold"+OR+"10-qcom-encryption"+OR+"10-qcom-encryption-fbe-wrapped-key")+status:open+NOT+owner:javelinanddart@gmail.com"
-repopick 263896 #cryptfshw: Introduce kernel backend implementation
+repopick -t ten-vold
 echo ""
-#repopick 256308 #tinycompress: Enable extended compress format
-#repopick 259449 #config: Mark more gralloc bits as valid
 
 #read -p "Press any key to start building, or CTRL-C to exit" nothing
 

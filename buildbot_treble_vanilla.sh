@@ -3,11 +3,7 @@
 repo sync -c --force-sync --no-clone-bundle --no-tags -j$(nproc --all)
 
 cd frameworks/base
-git revert 9213b9f5aa79d25a9633df99a7922c4c7f72dfda --no-edit #FODCircleView: rewrite and simplify implementation
-git revert 71e6d97d3fe05ebd2fe3dc7f5eee846b13b88131 --no-edit #FODCircleView: place above other UI elements
-git revert 6077075200cce9f66a688012786b054d0843ed6c --no-edit #fw/b: Fix systemui tests with in-display fingerprint
-git revert 737170f406d850c79efc961e9d4026dd10db4f88 --no-edit #FODCircleView: defer removal to next re-layout
-git revert 471cf7dc1478fce893e77ac1fb97dfbeeb5af2e7 --no-edit #Initial support for in-display fingerprint sensors
+git am ../../0001-Squashed-revert-of-LOS-FOD-implementation.patch
 cd ../..
 
 rm -f device/*/sepolicy/common/private/genfs_contexts
@@ -57,7 +53,7 @@ git am ../../../0001-Increase-system-partition-size-for-arm_ab.patch
 git am ../../../0001-TEMP-treble-Fix-init.treble-environ.rc-hardcode-for-.patch
 cd ../../..
 cd external/tinycompress
-git revert 41d822fd7edfe1e629cdebe5645dab41ea4efb59 --no-edit #tinycompress: Use generated kernel headers
+git revert 82c8fbf6d3fb0a017026b675adf2cee3f994e08a --no-edit #tinycompress: Use generated kernel headers
 cd ../..
 cd hardware/lineage/interfaces
 git am ../../../0001-cryptfshw-Remove-dependency-on-generated-kernel-head.patch

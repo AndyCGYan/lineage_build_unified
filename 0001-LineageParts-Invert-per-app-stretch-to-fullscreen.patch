@@ -1,4 +1,4 @@
-From 552e2f6d0ef9b72ade75ab5e0ba00a373a3a9468 Mon Sep 17 00:00:00 2001
+From 2da980250f13f6bec288b921be1ad6a57549b1fc Mon Sep 17 00:00:00 2001
 From: AndyCGYan <GeForce8800Ultra@gmail.com>
 Date: Sun, 13 Jan 2019 21:44:48 +0800
 Subject: [PATCH] LineageParts: Invert per-app stretch-to-fullscreen
@@ -42,11 +42,11 @@ index b518ff4..6ca9adb 100644
      <string name="charging_sounds_enabled_title">启用</string>
      <string name="charging_sounds_enabled_summary">连接或断开电源时发出声音</string>
 diff --git a/res/values/strings.xml b/res/values/strings.xml
-index 925c9ae..29854aa 100644
+index 418b478..2ae06e7 100644
 --- a/res/values/strings.xml
 +++ b/res/values/strings.xml
-@@ -589,9 +589,9 @@
-     <string name="expanded_desktop_nothing_to_show_text">Turn the switch off to customize your expanded desktop on a per-app basis</string>
+@@ -579,9 +579,9 @@
+     <string name="auto_power_save_never">Never</string>
  
      <!-- Applications: Long screen -->
 -    <string name="long_screen_settings_title">Full screen apps</string>
@@ -71,11 +71,11 @@ index ec947fa..20da90a 100644
  
  </PreferenceScreen>
 diff --git a/res/xml/parts_catalog.xml b/res/xml/parts_catalog.xml
-index 84beec1..9455bab 100644
+index a4346c7..e21d7d5 100644
 --- a/res/xml/parts_catalog.xml
 +++ b/res/xml/parts_catalog.xml
-@@ -98,8 +98,8 @@
-           lineage:xmlRes="@xml/expanded_desktop_prefs" />
+@@ -92,8 +92,8 @@
+           lineage:xmlRes="@xml/perf_profile_settings" />
  
      <part android:key="long_screen_settings"
 -          android:title="@string/long_screen_settings_title"

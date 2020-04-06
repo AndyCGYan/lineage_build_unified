@@ -1,0 +1,29 @@
+From d922de7e988db91e16f0d9c15b5589026e7bc11c Mon Sep 17 00:00:00 2001
+From: Andy CrossGate Yan <GeForce8800Ultra@gmail.com>
+Date: Wed, 23 Oct 2019 09:38:16 +0000
+Subject: [PATCH] Remove fsck SELinux labels
+
+These are covered by LOS sepolicy
+
+Change-Id: I7c63c9aed39afc07b8c80918053154113f848cd9
+---
+ sepolicy/file_contexts | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/sepolicy/file_contexts b/sepolicy/file_contexts
+index 1160738..a29bd32 100644
+--- a/sepolicy/file_contexts
++++ b/sepolicy/file_contexts
+@@ -4,8 +4,5 @@
+ /system/bin/rw-system.sh u:object_r:phhsu_exec:s0
+ /system/bin/phh-on-boot.sh u:object_r:phhsu_exec:s0
+ 
+-/system/bin/fsck\.exfat                 u:object_r:fsck_exec:s0
+-/system/bin/fsck\.ntfs                  u:object_r:fsck_exec:s0
+-
+ /sec_storage(/.*)?      u:object_r:teecd_data_file:s0
+ /dev/dsm                u:object_r:dmd_device:s0
+ 
+-- 
+2.17.1
+

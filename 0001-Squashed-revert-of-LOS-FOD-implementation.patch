@@ -1,4 +1,4 @@
-From 1880d0b34d9300895315c23e6742e0476fe0b5c9 Mon Sep 17 00:00:00 2001
+From 16b05029ca5f14a5c881eccfc57f07738fc64d8a Mon Sep 17 00:00:00 2001
 From: Andy CrossGate Yan <GeForce8800Ultra@gmail.com>
 Date: Wed, 5 Feb 2020 02:24:44 +0000
 Subject: [PATCH] Squashed revert of LOS FOD implementation
@@ -13,14 +13,14 @@ Change-Id: Ifbcd5ff44c97e536fd2e417deadc2b08773b7b5e
  .../res/drawable/fod_icon_default.xml         |  25 -
  packages/SystemUI/res/values/config.xml       |   1 -
  .../SystemUI/res/values/lineage_config.xml    |   4 -
- .../systemui/biometrics/FODCircleView.java    | 428 ------------------
+ .../systemui/biometrics/FODCircleView.java    | 430 ------------------
  .../biometrics/FODCircleViewImpl.java         |  62 ---
  .../systemui/statusbar/CommandQueue.java      |  28 --
  services/core/Android.bp                      |   1 -
  .../biometrics/BiometricServiceBase.java      |   2 +-
  .../fingerprint/FingerprintService.java       | 112 -----
  .../statusbar/StatusBarManagerService.java    |  22 -
- 13 files changed, 1 insertion(+), 692 deletions(-)
+ 13 files changed, 1 insertion(+), 694 deletions(-)
  delete mode 100644 packages/SystemUI/res/drawable/fod_icon_default.xml
  delete mode 100644 packages/SystemUI/src/com/android/systemui/biometrics/FODCircleView.java
  delete mode 100644 packages/SystemUI/src/com/android/systemui/biometrics/FODCircleViewImpl.java
@@ -133,10 +133,10 @@ index fd732a7127a..e520306aa78 100644
      <integer name="config_maxVisibleNotificationIconsOnLock">5</integer>
 diff --git a/packages/SystemUI/src/com/android/systemui/biometrics/FODCircleView.java b/packages/SystemUI/src/com/android/systemui/biometrics/FODCircleView.java
 deleted file mode 100644
-index 782805cdccf..00000000000
+index 0af62b731b9..00000000000
 --- a/packages/SystemUI/src/com/android/systemui/biometrics/FODCircleView.java
 +++ /dev/null
-@@ -1,428 +0,0 @@
+@@ -1,430 +0,0 @@
 -/**
 - * Copyright (C) 2019 The Android Open Source Project
 - *
@@ -459,6 +459,8 @@ index 782805cdccf..00000000000
 -        }
 -
 -        mIsShowing = true;
+-
+-        updatePosition();
 -
 -        dispatchShow();
 -        setVisibility(View.VISIBLE);

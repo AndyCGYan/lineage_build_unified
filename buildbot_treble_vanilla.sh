@@ -17,10 +17,6 @@ echo "Setting up build environment"
 source build/envsetup.sh &> /dev/null
 echo ""
 
-echo "Picking temporary stuff"
-repopick -t ten-vold
-echo ""
-
 #read -p "Press any key to start building, or CTRL-C to exit" nothing
 
 echo "Applying universal patches"
@@ -72,6 +68,6 @@ make WITHOUT_CHECK_API=true installclean
 make WITHOUT_CHECK_API=true systemimage
 make WITHOUT_CHECK_API=true vndk-test-sepolicy
 BUILD_DATE=`date +%Y%m%d`
-mv $OUT/system.img ~/build-output/lineage-17.0-$BUILD_DATE-UNOFFICIAL-treble_arm64_avN.img
+mv $OUT/system.img ~/build-output/lineage-17.1-$BUILD_DATE-UNOFFICIAL-treble_arm64_avN.img
 cat $OUT/system/build.prop | grep security_patch
 echo ""

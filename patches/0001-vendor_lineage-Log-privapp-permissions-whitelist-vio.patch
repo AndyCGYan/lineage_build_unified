@@ -1,0 +1,30 @@
+From 3290062c72effc07ccfd62e2b8ef67f897869b8d Mon Sep 17 00:00:00 2001
+From: Andy CrossGate Yan <GeForce8800Ultra@gmail.com>
+Date: Thu, 5 Sep 2019 02:08:22 +0000
+Subject: [PATCH] vendor_lineage: Log privapp-permissions whitelist violations
+ instead
+
+Change-Id: I49dba61f332253e291a65e79ca70d9a07d45bb07
+---
+ config/common.mk | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/config/common.mk b/config/common.mk
+index 837e11ef..8dfc372b 100644
+--- a/config/common.mk
++++ b/config/common.mk
+@@ -89,9 +89,9 @@ PRODUCT_COPY_FILES += \
+     vendor/lineage/config/permissions/privapp-permissions-lineage.xml:system/etc/permissions/privapp-permissions-lineage.xml \
+     vendor/lineage/config/permissions/privapp-permissions-cm-legacy.xml:system/etc/permissions/privapp-permissions-cm-legacy.xml
+ 
+-# Enforce privapp-permissions whitelist
++# Log privapp-permissions whitelist violations
+ PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
+-    ro.control_privapp_permissions=enforce
++    ro.control_privapp_permissions=log
+ 
+ # Hidden API whitelist
+ PRODUCT_COPY_FILES += \
+-- 
+2.17.1
+

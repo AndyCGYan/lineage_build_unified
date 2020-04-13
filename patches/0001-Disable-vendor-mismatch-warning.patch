@@ -1,0 +1,28 @@
+From 7cb0be20c75a47e2f8b5849bc3d8485222bcafbe Mon Sep 17 00:00:00 2001
+From: Andy CrossGate Yan <GeForce8800Ultra@gmail.com>
+Date: Thu, 5 Apr 2018 10:01:19 +0800
+Subject: [PATCH] Disable vendor mismatch warning
+
+Change-Id: Ieb8fe91e2f02462f074312ed0f4885d183e9780b
+---
+ services/core/java/com/android/server/am/ActivityManagerService.java | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/services/core/java/com/android/server/am/ActivityManagerService.java b/services/core/java/com/android/server/am/ActivityManagerService.java
+index 7274c80..0d1a92f 100644
+--- a/services/core/java/com/android/server/am/ActivityManagerService.java
++++ b/services/core/java/com/android/server/am/ActivityManagerService.java
+@@ -14356,8 +14356,8 @@ public class ActivityManagerService extends IActivityManager.Stub
+             }
+ 
+             if (!Build.isBuildConsistent()) {
+-                Slog.e(TAG, "Build fingerprint is not consistent, warning user");
+-                mUiHandler.obtainMessage(SHOW_FINGERPRINT_ERROR_UI_MSG).sendToTarget();
++                Slog.e(TAG, "Build fingerprint is not consistent");
++                // Do not emit warning about vendor mismatch
+             }
+ 
+             long ident = Binder.clearCallingIdentity();
+-- 
+2.7.4
+

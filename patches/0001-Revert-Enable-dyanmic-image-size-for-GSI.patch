@@ -1,0 +1,226 @@
+From fb17ff0c8ac4a23c36cdde42797795f36a20bc58 Mon Sep 17 00:00:00 2001
+From: AndyCGYan <GeForce8800Ultra@gmail.com>
+Date: Mon, 15 Jul 2019 10:39:08 +0000
+Subject: [PATCH] Revert "Enable dyanmic image size for GSI"
+
+This reverts commit b9acd8b4f49d710b4dae2c73ac8e919589f76d44.
+---
+ target/board/BoardConfigGsiCommon.mk       | 3 ---
+ target/board/generic/BoardConfig.mk        | 2 ++
+ target/board/generic_arm64/BoardConfig.mk  | 2 ++
+ target/board/generic_arm_a/BoardConfig.mk  | 3 +++
+ target/board/generic_arm_ab/BoardConfig.mk | 3 +++
+ target/board/generic_x86/BoardConfig.mk    | 1 +
+ target/board/generic_x86_64/BoardConfig.mk | 1 +
+ target/board/treble_common.mk              | 3 ---
+ target/board/treble_common_32.mk           | 4 ++++
+ target/board/treble_common_64.mk           | 3 +++
+ target/product/aosp_arm.mk                 | 3 ---
+ target/product/aosp_arm64.mk               | 3 ---
+ target/product/aosp_x86.mk                 | 3 ---
+ target/product/aosp_x86_64.mk              | 3 ---
+ target/product/treble_common.mk            | 3 ---
+ 15 files changed, 19 insertions(+), 21 deletions(-)
+
+diff --git a/target/board/BoardConfigGsiCommon.mk b/target/board/BoardConfigGsiCommon.mk
+index bbc9a3639..97420e14b 100644
+--- a/target/board/BoardConfigGsiCommon.mk
++++ b/target/board/BoardConfigGsiCommon.mk
+@@ -10,9 +10,6 @@ TARGET_USERIMAGES_USE_EXT4 := true
+ # we explicit specify this need below (even though it's the current default).
+ TARGET_USERIMAGES_SPARSE_EXT_DISABLED := false
+ 
+-# Enable dyanmic system image size and reserved 64MB in it.
+-BOARD_SYSTEMIMAGE_PARTITION_RESERVED_SIZE := 67108864
+-
+ # Android Verified Boot (AVB):
+ #   1) Sets BOARD_AVB_ENABLE to sign the GSI image.
+ #   2) Sets AVB_VBMETA_IMAGE_FLAGS_VERIFICATION_DISABLED (--flag 2) in
+diff --git a/target/board/generic/BoardConfig.mk b/target/board/generic/BoardConfig.mk
+index 738c03731..19d1b03c7 100644
+--- a/target/board/generic/BoardConfig.mk
++++ b/target/board/generic/BoardConfig.mk
+@@ -48,6 +48,8 @@ TARGET_CPU_ABI2 := armeabi
+ include build/make/target/board/BoardConfigEmuCommon.mk
+ include build/make/target/board/BoardConfigGsiCommon.mk
+ 
++# Partition size is default 1.5GB (1536MB) for 64 bits projects
++BOARD_SYSTEMIMAGE_PARTITION_SIZE := 1610612736
+ BOARD_USERDATAIMAGE_PARTITION_SIZE := 576716800
+ 
+ # Wifi.
+diff --git a/target/board/generic_arm64/BoardConfig.mk b/target/board/generic_arm64/BoardConfig.mk
+index 13d5bd64a..d99e86f7c 100644
+--- a/target/board/generic_arm64/BoardConfig.mk
++++ b/target/board/generic_arm64/BoardConfig.mk
+@@ -55,6 +55,8 @@ endif
+ include build/make/target/board/BoardConfigEmuCommon.mk
+ include build/make/target/board/BoardConfigGsiCommon.mk
+ 
++# Partition size is default 1.5GB (1536MB) for 64 bits projects
++BOARD_SYSTEMIMAGE_PARTITION_SIZE := 1610612736
+ BOARD_USERDATAIMAGE_PARTITION_SIZE := 576716800
+ 
+ # Emulator system image is going to be used as GSI and some vendor still hasn't
+diff --git a/target/board/generic_arm_a/BoardConfig.mk b/target/board/generic_arm_a/BoardConfig.mk
+index 57a5196a9..f0e1a3949 100644
+--- a/target/board/generic_arm_a/BoardConfig.mk
++++ b/target/board/generic_arm_a/BoardConfig.mk
+@@ -16,6 +16,9 @@
+ 
+ include build/make/target/board/treble_common_32.mk
+ 
++# Overwrite the setting in treble_common_32.mk for non-A/B arm GSI
++BOARD_SYSTEMIMAGE_PARTITION_SIZE := 943718400 # 900MB
++
+ TARGET_ARCH := arm
+ TARGET_ARCH_VARIANT := armv7-a-neon
+ TARGET_CPU_ABI := armeabi-v7a
+diff --git a/target/board/generic_arm_ab/BoardConfig.mk b/target/board/generic_arm_ab/BoardConfig.mk
+index 3d1484290..c1df8f1c2 100644
+--- a/target/board/generic_arm_ab/BoardConfig.mk
++++ b/target/board/generic_arm_ab/BoardConfig.mk
+@@ -16,6 +16,9 @@
+ 
+ include build/make/target/board/treble_common_32.mk
+ 
++# Overwrite the setting in treble_common_32.mk for non-A/B arm GSI
++BOARD_SYSTEMIMAGE_PARTITION_SIZE := 943718400 # 900MB
++
+ TARGET_ARCH := arm
+ TARGET_ARCH_VARIANT := armv7-a-neon
+ TARGET_CPU_ABI := armeabi-v7a
+diff --git a/target/board/generic_x86/BoardConfig.mk b/target/board/generic_x86/BoardConfig.mk
+index 650073e68..ae2e6414d 100644
+--- a/target/board/generic_x86/BoardConfig.mk
++++ b/target/board/generic_x86/BoardConfig.mk
+@@ -23,6 +23,7 @@ TARGET_PRELINK_MODULE := false
+ include build/make/target/board/BoardConfigEmuCommon.mk
+ include build/make/target/board/BoardConfigGsiCommon.mk
+ 
++BOARD_SYSTEMIMAGE_PARTITION_SIZE := 2684354560
+ # Resize to 4G to accomodate ASAN and CTS
+ BOARD_USERDATAIMAGE_PARTITION_SIZE := 4294967296
+ 
+diff --git a/target/board/generic_x86_64/BoardConfig.mk b/target/board/generic_x86_64/BoardConfig.mk
+index 142663044..7fc822d60 100755
+--- a/target/board/generic_x86_64/BoardConfig.mk
++++ b/target/board/generic_x86_64/BoardConfig.mk
+@@ -27,6 +27,7 @@ TARGET_PRELINK_MODULE := false
+ include build/make/target/board/BoardConfigEmuCommon.mk
+ include build/make/target/board/BoardConfigGsiCommon.mk
+ 
++BOARD_SYSTEMIMAGE_PARTITION_SIZE := 2684354560 # 2.5 GB
+ BOARD_USERDATAIMAGE_PARTITION_SIZE := 576716800
+ 
+ BOARD_SEPOLICY_DIRS += device/generic/goldfish/sepolicy/x86
+diff --git a/target/board/treble_common.mk b/target/board/treble_common.mk
+index b5c01a5a9..a6aba4a05 100644
+--- a/target/board/treble_common.mk
++++ b/target/board/treble_common.mk
+@@ -35,9 +35,6 @@ TARGET_USERIMAGES_USE_EXT4 := true
+ TARGET_USERIMAGES_USE_F2FS := true
+ TARGET_USERIMAGES_SPARSE_EXT_DISABLED := false
+ 
+-# Enable dyanmic system image size and reserved 64MB in it.
+-BOARD_SYSTEMIMAGE_PARTITION_RESERVED_SIZE := 67108864
+-
+ # Generic AOSP image always requires separate vendor.img
+ TARGET_COPY_OUT_VENDOR := vendor
+ 
+diff --git a/target/board/treble_common_32.mk b/target/board/treble_common_32.mk
+index e8bad087b..d637b3d8c 100644
+--- a/target/board/treble_common_32.mk
++++ b/target/board/treble_common_32.mk
+@@ -18,3 +18,7 @@ include build/make/target/board/treble_common.mk
+ 
+ # Legacy GSI keeps 32 bits binder for 32 bits CPU Arch
+ TARGET_USES_64_BIT_BINDER := false
++
++# Partition size defaults to 1 GB (1024 MB) for 32-bit products. It can
++# be overwritten in specific BoardConfig.mk, if so desired.
++BOARD_SYSTEMIMAGE_PARTITION_SIZE := 1073741824
+diff --git a/target/board/treble_common_64.mk b/target/board/treble_common_64.mk
+index 8980dfde1..0a6eb172d 100644
+--- a/target/board/treble_common_64.mk
++++ b/target/board/treble_common_64.mk
+@@ -18,3 +18,6 @@ include build/make/target/board/treble_common.mk
+ 
+ # Enable 64-bits binder
+ TARGET_USES_64_BIT_BINDER := true
++
++# Partition size is default 1.5GB (1536MB) for 64 bits projects
++BOARD_SYSTEMIMAGE_PARTITION_SIZE := 1610612736
+diff --git a/target/product/aosp_arm.mk b/target/product/aosp_arm.mk
+index f0752a8e2..bc62e60b0 100644
+--- a/target/product/aosp_arm.mk
++++ b/target/product/aosp_arm.mk
+@@ -25,9 +25,6 @@
+ 
+ include $(SRC_TARGET_DIR)/product/full.mk
+ 
+-# Enable dynamic partition size
+-PRODUCT_USE_DYNAMIC_PARTITION_SIZE := true
+-
+ # Enable A/B update
+ AB_OTA_UPDATER := true
+ AB_OTA_PARTITIONS := system
+diff --git a/target/product/aosp_arm64.mk b/target/product/aosp_arm64.mk
+index ab231110c..9c1a16416 100644
+--- a/target/product/aosp_arm64.mk
++++ b/target/product/aosp_arm64.mk
+@@ -41,9 +41,6 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/core_64_bit.mk)
+ $(call inherit-product, $(SRC_TARGET_DIR)/product/aosp_base_telephony.mk)
+ $(call inherit-product, $(SRC_TARGET_DIR)/board/generic_arm64/device.mk)
+ 
+-# Enable dynamic partition size
+-PRODUCT_USE_DYNAMIC_PARTITION_SIZE := true
+-
+ # Enable A/B update
+ AB_OTA_UPDATER := true
+ AB_OTA_PARTITIONS := system
+diff --git a/target/product/aosp_x86.mk b/target/product/aosp_x86.mk
+index 9d1b14bc9..8ca88dce0 100644
+--- a/target/product/aosp_x86.mk
++++ b/target/product/aosp_x86.mk
+@@ -25,9 +25,6 @@
+ 
+ include $(SRC_TARGET_DIR)/product/full_x86.mk
+ 
+-# Enable dynamic partition size
+-PRODUCT_USE_DYNAMIC_PARTITION_SIZE := true
+-
+ # Enable A/B update
+ AB_OTA_UPDATER := true
+ AB_OTA_PARTITIONS := system
+diff --git a/target/product/aosp_x86_64.mk b/target/product/aosp_x86_64.mk
+index b38c4173e..0948149b8 100644
+--- a/target/product/aosp_x86_64.mk
++++ b/target/product/aosp_x86_64.mk
+@@ -41,9 +41,6 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/core_64_bit.mk)
+ $(call inherit-product, $(SRC_TARGET_DIR)/product/aosp_base_telephony.mk)
+ $(call inherit-product, $(SRC_TARGET_DIR)/board/generic_x86_64/device.mk)
+ 
+-# Enable dynamic partition size
+-PRODUCT_USE_DYNAMIC_PARTITION_SIZE := true
+-
+ # Enable A/B update
+ AB_OTA_UPDATER := true
+ AB_OTA_PARTITIONS := system
+diff --git a/target/product/treble_common.mk b/target/product/treble_common.mk
+index e76e89646..aa2aa7f72 100644
+--- a/target/product/treble_common.mk
++++ b/target/product/treble_common.mk
+@@ -23,9 +23,6 @@
+ $(call inherit-product, $(SRC_TARGET_DIR)/product/aosp_base.mk)
+ $(call inherit-product, $(SRC_TARGET_DIR)/product/telephony.mk)
+ 
+-# Enable dynamic partition size
+-PRODUCT_USE_DYNAMIC_PARTITION_SIZE := true
+-
+ # Split selinux policy
+ PRODUCT_FULL_TREBLE_OVERRIDE := true
+ 
+-- 
+2.17.1
+

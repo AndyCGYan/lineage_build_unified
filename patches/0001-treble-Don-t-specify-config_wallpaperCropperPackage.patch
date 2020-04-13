@@ -1,0 +1,25 @@
+From 5180f2417b628e6f1611ce24fd54f711fbdbb991 Mon Sep 17 00:00:00 2001
+From: Andy CrossGate Yan <GeForce8800Ultra@gmail.com>
+Date: Tue, 10 Sep 2019 02:42:36 +0000
+Subject: [PATCH] treble: Don't specify config_wallpaperCropperPackage
+
+Change-Id: I72b59def304779e4bd9a399c01cf1180d15bf444
+---
+ overlay/frameworks/base/core/res/res/values/config.xml | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/overlay/frameworks/base/core/res/res/values/config.xml b/overlay/frameworks/base/core/res/res/values/config.xml
+index 0cdc065..627c91e 100644
+--- a/overlay/frameworks/base/core/res/res/values/config.xml
++++ b/overlay/frameworks/base/core/res/res/values/config.xml
+@@ -22,7 +22,6 @@
+ 	<string name="config_icon_mask" translatable="false">"M50 0C77.6 0 100 22.4 100 50C100 77.6 77.6 100 50 100C22.4 100 0 77.6 0 50C0 22.4 22.4 0 50 0Z"</string>
+ 	<bool name="config_useRoundIcon">true</bool>
+ 
+-	<string name="config_wallpaperCropperPackage">com.android.wallpaperpicker</string>
+ 	<bool name="config_unplugTurnsOnScreen">true</bool>
+ 	<!-- Currently disabled for Android Go
+ 	<integer name="config_multiuserMaximumUsers">4</integer>
+-- 
+2.17.1
+

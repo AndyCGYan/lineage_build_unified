@@ -1,0 +1,24 @@
+From 037c36f36b8f71bd2001c30285bcfcd6523973b0 Mon Sep 17 00:00:00 2001
+From: Andy CrossGate Yan <GeForce8800Ultra@gmail.com>
+Date: Wed, 4 Sep 2019 01:37:30 +0000
+Subject: [PATCH] Increase system partition size for arm_ab
+
+Change-Id: I3ac099dd64624ec27c5fb64ce3fa3a9e500402e5
+---
+ phhgsi_arm_ab/BoardConfig.mk | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/phhgsi_arm_ab/BoardConfig.mk b/phhgsi_arm_ab/BoardConfig.mk
+index 18aaace..5726959 100644
+--- a/phhgsi_arm_ab/BoardConfig.mk
++++ b/phhgsi_arm_ab/BoardConfig.mk
+@@ -2,5 +2,5 @@ include build/make/target/board/generic_arm_ab/BoardConfig.mk
+ include device/phh/treble/board-base.mk
+ 
+ ifeq ($(BOARD_SYSTEMIMAGE_PARTITION_RESERVED_SIZE),)
+-BOARD_SYSTEMIMAGE_PARTITION_SIZE := 1073741824
++BOARD_SYSTEMIMAGE_PARTITION_SIZE := 1313583104
+ endif
+-- 
+2.17.1
+

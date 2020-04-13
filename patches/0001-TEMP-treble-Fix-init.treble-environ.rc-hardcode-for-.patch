@@ -1,0 +1,25 @@
+From f0826e489f5b2823d22273a55ef628945fa9819c Mon Sep 17 00:00:00 2001
+From: Andy CrossGate Yan <GeForce8800Ultra@gmail.com>
+Date: Fri, 1 Nov 2019 15:26:10 +0000
+Subject: [PATCH] [TEMP] treble: Fix init.treble-environ.rc hardcode for LOS
+
+Refer to https://github.com/phhusson/device_phh_treble/commit/a6aa52f7b11cc7d3f9fbe51356b34ebf0705d775
+
+Change-Id: I045e140f0eafe13bca07c6e24f31361a3f876a45
+---
+ environ/init.treble-environ.rc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/environ/init.treble-environ.rc b/environ/init.treble-environ.rc
+index 4fc8c32..d36ba2c 100644
+--- a/environ/init.treble-environ.rc
++++ b/environ/init.treble-environ.rc
+@@ -1,4 +1,4 @@
+ # set up the global environment
+ on init
+     export BOOTCLASSPATH /apex/com.android.runtime/javalib/core-oj.jar:/apex/com.android.runtime/javalib/core-libart.jar:/apex/com.android.runtime/javalib/okhttp.jar:/apex/com.android.runtime/javalib/bouncycastle.jar:/apex/com.android.runtime/javalib/apache-xml.jar:/system/framework/framework.jar:/system/framework/ext.jar:/system/framework/telephony-common.jar:/system/framework/voip-common.jar:/system/framework/ims-common.jar:/system/framework/android.test.base.jar:/apex/com.android.conscrypt/javalib/conscrypt.jar:/apex/com.android.media/javalib/updatable-media.jar
+-    export SYSTEMSERVERCLASSPATH /system/framework/services.jar:/system/framework/ethernet-service.jar:/system/framework/wifi-service.jar:/system/framework/com.android.location.provider.jar
++    export SYSTEMSERVERCLASSPATH /system/framework/org.lineageos.platform.jar:/system/framework/services.jar:/system/framework/ethernet-service.jar:/system/framework/wifi-service.jar:/system/framework/com.android.location.provider.jar
+-- 
+2.17.1
+

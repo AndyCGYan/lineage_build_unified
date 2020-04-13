@@ -1,0 +1,62 @@
+From 834da871f22f65ee8c8a807c13f9248a4633ecee Mon Sep 17 00:00:00 2001
+From: Andy CrossGate Yan <GeForce8800Ultra@gmail.com>
+Date: Tue, 22 Oct 2019 12:36:03 +0000
+Subject: [PATCH] build: Don't handle apns-conf
+
+Leave it to vendor/lineage instead
+
+Change-Id: I743e2d8ab8b6527c887b4d9bbc219ff4dcf6a9ba
+---
+ target/product/full_base_telephony.mk | 5 -----
+ target/product/gsi_common.mk          | 7 -------
+ target/product/mainline.mk            | 4 ----
+ 3 files changed, 16 deletions(-)
+
+diff --git a/target/product/full_base_telephony.mk b/target/product/full_base_telephony.mk
+index e3442147a..0aa9e7700 100644
+--- a/target/product/full_base_telephony.mk
++++ b/target/product/full_base_telephony.mk
+@@ -30,10 +30,5 @@ endif
+ PRODUCT_COPY_FILES := \
+     frameworks/native/data/etc/handheld_core_hardware.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/handheld_core_hardware.xml
+ 
+-ifeq ($(LINEAGE_BUILD),)
+-PRODUCT_COPY_FILES += \
+-    device/sample/etc/apns-full-conf.xml:system/etc/apns-conf.xml
+-endif
+-
+ $(call inherit-product, $(SRC_TARGET_DIR)/product/aosp_base.mk)
+ $(call inherit-product, $(SRC_TARGET_DIR)/product/telephony.mk)
+diff --git a/target/product/gsi_common.mk b/target/product/gsi_common.mk
+index dac3a2fcf..b7ef78c23 100644
+--- a/target/product/gsi_common.mk
++++ b/target/product/gsi_common.mk
+@@ -87,13 +87,6 @@ PRODUCT_PACKAGES += \
+     WAPPushManager \
+     WallpaperPicker \
+ 
+-# Telephony:
+-#   Provide a APN configuration to GSI product
+-ifeq ($(LINEAGE_BUILD),)
+-PRODUCT_COPY_FILES += \
+-    device/sample/etc/apns-full-conf.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/apns-conf.xml
+-endif
+-
+ # NFC:
+ #   Provide a libnfc-nci.conf to GSI product
+ PRODUCT_COPY_FILES += \
+diff --git a/target/product/mainline.mk b/target/product/mainline.mk
+index ca16fc656..70da48b25 100644
+--- a/target/product/mainline.mk
++++ b/target/product/mainline.mk
+@@ -40,7 +40,3 @@ endif
+ PRODUCT_PACKAGES += \
+     PhotoTable \
+     WallpaperPicker \
+-
+-ifeq ($(LINEAGE_BUILD),)
+-PRODUCT_COPY_FILES += device/sample/etc/apns-full-conf.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/apns-conf.xml
+-endif
+-- 
+2.17.1
+

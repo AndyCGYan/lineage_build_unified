@@ -1,0 +1,40 @@
+From 8a1c7866b848c51ad470fecc330d023dd5556d43 Mon Sep 17 00:00:00 2001
+From: Andy CrossGate Yan <GeForce8800Ultra@gmail.com>
+Date: Tue, 24 Dec 2019 15:32:21 +0000
+Subject: [PATCH] cryptfshw: Remove dependency on generated kernel headers
+
+Change-Id: I1a95cf9f4391c40bec79d5380ee9a4dc57dbe2ac
+---
+ cryptfshw/1.0/Android.bp      | 2 +-
+ cryptfshw/1.0/qsee/Android.bp | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/cryptfshw/1.0/Android.bp b/cryptfshw/1.0/Android.bp
+index fe511ff..6157075 100644
+--- a/cryptfshw/1.0/Android.bp
++++ b/cryptfshw/1.0/Android.bp
+@@ -21,7 +21,7 @@ cc_library_static {
+         "CryptfsHwUtils.cpp",
+     ],
+     export_include_dirs: ["."],
+-    header_libs: ["generated_kernel_headers"],
++    header_libs: ["device_kernel_headers"],
+     shared_libs: [
+         "libbase",
+         "libhidlbase",
+diff --git a/cryptfshw/1.0/qsee/Android.bp b/cryptfshw/1.0/qsee/Android.bp
+index b06e286..01cadd4 100644
+--- a/cryptfshw/1.0/qsee/Android.bp
++++ b/cryptfshw/1.0/qsee/Android.bp
+@@ -38,7 +38,7 @@ cc_binary {
+             },
+         },
+     },
+-    header_libs: ["generated_kernel_headers"],
++    header_libs: ["device_kernel_headers"],
+     shared_libs: [
+         "libbase",
+         "libdl",
+-- 
+2.17.1
+

@@ -67,9 +67,18 @@ cd ../../..
 cd external/tinycompress
 git revert 82c8fbf6d3fb0a017026b675adf2cee3f994e08a --no-edit # tinycompress: Use generated kernel headers
 cd ../..
+cd frameworks/native
+git revert 581c22f979af05e48ad4843cdfa9605186d286da --no-edit # Add suspend_resume trace events to the atrace 'freq' category.
+cd ../..
 cd hardware/lineage/interfaces
 git am $BL/patches/0001-cryptfshw-Remove-dependency-on-generated-kernel-head.patch
 cd ../../..
+cd system/hardware/interfaces
+git revert 5c145c49cc83bfe37c740bcfd3f82715ee051122 --no-edit # system_suspend: start early
+cd ../../..
+cd system/sepolicy
+git revert d12551bf1a6e8a9ece6bbb98344a27bde7f9b3e1 --no-edit # sepolicy: Relabel wifi. properties as wifi_prop
+cd ../..
 cd vendor/lineage
 git am $BL/patches/0001-build_soong-Disable-generated_kernel_headers.patch
 cd ../..

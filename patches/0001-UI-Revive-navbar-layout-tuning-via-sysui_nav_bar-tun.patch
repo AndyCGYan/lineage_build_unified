@@ -1,4 +1,4 @@
-From 9a0fea3a8fa45f4fd804f06eaa0a39a044ecb0d8 Mon Sep 17 00:00:00 2001
+From 6642bca8a784f2a65cde080935878c830e383ffd Mon Sep 17 00:00:00 2001
 From: Andy CrossGate Yan <GeForce8800Ultra@gmail.com>
 Date: Sun, 3 Nov 2019 03:32:02 +0000
 Subject: [PATCH] UI: Revive navbar layout tuning via sysui_nav_bar tunable
@@ -8,23 +8,22 @@ This partially undoes https://github.com/LineageOS/android_frameworks_base/commi
 
 Change-Id: I7a0fcfc9c27a08100712200d50f295f4bd81494d
 ---
- .../systemui/statusbar/phone/NavigationBarInflaterView.java | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ .../systemui/statusbar/phone/NavigationBarInflaterView.java  | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
 diff --git a/packages/SystemUI/src/com/android/systemui/statusbar/phone/NavigationBarInflaterView.java b/packages/SystemUI/src/com/android/systemui/statusbar/phone/NavigationBarInflaterView.java
-index 79a47af9fdf..50b3a47b6fa 100644
+index db58e1364b3..9ebeab07f11 100644
 --- a/packages/SystemUI/src/com/android/systemui/statusbar/phone/NavigationBarInflaterView.java
 +++ b/packages/SystemUI/src/com/android/systemui/statusbar/phone/NavigationBarInflaterView.java
-@@ -155,7 +155,7 @@ public class NavigationBarInflaterView extends FrameLayout
-     @Override
-     protected void onAttachedToWindow() {
+@@ -173,6 +173,7 @@ public class NavigationBarInflaterView extends FrameLayout
          super.onAttachedToWindow();
--        Dependency.get(TunerService.class).addTunable(this, NAV_BAR_INVERSE);
-+        Dependency.get(TunerService.class).addTunable(this, NAV_BAR_VIEWS, NAV_BAR_INVERSE);
+         Dependency.get(TunerService.class).addTunable(this, NAV_BAR_INVERSE);
+         Dependency.get(TunerService.class).addTunable(this, KEY_NAVIGATION_HINT);
++        Dependency.get(TunerService.class).addTunable(this, NAV_BAR_VIEWS);
      }
  
      @Override
-@@ -167,7 +167,9 @@ public class NavigationBarInflaterView extends FrameLayout
+@@ -184,7 +185,9 @@ public class NavigationBarInflaterView extends FrameLayout
  
      @Override
      public void onTuningChanged(String key, String newValue) {
@@ -34,7 +33,7 @@ index 79a47af9fdf..50b3a47b6fa 100644
 +        } else if (NAV_BAR_INVERSE.equals(key)) {
              mInverseLayout = TunerService.parseIntegerSwitch(newValue, false);
              updateLayoutInversion();
-         }
+         } else if (KEY_NAVIGATION_HINT.equals(key)) {
 -- 
 2.17.1
 

@@ -23,10 +23,19 @@ echo "Setting up build environment"
 source build/envsetup.sh &> /dev/null
 echo ""
 
-echo "Applying PHH patches"
+echo "Reverting LOS FOD implementation"
 cd frameworks/base
 git am $BL/patches/0001-Squashed-revert-of-LOS-FOD-implementation.patch
 cd ../..
+cd frameworks/native
+git am $BL/patches/0001-Revert-surfaceflinger-Add-support-for-extension-lib.patch
+cd ../..
+cd vendor/lineage
+git revert 612c5a846ea5aed339fe1275c119ee111faae78c --no-edit # soong: Add flag for fod extension
+cd ../..
+echo ""
+
+echo "Applying PHH patches"
 rm -f device/*/sepolicy/common/private/genfs_contexts
 cd device/phh/treble
 git clean -fdx
@@ -61,7 +70,6 @@ git revert 82b15278bad816632dcaeaed623b569978e9840d --no-edit # Update lineage.m
 git am $BL/patches/0001-Remove-fsck-SELinux-labels.patch
 git am $BL/patches/0001-treble-Add-overlay-lineage.patch
 git am $BL/patches/0001-treble-Don-t-specify-config_wallpaperCropperPackage.patch
-git am $BL/patches/0001-Increase-system-partition-size-for-arm_ab.patch
 git am $BL/patches/0001-TEMP-treble-Fix-init.treble-environ.rc-hardcode-for-.patch
 cd ../../..
 cd external/tinycompress

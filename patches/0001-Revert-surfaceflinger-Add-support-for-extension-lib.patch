@@ -1,0 +1,106 @@
+From 7d7802adc9d58e2b3c65eba48e543ac5b8d8813f Mon Sep 17 00:00:00 2001
+From: Andy CrossGate Yan <GeForce8800Ultra@gmail.com>
+Date: Wed, 10 Jun 2020 15:36:26 +0000
+Subject: [PATCH] Revert "surfaceflinger: Add support for extension lib"
+
+This reverts commit 470dde656e0ee547f78ac403a6f959e1438c2158.
+
+Change-Id: I7c7ed49ba33f98e2715e12f24a0b01c937cae5ac
+---
+ services/surfaceflinger/BufferQueueLayer.cpp          | 11 +----------
+ services/surfaceflinger/CompositionEngine/Android.bp  | 10 ----------
+ .../CompositionEngine/src/OutputLayer.cpp             | 10 +---------
+ 3 files changed, 2 insertions(+), 29 deletions(-)
+
+diff --git a/services/surfaceflinger/BufferQueueLayer.cpp b/services/surfaceflinger/BufferQueueLayer.cpp
+index 18c74e6c6..eb1bf66cd 100644
+--- a/services/surfaceflinger/BufferQueueLayer.cpp
++++ b/services/surfaceflinger/BufferQueueLayer.cpp
+@@ -18,7 +18,6 @@
+ #define LOG_TAG "BufferQueueLayer"
+ #define ATRACE_TAG ATRACE_TAG_GRAPHICS
+ #include <compositionengine/Display.h>
+-#include <compositionengine/FodExtension.h>
+ #include <compositionengine/Layer.h>
+ #include <compositionengine/OutputLayer.h>
+ #include <compositionengine/impl/LayerCompositionState.h>
+@@ -563,19 +562,11 @@ status_t BufferQueueLayer::setDefaultBufferProperties(uint32_t w, uint32_t h, Pi
+         return BAD_VALUE;
+     }
+ 
+-    uint64_t usageBits = getEffectiveUsage(0);
+-
+-    if (mName == FOD_LAYER_NAME) {
+-        usageBits = getFodUsageBits(usageBits, false);
+-    } else if (mName == FOD_TOUCHED_LAYER_NAME) {
+-        usageBits = getFodUsageBits(usageBits, true);
+-    }
+-
+     mFormat = format;
+ 
+     setDefaultBufferSize(w, h);
+     mConsumer->setDefaultBufferFormat(format);
+-    mConsumer->setConsumerUsageBits(usageBits);
++    mConsumer->setConsumerUsageBits(getEffectiveUsage(0));
+ 
+     return NO_ERROR;
+ }
+diff --git a/services/surfaceflinger/CompositionEngine/Android.bp b/services/surfaceflinger/CompositionEngine/Android.bp
+index fd1c369d8..6f076ad11 100644
+--- a/services/surfaceflinger/CompositionEngine/Android.bp
++++ b/services/surfaceflinger/CompositionEngine/Android.bp
+@@ -45,7 +45,6 @@ cc_library {
+         "src/DisplayColorProfile.cpp",
+         "src/DisplaySurface.cpp",
+         "src/DumpHelpers.cpp",
+-        "src/FodExtension.cpp",
+         "src/HwcBufferCache.cpp",
+         "src/Layer.cpp",
+         "src/LayerCompositionState.cpp",
+@@ -57,15 +56,6 @@ cc_library {
+     ],
+     local_include_dirs: ["include"],
+     export_include_dirs: ["include"],
+-    product_variables: {
+-        lineage: {
+-            target_surfaceflinger_fod_lib: {
+-                cflags: ["-DTARGET_PROVIDES_FOD_LIB"],
+-                whole_static_libs: ["%s"],
+-            },
+-        },
+-    },
+-
+ }
+ 
+ cc_library {
+diff --git a/services/surfaceflinger/CompositionEngine/src/OutputLayer.cpp b/services/surfaceflinger/CompositionEngine/src/OutputLayer.cpp
+index 985b598f1..5ce72b087 100644
+--- a/services/surfaceflinger/CompositionEngine/src/OutputLayer.cpp
++++ b/services/surfaceflinger/CompositionEngine/src/OutputLayer.cpp
+@@ -16,7 +16,6 @@
+ 
+ #include <android-base/stringprintf.h>
+ #include <compositionengine/CompositionEngine.h>
+-#include <compositionengine/FodExtension.h>
+ #include <compositionengine/Layer.h>
+ #include <compositionengine/LayerFE.h>
+ #include <compositionengine/Output.h>
+@@ -336,14 +335,7 @@ void OutputLayer::writeStateToHWC(bool includeGeometry) const {
+                   static_cast<int32_t>(error));
+         }
+ 
+-        uint32_t z = mState.z;
+-        if (strcmp(mLayerFE->getDebugName(), FOD_LAYER_NAME) == 0) {
+-            z = getFodZOrder(z, false);
+-        } else if (strcmp(mLayerFE->getDebugName(), FOD_TOUCHED_LAYER_NAME) == 0) {
+-            z = getFodZOrder(z, true);
+-        }
+-
+-        if (auto error = hwcLayer->setZOrder(z); error != HWC2::Error::None) {
++        if (auto error = hwcLayer->setZOrder(mState.z); error != HWC2::Error::None) {
+             ALOGE("[%s] Failed to set Z %u: %s (%d)", mLayerFE->getDebugName(), mState.z,
+                   to_string(error).c_str(), static_cast<int32_t>(error));
+         }
+-- 
+2.17.1
+

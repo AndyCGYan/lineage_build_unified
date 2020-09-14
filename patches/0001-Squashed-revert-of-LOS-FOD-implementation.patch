@@ -1,4 +1,4 @@
-From 6d38ca2cea41942ef2e2168e7d00110d48e37690 Mon Sep 17 00:00:00 2001
+From 5da0bcb4256af2b176e47b46bfe925a47b9c100c Mon Sep 17 00:00:00 2001
 From: Andy CrossGate Yan <GeForce8800Ultra@gmail.com>
 Date: Wed, 5 Feb 2020 02:24:44 +0000
 Subject: [PATCH] Squashed revert of LOS FOD implementation
@@ -13,14 +13,14 @@ Change-Id: Ifbcd5ff44c97e536fd2e417deadc2b08773b7b5e
  .../res/drawable/fod_icon_default.xml         |  25 -
  packages/SystemUI/res/values/config.xml       |   1 -
  .../SystemUI/res/values/lineage_config.xml    |   4 -
- .../systemui/biometrics/FODCircleView.java    | 465 ------------------
+ .../systemui/biometrics/FODCircleView.java    | 466 ------------------
  .../biometrics/FODCircleViewImpl.java         |  62 ---
  .../systemui/statusbar/CommandQueue.java      |  28 --
  services/core/Android.bp                      |   1 -
  .../biometrics/BiometricServiceBase.java      |   2 +-
  .../fingerprint/FingerprintService.java       | 112 -----
  .../statusbar/StatusBarManagerService.java    |  22 -
- 13 files changed, 1 insertion(+), 729 deletions(-)
+ 13 files changed, 1 insertion(+), 730 deletions(-)
  delete mode 100644 packages/SystemUI/res/drawable/fod_icon_default.xml
  delete mode 100644 packages/SystemUI/src/com/android/systemui/biometrics/FODCircleView.java
  delete mode 100644 packages/SystemUI/src/com/android/systemui/biometrics/FODCircleViewImpl.java
@@ -133,10 +133,10 @@ index fd732a7127a..e520306aa78 100644
      <integer name="config_maxVisibleNotificationIconsOnLock">5</integer>
 diff --git a/packages/SystemUI/src/com/android/systemui/biometrics/FODCircleView.java b/packages/SystemUI/src/com/android/systemui/biometrics/FODCircleView.java
 deleted file mode 100644
-index a1691b9cb69..00000000000
+index 00172dd8f3e..00000000000
 --- a/packages/SystemUI/src/com/android/systemui/biometrics/FODCircleView.java
 +++ /dev/null
-@@ -1,465 +0,0 @@
+@@ -1,466 +0,0 @@
 -/**
 - * Copyright (C) 2019 The Android Open Source Project
 - *
@@ -340,6 +340,7 @@ index a1691b9cb69..00000000000
 -                super.onDraw(canvas);
 -            }
 -        };
+-        mPressedView.setImageResource(R.drawable.fod_icon_pressed);
 -
 -        mWindowManager.addView(this, mParams);
 -
@@ -1000,5 +1001,5 @@ index 81c57d75bbb..faeafc25f67 100644
      public void setBlockedGesturalNavigation(boolean blocked) {
          if (mBar != null) {
 -- 
-2.17.1
+2.25.1
 

@@ -86,6 +86,7 @@ git revert 5c145c49cc83bfe37c740bcfd3f82715ee051122 --no-edit # system_suspend: 
 cd ../../..
 cd system/sepolicy
 git revert d12551bf1a6e8a9ece6bbb98344a27bde7f9b3e1 --no-edit # sepolicy: Relabel wifi. properties as wifi_prop
+git am $BL/patches/0001-Revert-sepolicy-Address-denials-for-legacy-last_kmsg.patch
 cd ../..
 cd vendor/lineage
 git am $BL/patches/0001-build_soong-Disable-generated_kernel_headers.patch
@@ -108,12 +109,12 @@ buildVariant() {
 	mv $OUT/system.img ~/build-output/lineage-17.1-$BUILD_DATE-UNOFFICIAL-${1}.img
 }
 
-buildVariant treble_arm_avN
-buildVariant treble_arm_bvN
-buildVariant treble_a64_avN
-buildVariant treble_a64_bvN
-buildVariant treble_arm64_avN
-buildVariant treble_arm64_bvN
+buildVariant treble_arm_avS
+buildVariant treble_arm_bvS
+buildVariant treble_a64_avS
+buildVariant treble_a64_bvS
+buildVariant treble_arm64_avS
+buildVariant treble_arm64_bvS
 ls ~/build-output | grep 'lineage'
 
 END=`date +%s`

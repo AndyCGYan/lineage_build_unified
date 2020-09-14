@@ -1,0 +1,219 @@
+From f2d91940b4e014d63154a816749150cffd3f1a47 Mon Sep 17 00:00:00 2001
+From: Peter Cai <peter@typeblog.net>
+Date: Fri, 28 Feb 2020 10:29:42 +0800
+Subject: [PATCH] Revert "sepolicy: Address denials for legacy last_kmsg file"
+
+This reverts commit 1188affe377931f31b6f85d8851c3ddf00ab5567.
+
+* Some vendor images (like Xiaomi's sm7250 vendor) already defines
+  similar rules for last_kmsg. Having this in system will cause
+  conflicts with prebuilt vendor images.
+* We can probably move this to somewhere like `device/qcom/sepolicy` or
+  `device/lineage/sepolicy`, putting them in vendor sepolicy to guard
+  them off system-only builds.
+
+Change-Id: I813c5f56a6e23c96f129c3928dd559fb4c56d9d7
+---
+ prebuilts/api/29.0/private/compat/26.0/26.0.ignore.cil | 1 -
+ prebuilts/api/29.0/private/compat/27.0/27.0.ignore.cil | 1 -
+ prebuilts/api/29.0/private/compat/28.0/28.0.ignore.cil | 1 -
+ prebuilts/api/29.0/private/genfs_contexts              | 1 -
+ prebuilts/api/29.0/private/system_server.te            | 1 -
+ prebuilts/api/29.0/public/file.te                      | 1 -
+ prebuilts/api/29.0/public/init.te                      | 2 --
+ private/compat/26.0/26.0.ignore.cil                    | 1 -
+ private/compat/27.0/27.0.ignore.cil                    | 1 -
+ private/compat/28.0/28.0.ignore.cil                    | 1 -
+ private/genfs_contexts                                 | 1 -
+ private/system_server.te                               | 1 -
+ public/file.te                                         | 1 -
+ public/init.te                                         | 2 --
+ 14 files changed, 16 deletions(-)
+
+diff --git a/prebuilts/api/29.0/private/compat/26.0/26.0.ignore.cil b/prebuilts/api/29.0/private/compat/26.0/26.0.ignore.cil
+index b12f917d..5a908cf2 100644
+--- a/prebuilts/api/29.0/private/compat/26.0/26.0.ignore.cil
++++ b/prebuilts/api/29.0/private/compat/26.0/26.0.ignore.cil
+@@ -134,7 +134,6 @@
+     perfprofd_service
+     proc_cpu_alignment
+     proc_dt_firmware_android
+-    proc_last_kmsg
+     property_info
+     recovery_socket
+     role_service
+diff --git a/prebuilts/api/29.0/private/compat/27.0/27.0.ignore.cil b/prebuilts/api/29.0/private/compat/27.0/27.0.ignore.cil
+index bba68f10..f4bf3ac0 100644
+--- a/prebuilts/api/29.0/private/compat/27.0/27.0.ignore.cil
++++ b/prebuilts/api/29.0/private/compat/27.0/27.0.ignore.cil
+@@ -121,7 +121,6 @@
+     perfprofd_service
+     proc_cpu_alignment
+     proc_dt_firmware_android
+-    proc_last_kmsg
+     property_info
+     recovery_socket
+     role_service
+diff --git a/prebuilts/api/29.0/private/compat/28.0/28.0.ignore.cil b/prebuilts/api/29.0/private/compat/28.0/28.0.ignore.cil
+index 1e46f712..96d649b5 100644
+--- a/prebuilts/api/29.0/private/compat/28.0/28.0.ignore.cil
++++ b/prebuilts/api/29.0/private/compat/28.0/28.0.ignore.cil
+@@ -106,7 +106,6 @@
+     postinstall_apex_mnt_dir
+     proc_cpu_alignment
+     proc_dt_firmware_android
+-    proc_last_kmsg
+     recovery_socket
+     role_service
+     rollback_service
+diff --git a/prebuilts/api/29.0/private/genfs_contexts b/prebuilts/api/29.0/private/genfs_contexts
+index c7603a9a..d9b24d0d 100644
+--- a/prebuilts/api/29.0/private/genfs_contexts
++++ b/prebuilts/api/29.0/private/genfs_contexts
+@@ -13,7 +13,6 @@ genfscon proc /interrupts u:object_r:proc_interrupts:s0
+ genfscon proc /iomem u:object_r:proc_iomem:s0
+ genfscon proc /keys u:object_r:proc_keys:s0
+ genfscon proc /kmsg u:object_r:proc_kmsg:s0
+-genfscon proc /last_kmsg u:object_r:proc_last_kmsg:s0
+ genfscon proc /loadavg u:object_r:proc_loadavg:s0
+ genfscon proc /meminfo u:object_r:proc_meminfo:s0
+ genfscon proc /misc u:object_r:proc_misc:s0
+diff --git a/prebuilts/api/29.0/private/system_server.te b/prebuilts/api/29.0/private/system_server.te
+index 87f26c4b..73891c92 100644
+--- a/prebuilts/api/29.0/private/system_server.te
++++ b/prebuilts/api/29.0/private/system_server.te
+@@ -848,7 +848,6 @@ r_dir_file(system_server, proc_net_type)
+ r_dir_file(system_server, proc_qtaguid_stat)
+ allow system_server {
+   proc_cmdline
+-  proc_last_kmsg
+   proc_loadavg
+   proc_meminfo
+   proc_pagetypeinfo
+diff --git a/prebuilts/api/29.0/public/file.te b/prebuilts/api/29.0/public/file.te
+index b4c77b1e..96c07324 100644
+--- a/prebuilts/api/29.0/public/file.te
++++ b/prebuilts/api/29.0/public/file.te
+@@ -34,7 +34,6 @@ type proc_interrupts, fs_type, proc_type;
+ type proc_iomem, fs_type, proc_type;
+ type proc_keys, fs_type, proc_type;
+ type proc_kmsg, fs_type, proc_type;
+-type proc_last_kmsg, fs_type, proc_type;
+ type proc_loadavg, fs_type, proc_type;
+ type proc_max_map_count, fs_type, proc_type;
+ type proc_meminfo, fs_type, proc_type;
+diff --git a/prebuilts/api/29.0/public/init.te b/prebuilts/api/29.0/public/init.te
+index e7e5b651..b4969b1d 100644
+--- a/prebuilts/api/29.0/public/init.te
++++ b/prebuilts/api/29.0/public/init.te
+@@ -319,7 +319,6 @@ allow init {
+   proc_cmdline
+   proc_diskstats
+   proc_kmsg # Open /proc/kmsg for logd service.
+-  proc_last_kmsg
+   proc_meminfo
+   proc_stat # Read /proc/stat for bootchart.
+   proc_uptime
+@@ -352,7 +351,6 @@ allow init {
+ allow init {
+   proc_cmdline
+   proc_kmsg
+-  proc_last_kmsg
+   proc_net
+   proc_qtaguid_stat
+   proc_slabinfo
+diff --git a/private/compat/26.0/26.0.ignore.cil b/private/compat/26.0/26.0.ignore.cil
+index b12f917d..5a908cf2 100644
+--- a/private/compat/26.0/26.0.ignore.cil
++++ b/private/compat/26.0/26.0.ignore.cil
+@@ -134,7 +134,6 @@
+     perfprofd_service
+     proc_cpu_alignment
+     proc_dt_firmware_android
+-    proc_last_kmsg
+     property_info
+     recovery_socket
+     role_service
+diff --git a/private/compat/27.0/27.0.ignore.cil b/private/compat/27.0/27.0.ignore.cil
+index bba68f10..f4bf3ac0 100644
+--- a/private/compat/27.0/27.0.ignore.cil
++++ b/private/compat/27.0/27.0.ignore.cil
+@@ -121,7 +121,6 @@
+     perfprofd_service
+     proc_cpu_alignment
+     proc_dt_firmware_android
+-    proc_last_kmsg
+     property_info
+     recovery_socket
+     role_service
+diff --git a/private/compat/28.0/28.0.ignore.cil b/private/compat/28.0/28.0.ignore.cil
+index 1e46f712..96d649b5 100644
+--- a/private/compat/28.0/28.0.ignore.cil
++++ b/private/compat/28.0/28.0.ignore.cil
+@@ -106,7 +106,6 @@
+     postinstall_apex_mnt_dir
+     proc_cpu_alignment
+     proc_dt_firmware_android
+-    proc_last_kmsg
+     recovery_socket
+     role_service
+     rollback_service
+diff --git a/private/genfs_contexts b/private/genfs_contexts
+index c7603a9a..d9b24d0d 100644
+--- a/private/genfs_contexts
++++ b/private/genfs_contexts
+@@ -13,7 +13,6 @@ genfscon proc /interrupts u:object_r:proc_interrupts:s0
+ genfscon proc /iomem u:object_r:proc_iomem:s0
+ genfscon proc /keys u:object_r:proc_keys:s0
+ genfscon proc /kmsg u:object_r:proc_kmsg:s0
+-genfscon proc /last_kmsg u:object_r:proc_last_kmsg:s0
+ genfscon proc /loadavg u:object_r:proc_loadavg:s0
+ genfscon proc /meminfo u:object_r:proc_meminfo:s0
+ genfscon proc /misc u:object_r:proc_misc:s0
+diff --git a/private/system_server.te b/private/system_server.te
+index 87f26c4b..73891c92 100644
+--- a/private/system_server.te
++++ b/private/system_server.te
+@@ -848,7 +848,6 @@ r_dir_file(system_server, proc_net_type)
+ r_dir_file(system_server, proc_qtaguid_stat)
+ allow system_server {
+   proc_cmdline
+-  proc_last_kmsg
+   proc_loadavg
+   proc_meminfo
+   proc_pagetypeinfo
+diff --git a/public/file.te b/public/file.te
+index b4c77b1e..96c07324 100644
+--- a/public/file.te
++++ b/public/file.te
+@@ -34,7 +34,6 @@ type proc_interrupts, fs_type, proc_type;
+ type proc_iomem, fs_type, proc_type;
+ type proc_keys, fs_type, proc_type;
+ type proc_kmsg, fs_type, proc_type;
+-type proc_last_kmsg, fs_type, proc_type;
+ type proc_loadavg, fs_type, proc_type;
+ type proc_max_map_count, fs_type, proc_type;
+ type proc_meminfo, fs_type, proc_type;
+diff --git a/public/init.te b/public/init.te
+index e7e5b651..b4969b1d 100644
+--- a/public/init.te
++++ b/public/init.te
+@@ -319,7 +319,6 @@ allow init {
+   proc_cmdline
+   proc_diskstats
+   proc_kmsg # Open /proc/kmsg for logd service.
+-  proc_last_kmsg
+   proc_meminfo
+   proc_stat # Read /proc/stat for bootchart.
+   proc_uptime
+@@ -352,7 +351,6 @@ allow init {
+ allow init {
+   proc_cmdline
+   proc_kmsg
+-  proc_last_kmsg
+   proc_net
+   proc_qtaguid_stat
+   proc_slabinfo
+-- 
+2.25.1
+

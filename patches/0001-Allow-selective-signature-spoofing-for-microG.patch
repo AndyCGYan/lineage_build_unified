@@ -1,4 +1,4 @@
-From 35aa9512f17c0e3809b863c87f41fc567b6f310f Mon Sep 17 00:00:00 2001
+From 4f35431eb542182d0359dcd62c4bb77f05794261 Mon Sep 17 00:00:00 2001
 From: Chirayu Desai <chirayudesai1@gmail.com>
 Date: Wed, 30 Jan 2019 18:18:10 +0530
 Subject: [PATCH] Allow selective signature spoofing for microG
@@ -63,7 +63,7 @@ index 7e975f68ec3..69932c6ac16 100644
      <string name="permlab_statusBar">disable or modify status bar</string>
      <!-- Description of an application permission, listed so the user can choose whether they want to allow the application to do this. -->
 diff --git a/services/core/java/com/android/server/pm/PackageManagerService.java b/services/core/java/com/android/server/pm/PackageManagerService.java
-index 879c06eef33..a9346c8a29d 100644
+index 9d287a53af3..205217b3009 100644
 --- a/services/core/java/com/android/server/pm/PackageManagerService.java
 +++ b/services/core/java/com/android/server/pm/PackageManagerService.java
 @@ -635,6 +635,11 @@ public class PackageManagerService extends IPackageManager.Stub
@@ -78,9 +78,9 @@ index 879c06eef33..a9346c8a29d 100644
      final ServiceThread mHandlerThread;
  
      final PackageHandler mHandler;
-@@ -4185,8 +4190,9 @@ public class PackageManagerService extends IPackageManager.Stub
-             final Set<String> permissions = ArrayUtils.isEmpty(p.requestedPermissions)
-                     ? Collections.emptySet() : permissionsState.getPermissions(userId);
+@@ -4197,8 +4202,9 @@ public class PackageManagerService extends IPackageManager.Stub
+                 });
+             }
  
 -            PackageInfo packageInfo = PackageParser.generatePackageInfo(p, gids, flags,
 -                    ps.firstInstallTime, ps.lastUpdateTime, permissions, state, userId);
@@ -90,7 +90,7 @@ index 879c06eef33..a9346c8a29d 100644
  
              if (packageInfo == null) {
                  return null;
-@@ -4222,6 +4228,24 @@ public class PackageManagerService extends IPackageManager.Stub
+@@ -4234,6 +4240,24 @@ public class PackageManagerService extends IPackageManager.Stub
          }
      }
  

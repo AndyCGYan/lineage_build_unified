@@ -72,9 +72,6 @@ git am $BL/patches/0001-treble-Add-overlay-lineage.patch
 git am $BL/patches/0001-treble-Don-t-specify-config_wallpaperCropperPackage.patch
 git am $BL/patches/0001-TEMP-treble-Fix-init.treble-environ.rc-hardcode-for-.patch
 cd ../../..
-cd external/tinycompress
-git revert 82c8fbf6d3fb0a017026b675adf2cee3f994e08a --no-edit # tinycompress: Use generated kernel headers
-cd ../..
 cd frameworks/native
 git revert 581c22f979af05e48ad4843cdfa9605186d286da --no-edit # Add suspend_resume trace events to the atrace 'freq' category.
 cd ../..

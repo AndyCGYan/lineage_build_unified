@@ -1,0 +1,30 @@
+From 7a633a53d8e20e2d976597a332bf5ba855ec1f75 Mon Sep 17 00:00:00 2001
+From: Andy CrossGate Yan <GeForce8800Ultra@gmail.com>
+Date: Thu, 5 Sep 2019 02:08:22 +0000
+Subject: [PATCH] vendor_lineage: Log privapp-permissions whitelist violations
+ instead
+
+Change-Id: I49dba61f332253e291a65e79ca70d9a07d45bb07
+---
+ config/common.mk | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/config/common.mk b/config/common.mk
+index 2fe9cb01..7d971bba 100644
+--- a/config/common.mk
++++ b/config/common.mk
+@@ -70,9 +70,9 @@ PRODUCT_COPY_FILES += \
+ PRODUCT_COPY_FILES += \
+     vendor/lineage/config/permissions/org.lineageos.android.xml:$(TARGET_COPY_OUT_SYSTEM)/etc/permissions/org.lineageos.android.xml
+ 
+-# Enforce privapp-permissions whitelist
++# Log privapp-permissions whitelist violations
+ PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
+-    ro.control_privapp_permissions=enforce
++    ro.control_privapp_permissions=log
+ 
+ # Include AOSP audio files
+ include vendor/lineage/config/aosp_audio.mk
+-- 
+2.17.1
+

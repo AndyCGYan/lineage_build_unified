@@ -1,0 +1,186 @@
+From 22d48d3925e8741ab115e7f20c2faf20c2fe21b5 Mon Sep 17 00:00:00 2001
+From: Andy CrossGate Yan <GeForce8800Ultra@gmail.com>
+Date: Sat, 19 Dec 2020 15:57:27 +0000
+Subject: [PATCH] Revert "init: Add vendor-specific initialization hooks."
+
+This reverts commit 7bc78d1354cd2e8df1ba693c627d5be39206e375.
+
+Change-Id: I0c3241ef3626bc989b34723e30b2339e4a62399d
+---
+ init/Android.bp           |  9 ---------
+ init/NOTICE               | 26 --------------------------
+ init/property_service.cpp |  4 ----
+ init/vendor_init.cpp      | 37 -------------------------------------
+ init/vendor_init.h        | 33 ---------------------------------
+ 5 files changed, 109 deletions(-)
+ delete mode 100644 init/vendor_init.cpp
+ delete mode 100644 init/vendor_init.h
+
+diff --git a/init/Android.bp b/init/Android.bp
+index e28d9f026..827a8293f 100644
+--- a/init/Android.bp
++++ b/init/Android.bp
+@@ -71,14 +71,6 @@ init_host_sources = [
+     "host_init_verifier.cpp",
+ ]
+ 
+-cc_library_static {
+-    name: "vendor_init",
+-    recovery_available: true,
+-    srcs: [
+-        "vendor_init.cpp",
+-    ],
+-}
+-
+ cc_defaults {
+     name: "init_defaults",
+     cpp_std: "experimental",
+@@ -169,7 +161,6 @@ cc_library_static {
+     defaults: [
+         "init_defaults",
+         "selinux_policy_version",
+-        "vendor_init_defaults",
+     ],
+     srcs: init_common_sources + init_device_sources,
+     whole_static_libs: [
+diff --git a/init/NOTICE b/init/NOTICE
+index 383d0f541..c5b1efa7a 100644
+--- a/init/NOTICE
++++ b/init/NOTICE
+@@ -188,29 +188,3 @@
+ 
+    END OF TERMS AND CONDITIONS
+ 
+-Copyright (c) 2013, The Linux Foundation. All rights reserved.
+-
+-Redistribution and use in source and binary forms, with or without
+-modification, are permitted provided that the following conditions are
+-met:
+-    * Redistributions of source code must retain the above copyright
+-      notice, this list of conditions and the following disclaimer.
+-    * Redistributions in binary form must reproduce the above
+-      copyright notice, this list of conditions and the following
+-      disclaimer in the documentation and/or other materials provided
+-      with the distribution.
+-    * Neither the name of The Linux Foundation nor the names of its
+-      contributors may be used to endorse or promote products derived
+-      from this software without specific prior written permission.
+-
+-THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED
+-WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT
+-ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS
+-BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+-CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+-SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+-BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+-WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+-OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+-IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+diff --git a/init/property_service.cpp b/init/property_service.cpp
+index 2852f4fb4..a89504e59 100644
+--- a/init/property_service.cpp
++++ b/init/property_service.cpp
+@@ -70,7 +70,6 @@
+ #include "subcontext.h"
+ #include "system/core/init/property_service.pb.h"
+ #include "util.h"
+-#include "vendor_init.h"
+ 
+ using namespace std::literals;
+ 
+@@ -913,9 +912,6 @@ void PropertyLoadBootDefaults() {
+         }
+     }
+ 
+-    // Update with vendor-specific property runtime overrides
+-    vendor_load_properties();
+-
+     property_initialize_ro_product_props();
+     property_derive_build_fingerprint();
+ 
+diff --git a/init/vendor_init.cpp b/init/vendor_init.cpp
+deleted file mode 100644
+index d3fd5ffe2..000000000
+--- a/init/vendor_init.cpp
++++ /dev/null
+@@ -1,37 +0,0 @@
+-/*
+-Copyright (c) 2013, The Linux Foundation. All rights reserved.
+-
+-Redistribution and use in source and binary forms, with or without
+-modification, are permitted provided that the following conditions are
+-met:
+-    * Redistributions of source code must retain the above copyright
+-      notice, this list of conditions and the following disclaimer.
+-    * Redistributions in binary form must reproduce the above
+-      copyright notice, this list of conditions and the following
+-      disclaimer in the documentation and/or other materials provided
+-      with the distribution.
+-    * Neither the name of The Linux Foundation nor the names of its
+-      contributors may be used to endorse or promote products derived
+-      from this software without specific prior written permission.
+-
+-THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED
+-WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT
+-ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS
+-BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+-CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+-SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+-BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+-WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+-OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+-IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+- */
+-
+-#include "vendor_init.h"
+-
+-/* init vendor override stubs */
+-
+-__attribute__ ((weak))
+-void vendor_load_properties()
+-{
+-}
+diff --git a/init/vendor_init.h b/init/vendor_init.h
+deleted file mode 100644
+index 9afb449be..000000000
+--- a/init/vendor_init.h
++++ /dev/null
+@@ -1,33 +0,0 @@
+-/*
+-Copyright (c) 2013, The Linux Foundation. All rights reserved.
+-
+-Redistribution and use in source and binary forms, with or without
+-modification, are permitted provided that the following conditions are
+-met:
+-    * Redistributions of source code must retain the above copyright
+-      notice, this list of conditions and the following disclaimer.
+-    * Redistributions in binary form must reproduce the above
+-      copyright notice, this list of conditions and the following
+-      disclaimer in the documentation and/or other materials provided
+-      with the distribution.
+-    * Neither the name of The Linux Foundation nor the names of its
+-      contributors may be used to endorse or promote products derived
+-      from this software without specific prior written permission.
+-
+-THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED
+-WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT
+-ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS
+-BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+-CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+-SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+-BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+-WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+-OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+-IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+- */
+-
+-#ifndef __INIT_VENDOR__H__
+-#define __INIT_VENDOR__H__
+-extern void vendor_load_properties(void);
+-#endif /* __INIT_VENDOR__H__ */
+-- 
+2.25.1
+

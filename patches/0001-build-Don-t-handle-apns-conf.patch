@@ -1,0 +1,62 @@
+From 861c67194b96a8eac90f5d871f6d1b350791f05a Mon Sep 17 00:00:00 2001
+From: Andy CrossGate Yan <GeForce8800Ultra@gmail.com>
+Date: Mon, 5 Oct 2020 01:51:46 +0000
+Subject: [PATCH] build: Don't handle apns-conf
+
+Leave it to vendor/lineage instead
+
+Change-Id: I51fb1436ee0ee2e33b20ca0810b69e827f3f34dc
+---
+ target/product/aosp_product.mk        | 7 -------
+ target/product/full_base_telephony.mk | 5 -----
+ target/product/mainline.mk            | 4 ----
+ 3 files changed, 16 deletions(-)
+
+diff --git a/target/product/aosp_product.mk b/target/product/aosp_product.mk
+index 4cdb28b30..dd38847f1 100644
+--- a/target/product/aosp_product.mk
++++ b/target/product/aosp_product.mk
+@@ -39,13 +39,6 @@ PRODUCT_PACKAGES += \
+     preinstalled-packages-platform-aosp-product.xml \
+     WallpaperPicker \
+ 
+-# Telephony:
+-#   Provide a APN configuration to GSI product
+-ifeq ($(LINEAGE_BUILD),)
+-PRODUCT_COPY_FILES += \
+-    device/sample/etc/apns-full-conf.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/apns-conf.xml
+-endif
+-
+ # NFC:
+ #   Provide a libnfc-nci.conf to GSI product
+ PRODUCT_COPY_FILES += \
+diff --git a/target/product/full_base_telephony.mk b/target/product/full_base_telephony.mk
+index e3442147a..0aa9e7700 100644
+--- a/target/product/full_base_telephony.mk
++++ b/target/product/full_base_telephony.mk
+@@ -30,10 +30,5 @@ endif
+ PRODUCT_COPY_FILES := \
+     frameworks/native/data/etc/handheld_core_hardware.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/handheld_core_hardware.xml
+ 
+-ifeq ($(LINEAGE_BUILD),)
+-PRODUCT_COPY_FILES += \
+-    device/sample/etc/apns-full-conf.xml:system/etc/apns-conf.xml
+-endif
+-
+ $(call inherit-product, $(SRC_TARGET_DIR)/product/aosp_base.mk)
+ $(call inherit-product, $(SRC_TARGET_DIR)/product/telephony.mk)
+diff --git a/target/product/mainline.mk b/target/product/mainline.mk
+index 418b1eedd..9754cc8e2 100644
+--- a/target/product/mainline.mk
++++ b/target/product/mainline.mk
+@@ -40,7 +40,3 @@ endif
+ PRODUCT_PACKAGES += \
+     PhotoTable \
+     WallpaperPicker \
+-
+-ifeq ($(LINEAGE_BUILD),)
+-PRODUCT_COPY_FILES += device/sample/etc/apns-full-conf.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/apns-conf.xml
+-endif
+-- 
+2.25.1
+

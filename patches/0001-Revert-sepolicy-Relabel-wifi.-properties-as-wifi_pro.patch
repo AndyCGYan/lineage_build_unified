@@ -1,0 +1,42 @@
+From 7f50c607a9e3bae747ff33566da624abc50024d3 Mon Sep 17 00:00:00 2001
+From: Andy CrossGate Yan <GeForce8800Ultra@gmail.com>
+Date: Mon, 5 Oct 2020 01:29:18 +0000
+Subject: [PATCH] Revert "sepolicy: Relabel wifi. properties as wifi_prop"
+
+This reverts commit bf52f194873840546c996c232eb44c8427ddcd5c.
+
+Change-Id: I0446540331684eb57f7e17bcc3273d6247915854
+---
+ private/property_contexts | 1 -
+ private/system_server.te  | 3 ---
+ 2 files changed, 4 deletions(-)
+
+diff --git a/private/property_contexts b/private/property_contexts
+index 7908bb107..49cc8a2cd 100644
+--- a/private/property_contexts
++++ b/private/property_contexts
+@@ -169,7 +169,6 @@ dalvik.                 u:object_r:dalvik_prop:s0
+ ro.dalvik.              u:object_r:dalvik_prop:s0
+ 
+ # Shared between system server and wificond
+-wifi.                   u:object_r:wifi_prop:s0
+ wlan.                   u:object_r:wifi_prop:s0
+ 
+ # Lowpan properties
+diff --git a/private/system_server.te b/private/system_server.te
+index 66c46ed97..2373e9617 100644
+--- a/private/system_server.te
++++ b/private/system_server.te
+@@ -676,9 +676,6 @@ get_prop(system_server, mock_ota_prop)
+ # Read the property as feature flag for protecting apks with fs-verity.
+ get_prop(system_server, apk_verity_prop)
+ 
+-# Read wifi.interface
+-get_prop(system_server, wifi_prop)
+-
+ # Read the vendor property that indicates if Incremental features is enabled
+ get_prop(system_server, incremental_prop)
+ 
+-- 
+2.25.1
+

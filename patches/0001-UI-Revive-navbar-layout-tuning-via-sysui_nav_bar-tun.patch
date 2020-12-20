@@ -1,0 +1,63 @@
+From dc5694dd4956db2dbfbbea6bb2d34acb6f2a7851 Mon Sep 17 00:00:00 2001
+From: Andy CrossGate Yan <GeForce8800Ultra@gmail.com>
+Date: Tue, 6 Oct 2020 01:41:16 +0000
+Subject: [PATCH] UI: Revive navbar layout tuning via sysui_nav_bar tunable
+
+Google keeps fixing what ain't broken.
+This partially undoes https://github.com/LineageOS/android_frameworks_base/commit/e0d5ccd331e694afdc3c8462a1b845df329de2b8 and https://github.com/LineageOS/android_frameworks_base/commit/d34b4e8d278386b85a00018c502bd21d00f8813b
+
+Change-Id: Ied7d7859e50fd0fcc346219964e747c5d5f4c352
+---
+ .../statusbar/phone/NavigationBarInflaterView.java | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+
+diff --git a/packages/SystemUI/src/com/android/systemui/statusbar/phone/NavigationBarInflaterView.java b/packages/SystemUI/src/com/android/systemui/statusbar/phone/NavigationBarInflaterView.java
+index 726a70582537..536263c83ddd 100644
+--- a/packages/SystemUI/src/com/android/systemui/statusbar/phone/NavigationBarInflaterView.java
++++ b/packages/SystemUI/src/com/android/systemui/statusbar/phone/NavigationBarInflaterView.java
+@@ -108,6 +108,7 @@ public class NavigationBarInflaterView extends FrameLayout
+ 
+     private boolean mIsVertical;
+     private boolean mAlternativeOrder;
++    private boolean mUsingCustomLayout;
+ 
+     private OverviewProxyService mOverviewProxyService;
+     private int mNavBarMode = NAV_BAR_MODE_3BUTTON;
+@@ -173,6 +174,7 @@ public class NavigationBarInflaterView extends FrameLayout
+         super.onAttachedToWindow();
+         Dependency.get(TunerService.class).addTunable(this, NAV_BAR_INVERSE);
+         Dependency.get(TunerService.class).addTunable(this, KEY_NAVIGATION_HINT);
++        Dependency.get(TunerService.class).addTunable(this, NAV_BAR_VIEWS);
+     }
+ 
+     @Override
+@@ -191,6 +193,8 @@ public class NavigationBarInflaterView extends FrameLayout
+             mIsHintEnabled = TunerService.parseIntegerSwitch(newValue, true);
+             updateHint();
+             onLikelyDefaultLayoutChange();
++        } else if (NAV_BAR_VIEWS.equals(key)) {
++            setNavigationBarLayout(newValue);
+         }
+     }
+ 
+@@ -200,7 +204,17 @@ public class NavigationBarInflaterView extends FrameLayout
+         updateLayoutInversion();
+     }
+ 
++    public void setNavigationBarLayout(String layoutValue) {
++        if (!Objects.equals(mCurrentLayout, layoutValue)) {
++            mUsingCustomLayout = layoutValue != null;
++            clearViews();
++            inflateLayout(layoutValue);
++        }
++    }
++
+     public void onLikelyDefaultLayoutChange() {
++        // Don't override custom layouts
++        if (mUsingCustomLayout) return;
+ 
+         // Reevaluate new layout
+         final String newValue = getDefaultLayout();
+-- 
+2.25.1
+

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest>
+	<remote name="fdroid" fetch="https://gitlab.com/fdroid/" />
+	<remote name="phh" fetch="https://github.com/phhusson/" />
+	<project path="packages/apps/FDroidPrivilegedExtension"
+		name="privileged-extension.git" remote="fdroid"
+		revision="refs/tags/0.2.7" />
+	<project path="vendor/foss" name="vendor_foss"
+		remote="phh" revision="master" />
+</manifest>

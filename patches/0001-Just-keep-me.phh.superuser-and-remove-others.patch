@@ -1,0 +1,68 @@
+From dbef6b099bc13ed922a89693b24af5fd5c99e846 Mon Sep 17 00:00:00 2001
+From: kindle4jerry <kindle4jerry@gmail.com>
+Date: Mon, 4 Jan 2021 01:07:04 +0800
+Subject: [PATCH] Just keep me.phh.superuser and remove others
+
+---
+ update.sh | 45 ---------------------------------------------
+ 1 file changed, 45 deletions(-)
+
+diff --git a/update.sh b/update.sh
+index b402636..ef7bd7d 100644
+--- a/update.sh
++++ b/update.sh
+@@ -61,51 +61,6 @@ downloadFromFdroid() {
+ 
+ #phh's Superuser
+ downloadFromFdroid me.phh.superuser
+-#Ciphered SMS
+-downloadFromFdroid org.smssecure.smssecure "messaging"
+-#Navigation
+-downloadFromFdroid net.osmand.plus
+-#Web browser
+-downloadFromFdroid org.mozilla.fennec_fdroid "Browser2 QuickSearchBox"
+-#Calendar
+-downloadFromFdroid ws.xsoh.etar Calendar
+-#Public transportation
+-downloadFromFdroid de.grobox.liberario
+-#Pdf viewer
+-downloadFromFdroid com.artifex.mupdf.viewer.app
+-#Play Store download
+-downloadFromFdroid com.aurora.store
+-#Mail client
+-downloadFromFdroid com.fsck.k9 "Email"
+-#Ciphered Instant Messaging
+-#downloadFromFdroid im.vector.alpha
+-#Calendar/Contacts sync
+-downloadFromFdroid com.etesync.syncadapter
+-#Nextcloud client
+-downloadFromFdroid com.nextcloud.client
+-# Todo lists
+-downloadFromFdroid org.tasks
+-
+-downloadFromFdroid org.mariotaku.twidere
+-downloadFromFdroid com.pitchedapps.frost
+-downloadFromFdroid com.keylesspalace.tusky
+-
+-#Fake assistant that research on duckduckgo
+-downloadFromFdroid co.pxhouse.sas
+-
+-downloadFromFdroid com.simplemobiletools.gallery.pro "Photos Gallery Gallery2"
+-
+-downloadFromFdroid com.aurora.adroid
+-
+-repo=https://microg.org/fdroid/repo/
+-downloadFromFdroid com.google.android.gms
+-downloadFromFdroid com.google.android.gsf
+-downloadFromFdroid com.android.vending
+-downloadFromFdroid org.microg.gms.droidguard
+-
+-repo=https://archive.newpipe.net/fdroid/repo/
+-#YouTube viewer
+-downloadFromFdroid org.schabi.newpipe
+ 
+ echo >> apps.mk
+ 
+-- 
+2.25.1
+

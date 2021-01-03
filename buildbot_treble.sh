@@ -13,6 +13,7 @@ BL=$PWD/treble_build_los
 echo "Preparing local manifest"
 mkdir -p .repo/local_manifests
 cp $BL/manifest.xml .repo/local_manifests/manifest.xml
+cp $BL/foss.xml .repo/local_manifests/manifest.xml
 echo ""
 
 echo "Syncing repos"
@@ -22,6 +23,18 @@ echo ""
 echo "Setting up build environment"
 source build/envsetup.sh &> /dev/null
 echo ""
+
+#(Optional patch) remove foss apps except me.phh.superuser
+#If you just use superuser don't want build foss, you can use this patch
+cd /vendor/foss
+git am $BL/patches/0001-Just-keep-me.phh.superuser-and-remove-others.patch
+cd ../..
+
+#Update foss apps
+echo "Update foss apps"
+cd /vendor/foss
+bash update.sh
+cd ../..
 
 repopick -t eleven-dialer-master
 repopick -t eleven-telephony-master

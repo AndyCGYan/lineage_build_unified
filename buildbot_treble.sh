@@ -26,13 +26,13 @@ echo ""
 
 #(Optional patch) remove foss apps except me.phh.superuser
 #If you just use superuser don't want build foss, you can use this patch
-cd /vendor/foss
+cd vendor/foss
 git am $BL/patches/0001-Just-keep-me.phh.superuser-and-remove-others.patch
 cd ../..
 
 #Update foss apps
 echo "Update foss apps"
-cd /vendor/foss
+cd vendor/foss
 git clean -fdx #Remove old apps or tmp
 bash update.sh
 cd ../..

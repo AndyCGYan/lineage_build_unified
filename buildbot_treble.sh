@@ -33,6 +33,7 @@ cd ../..
 #Update foss apps
 echo "Update foss apps"
 cd /vendor/foss
+git clean -fdx #Remove old apps or tmp
 bash update.sh
 cd ../..
 

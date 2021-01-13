@@ -48,6 +48,7 @@ echo ""
 echo "Applying universal patches"
 cd frameworks/base
 git am $BL/patches/0001-UI-Revive-navbar-layout-tuning-via-sysui_nav_bar-tun.patch
+git am $BL/patches/0001-UI-Disable-wallpaper-zoom.patch
 git am $BL/patches/0001-Disable-vendor-mismatch-warning.patch
 cd ../..
 cd lineage-sdk
@@ -80,8 +81,14 @@ cd ../..
 cd frameworks/native
 git revert 581c22f979af05e48ad4843cdfa9605186d286da --no-edit # Add suspend_resume trace events to the atrace 'freq' category.
 cd ../..
+cd packages/apps/Bluetooth
+git revert 4ceb47e32c1be30640e40f81b6f741942f8598ed --no-edit # Bluetooth: Reset packages/apps/Bluetooth to upstream
+cd ../../..
 cd system/core
 git am $BL/patches/0001-Revert-init-Add-vendor-specific-initialization-hooks.patch
+git am $BL/patches/0001-Panic-into-recovery-rather-than-bootloader.patch
+git am $BL/patches/0001-Restore-sbin.patch
+git am $BL/patches/0001-fix-offline-charger-v7.patch
 cd ../..
 cd system/hardware/interfaces
 git revert cb732f9b635b5f6f79e447ddaf743ebb800b8535 --no-edit # system_suspend: start early

@@ -1,0 +1,52 @@
+From e55760ecf406097895a3d6d6af00873b6f563a7f Mon Sep 17 00:00:00 2001
+From: Victor Bo <bvoid@yandex.ru>
+Date: Wed, 26 Feb 2020 07:23:44 +0200
+Subject: [PATCH 4/5] fix offline charger v7
+
+	modified:   rootdir/init.rc
+---
+ rootdir/init.rc | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
+
+diff --git a/rootdir/init.rc b/rootdir/init.rc
+index a9af0b094..b136f1059 100644
+--- a/rootdir/init.rc
++++ b/rootdir/init.rc
+@@ -11,6 +11,11 @@ import /vendor/etc/init/hw/init.${ro.hardware}.rc
+ import /system/etc/init/hw/init.usb.configfs.rc
+ import /system/etc/init/hw/init.${ro.zygote}.rc
+ 
++service gsicharger /bin/charger
++    class gsicharger
++    user system
++    group system shell input graphics wakelock
++
+ # Cgroups are mounted right before early-init using list from /etc/cgroups.json
+ on early-init
+     # Disable sysrq from keyboard
+@@ -399,7 +404,7 @@ on init
+ # Healthd can trigger a full boot from charger mode by signaling this
+ # property when the power button is held.
+ on property:sys.boot_from_charger_mode=1
+-    class_stop charger
++    class_stop gsicharger
+     trigger late-init
+ 
+ on load_persist_props_action
+@@ -945,8 +950,12 @@ on nonencrypted
+ on property:sys.init_log_level=*
+     loglevel ${sys.init_log_level}
+ 
++on charger && property:ro.hardware=mt*
++    write /sys/class/leds/lcd-backlight/trigger "backlight"
++    write /sys/class/android_usb/android0/enable 1
++
+ on charger
+-    class_start charger
++    class_start gsicharger
+ 
+ on property:vold.decrypt=trigger_load_persist_props
+     load_persist_props
+-- 
+2.17.1
+

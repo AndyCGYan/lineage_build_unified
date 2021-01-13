@@ -1,0 +1,71 @@
+From 15359fa07d5f0216a6916662cc8dfce2e8e4b050 Mon Sep 17 00:00:00 2001
+From: Andy CrossGate Yan <GeForce8800Ultra@gmail.com>
+Date: Sun, 10 Jan 2021 05:10:39 +0000
+Subject: [PATCH] Restore /sbin
+
+This reverts "Do not create /sbin" and "Remove sbin from fs_config.cpp".
+
+Change-Id: Iade1d5e8ec8df8e3dcfbdeef3367dbe56996ae6f
+---
+ CleanSpec.mk            | 2 --
+ libcutils/fs_config.cpp | 3 +++
+ rootdir/Android.mk      | 2 +-
+ 3 files changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/CleanSpec.mk b/CleanSpec.mk
+index 0a534a2bd..81150a0fa 100644
+--- a/CleanSpec.mk
++++ b/CleanSpec.mk
+@@ -80,8 +80,6 @@ $(call add-clean-step, rm -rf $(PRODUCT_OUT)/system/etc/vndksp.libraries.txt)
+ $(call add-clean-step, rm -rf $(PRODUCT_OUT)/recovery/root/)
+ $(call add-clean-step, rm -rf $(PRODUCT_OUT)/root/sbin/charger)
+ $(call add-clean-step, rm -rf $(PRODUCT_OUT)/recovery/root/sbin/charger)
+-$(call add-clean-step, rm -rf $(PRODUCT_OUT)/root/sbin)
+-$(call add-clean-step, rm -rf $(PRODUCT_OUT)/recovery/root/sbin)
+ $(call add-clean-step, rm -rf $(PRODUCT_OUT)/product_services)
+ $(call add-clean-step, rm -rf $(PRODUCT_OUT)/product_services.img)
+ $(call add-clean-step, rm -rf $(PRODUCT_OUT)/system/product_services)
+diff --git a/libcutils/fs_config.cpp b/libcutils/fs_config.cpp
+index 5805a4d19..b30707fc8 100644
+--- a/libcutils/fs_config.cpp
++++ b/libcutils/fs_config.cpp
+@@ -80,6 +80,7 @@ static const struct fs_path_config android_dirs[] = {
+     { 00771, AID_SYSTEM,       AID_SYSTEM,       0, "data" },
+     { 00755, AID_ROOT,         AID_SYSTEM,       0, "mnt" },
+     { 00751, AID_ROOT,         AID_SHELL,        0, "product/bin" },
++    { 00750, AID_ROOT,         AID_SHELL,        0, "sbin" },
+     { 00777, AID_ROOT,         AID_ROOT,         0, "sdcard" },
+     { 00751, AID_ROOT,         AID_SDCARD_R,     0, "storage" },
+     { 00751, AID_ROOT,         AID_SHELL,        0, "system/bin" },
+@@ -164,6 +165,7 @@ static const struct fs_path_config android_files[] = {
+     { 00600, AID_ROOT,      AID_ROOT,      0, "system_ext/build.prop" },
+     { 00444, AID_ROOT,      AID_ROOT,      0, system_ext_conf_dir + 1 },
+     { 00444, AID_ROOT,      AID_ROOT,      0, system_ext_conf_file + 1 },
++    { 00750, AID_ROOT,      AID_SHELL,     0, "sbin/fs_mgr" },
+     { 00755, AID_ROOT,      AID_SHELL,     0, "system/bin/crash_dump32" },
+     { 00755, AID_ROOT,      AID_SHELL,     0, "system/bin/crash_dump64" },
+     { 00755, AID_ROOT,      AID_SHELL,     0, "system/bin/debuggerd" },
+@@ -209,6 +211,7 @@ static const struct fs_path_config android_files[] = {
+     { 00750, AID_ROOT,      AID_SHELL,     0, "init*" },
+     { 00755, AID_ROOT,      AID_SHELL,     0, "odm/bin/*" },
+     { 00755, AID_ROOT,      AID_SHELL,     0, "product/bin/*" },
++    { 00750, AID_ROOT,      AID_SHELL,     0, "sbin/*" },
+     { 00755, AID_ROOT,      AID_SHELL,     0, "system/bin/*" },
+     { 00755, AID_ROOT,      AID_SHELL,     0, "system/xbin/*" },
+     { 00755, AID_ROOT,      AID_SHELL,     0, "system/apex/*/bin/*" },
+diff --git a/rootdir/Android.mk b/rootdir/Android.mk
+index a9d0ed08a..56b0d5b5b 100644
+--- a/rootdir/Android.mk
++++ b/rootdir/Android.mk
+@@ -77,7 +77,7 @@ endif
+ #
+ # create some directories (some are mount points) and symlinks
+ LOCAL_POST_INSTALL_CMD := mkdir -p $(addprefix $(TARGET_ROOT_OUT)/, \
+-    dev proc sys system data data_mirror odm oem acct config storage mnt apex debug_ramdisk \
++    sbin dev proc sys system data data_mirror odm oem acct config storage mnt apex debug_ramdisk \
+     linkerconfig $(BOARD_ROOT_EXTRA_FOLDERS)); \
+     ln -sf /system/bin $(TARGET_ROOT_OUT)/bin; \
+     ln -sf /system/etc $(TARGET_ROOT_OUT)/etc; \
+-- 
+2.25.1
+

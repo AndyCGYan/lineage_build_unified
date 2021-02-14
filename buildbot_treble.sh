@@ -46,6 +46,9 @@ bash ~/treble_experimentations/apply-patches.sh treble_patches
 echo ""
 
 echo "Applying universal patches"
+cd build/make
+git am $BL/patches/0001-Make-broken-copy-headers-the-default.patch
+cd ../..
 cd frameworks/base
 git am $BL/patches/0001-UI-Revive-navbar-layout-tuning-via-sysui_nav_bar-tun.patch
 git am $BL/patches/0001-UI-Disable-wallpaper-zoom.patch
@@ -68,6 +71,7 @@ git revert 0e369f42b82c4d12edba9a46dd20bee0d4b783ec --no-edit # recovery: Allow 
 cd ../..
 cd build/make
 git am $BL/patches/0001-build-Don-t-handle-apns-conf.patch
+git revert 78c28df40f72fdcbe3f82a83828060ad19765fa1 --no-edit # mainline_system: Exclude vendor.lineage.power@1.0 from artifact path requirements
 cd ../..
 cd device/phh/treble
 git revert 82b15278bad816632dcaeaed623b569978e9840d --no-edit # Update lineage.mk for LineageOS 16.0

@@ -1,4 +1,4 @@
-From 15359fa07d5f0216a6916662cc8dfce2e8e4b050 Mon Sep 17 00:00:00 2001
+From 398f1882e09c12509c819a4568fb6b65f571418f Mon Sep 17 00:00:00 2001
 From: Andy CrossGate Yan <GeForce8800Ultra@gmail.com>
 Date: Sun, 10 Jan 2021 05:10:39 +0000
 Subject: [PATCH] Restore /sbin
@@ -54,7 +54,7 @@ index 5805a4d19..b30707fc8 100644
      { 00755, AID_ROOT,      AID_SHELL,     0, "system/xbin/*" },
      { 00755, AID_ROOT,      AID_SHELL,     0, "system/apex/*/bin/*" },
 diff --git a/rootdir/Android.mk b/rootdir/Android.mk
-index a9d0ed08a..56b0d5b5b 100644
+index 7d383f522..6d518dcb3 100644
 --- a/rootdir/Android.mk
 +++ b/rootdir/Android.mk
 @@ -77,7 +77,7 @@ endif
@@ -63,7 +63,7 @@ index a9d0ed08a..56b0d5b5b 100644
  LOCAL_POST_INSTALL_CMD := mkdir -p $(addprefix $(TARGET_ROOT_OUT)/, \
 -    dev proc sys system data data_mirror odm oem acct config storage mnt apex debug_ramdisk \
 +    sbin dev proc sys system data data_mirror odm oem acct config storage mnt apex debug_ramdisk \
-     linkerconfig $(BOARD_ROOT_EXTRA_FOLDERS)); \
+     linkerconfig postinstall $(BOARD_ROOT_EXTRA_FOLDERS)); \
      ln -sf /system/bin $(TARGET_ROOT_OUT)/bin; \
      ln -sf /system/etc $(TARGET_ROOT_OUT)/etc; \
 -- 

@@ -1,4 +1,4 @@
-From 30abf39af77e87b0b4fd8c11d3bc9a601b1b31bd Mon Sep 17 00:00:00 2001
+From c789a333062b16af8b41d52a002372500de7cf1e Mon Sep 17 00:00:00 2001
 From: Andy CrossGate Yan <GeForce8800Ultra@gmail.com>
 Date: Sun, 13 Dec 2020 02:22:12 +0000
 Subject: [PATCH] Squashed revert of LOS FOD implementation
@@ -9,7 +9,9 @@ Change-Id: I4650cef96617c32e52d5dd088c8afffb06ab5e1d
 ---
  .../internal/statusbar/IStatusBar.aidl        |   6 -
  .../internal/statusbar/IStatusBarService.aidl |   6 -
+ data/etc/com.android.systemui.xml             |   1 -
  packages/SystemUI/Android.bp                  |   2 -
+ packages/SystemUI/AndroidManifest.xml         |   1 -
  .../res-keyguard/values/lineage_dimens.xml    |  20 -
  .../res/drawable-nodpi/fod_icon_pressed.png   | Bin 108 -> 0 bytes
  .../res/drawable/fod_icon_default.xml         |  25 -
@@ -17,21 +19,28 @@ Change-Id: I4650cef96617c32e52d5dd088c8afffb06ab5e1d
  .../SystemUI/res/values/lineage_config.xml    |   4 -
  .../keyguard/KeyguardSecurityContainer.java   |  15 +-
  .../systemui/biometrics/FODCircleView.java    | 544 ------------------
- .../biometrics/FODCircleViewImpl.java         |  73 ---
+ .../biometrics/FODCircleViewImpl.java         | 128 -----
+ .../biometrics/FODCircleViewImplCallback.java |  25 -
  .../systemui/dagger/SystemUIBinder.java       |   7 -
  .../keyguard/KeyguardViewMediator.java        |  10 +-
  .../systemui/statusbar/CommandQueue.java      |  28 -
+ .../notification/ActivityLaunchAnimator.java  |  21 +-
+ .../systemui/statusbar/phone/StatusBar.java   |  70 +--
  .../phone/StatusBarKeyguardViewManager.java   |  11 +-
+ .../phone/dagger/StatusBarPhoneModule.java    |   7 +-
+ .../ActivityLaunchAnimatorTest.java           |   6 +-
+ .../statusbar/phone/StatusBarTest.java        |   5 +-
  services/core/Android.bp                      |   1 -
  .../biometrics/BiometricServiceBase.java      |   2 +-
  .../fingerprint/FingerprintService.java       | 112 ----
  .../statusbar/StatusBarManagerService.java    |  22 -
- 19 files changed, 5 insertions(+), 884 deletions(-)
+ 27 files changed, 12 insertions(+), 1068 deletions(-)
  delete mode 100644 packages/SystemUI/res-keyguard/values/lineage_dimens.xml
  delete mode 100644 packages/SystemUI/res/drawable-nodpi/fod_icon_pressed.png
  delete mode 100644 packages/SystemUI/res/drawable/fod_icon_default.xml
  delete mode 100644 packages/SystemUI/src/com/android/systemui/biometrics/FODCircleView.java
  delete mode 100644 packages/SystemUI/src/com/android/systemui/biometrics/FODCircleViewImpl.java
+ delete mode 100644 packages/SystemUI/src/com/android/systemui/biometrics/FODCircleViewImplCallback.java
 
 diff --git a/core/java/com/android/internal/statusbar/IStatusBar.aidl b/core/java/com/android/internal/statusbar/IStatusBar.aidl
 index 44607f7f5fb..83b672e06b0 100644
@@ -67,6 +76,18 @@ index e9b0683db89..ca0eccdbc6e 100644
      /**
       * Starts the default assistant app.
       */
+diff --git a/data/etc/com.android.systemui.xml b/data/etc/com.android.systemui.xml
+index 7af1de6a6ca..06f1dae30cd 100644
+--- a/data/etc/com.android.systemui.xml
++++ b/data/etc/com.android.systemui.xml
+@@ -30,7 +30,6 @@
+         <permission name="android.permission.GET_APP_OPS_STATS"/>
+         <permission name="android.permission.INTERACT_ACROSS_USERS"/>
+         <permission name="android.permission.MANAGE_DEBUGGING"/>
+-        <permission name="android.permission.MANAGE_FINGERPRINT" />
+         <permission name="android.permission.MANAGE_SENSOR_PRIVACY"/>
+         <permission name="android.permission.MANAGE_USB"/>
+         <permission name="android.permission.MANAGE_USERS"/>
 diff --git a/packages/SystemUI/Android.bp b/packages/SystemUI/Android.bp
 index c78630c05f0..84870f83ad2 100644
 --- a/packages/SystemUI/Android.bp
@@ -87,6 +108,18 @@ index c78630c05f0..84870f83ad2 100644
          "vendor.lineage.powershare-V1.0-java",
      ],
      libs: [
+diff --git a/packages/SystemUI/AndroidManifest.xml b/packages/SystemUI/AndroidManifest.xml
+index c68be502c4e..239edbd0c6f 100644
+--- a/packages/SystemUI/AndroidManifest.xml
++++ b/packages/SystemUI/AndroidManifest.xml
+@@ -137,7 +137,6 @@
+     <uses-permission android:name="android.permission.USE_FINGERPRINT" />
+     <uses-permission android:name="android.permission.RESET_FINGERPRINT_LOCKOUT" />
+     <uses-permission android:name="android.permission.MANAGE_BIOMETRIC" />
+-    <uses-permission android:name="android.permission.MANAGE_FINGERPRINT" />
+     <uses-permission android:name="android.permission.MANAGE_SLICE_PERMISSIONS" />
+     <uses-permission android:name="android.permission.CONTROL_KEYGUARD_SECURE_NOTIFICATIONS" />
+     <uses-permission android:name="android.permission.GET_RUNTIME_PERMISSIONS" />
 diff --git a/packages/SystemUI/res-keyguard/values/lineage_dimens.xml b/packages/SystemUI/res-keyguard/values/lineage_dimens.xml
 deleted file mode 100644
 index bb6070c7199..00000000000
@@ -246,7 +279,7 @@ index bace9324ac9..1db2e32b8cd 100644
  
 diff --git a/packages/SystemUI/src/com/android/systemui/biometrics/FODCircleView.java b/packages/SystemUI/src/com/android/systemui/biometrics/FODCircleView.java
 deleted file mode 100644
-index db2ab659709..00000000000
+index dee208705b2..00000000000
 --- a/packages/SystemUI/src/com/android/systemui/biometrics/FODCircleView.java
 +++ /dev/null
 @@ -1,544 +0,0 @@
@@ -305,7 +338,7 @@ index db2ab659709..00000000000
 -import java.util.TimerTask;
 -
 -public class FODCircleView extends ImageView {
--    private static final int FADE_ANIM_DURATION = 250;
+-    private static final int FADE_ANIM_DURATION = 125;
 -
 -    private final int mPositionX;
 -    private final int mPositionY;
@@ -796,10 +829,10 @@ index db2ab659709..00000000000
 -}
 diff --git a/packages/SystemUI/src/com/android/systemui/biometrics/FODCircleViewImpl.java b/packages/SystemUI/src/com/android/systemui/biometrics/FODCircleViewImpl.java
 deleted file mode 100644
-index ca4fd6b99a0..00000000000
+index 1b179ef98f2..00000000000
 --- a/packages/SystemUI/src/com/android/systemui/biometrics/FODCircleViewImpl.java
 +++ /dev/null
-@@ -1,73 +0,0 @@
+@@ -1,128 +0,0 @@
 -/**
 - * Copyright (C) 2019 The Android Open Source Project
 - *
@@ -824,10 +857,14 @@ index ca4fd6b99a0..00000000000
 -import android.view.View;
 -
 -import com.android.systemui.SystemUI;
+-import com.android.systemui.biometrics.FODCircleViewImplCallback;
 -import com.android.systemui.statusbar.CommandQueue;
+-import com.android.systemui.util.Assert;
 -
 -import lineageos.app.LineageContextConstants;
 -
+-import java.lang.ref.WeakReference;
+-import java.util.ArrayList;
 -import javax.inject.Inject;
 -import javax.inject.Singleton;
 -
@@ -836,7 +873,12 @@ index ca4fd6b99a0..00000000000
 -    private static final String TAG = "FODCircleViewImpl";
 -
 -    private FODCircleView mFodCircleView;
+-
+-    private final ArrayList<WeakReference<FODCircleViewImplCallback>>
+-            mCallbacks = new ArrayList<>();
 -    private final CommandQueue mCommandQueue;
+-
+-    private boolean mIsFODVisible;
 -
 -    @Inject
 -    public FODCircleViewImpl(Context context, CommandQueue commandQueue) {
@@ -854,6 +896,12 @@ index ca4fd6b99a0..00000000000
 -        mCommandQueue.addCallback(this);
 -        try {
 -            mFodCircleView = new FODCircleView(mContext);
+-            for (int i = 0; i < mCallbacks.size(); i++) {
+-                FODCircleViewImplCallback cb = mCallbacks.get(i).get();
+-                if (cb != null) {
+-                    cb.onFODStart();
+-                }
+-            }
 -        } catch (RuntimeException e) {
 -            Slog.e(TAG, "Failed to initialize FODCircleView", e);
 -        }
@@ -862,6 +910,13 @@ index ca4fd6b99a0..00000000000
 -    @Override
 -    public void showInDisplayFingerprintView() {
 -        if (mFodCircleView != null) {
+-            for (int i = 0; i < mCallbacks.size(); i++) {
+-                FODCircleViewImplCallback cb = mCallbacks.get(i).get();
+-                if (cb != null) {
+-                    cb.onFODStatusChange(true);
+-                }
+-            }
+-            mIsFODVisible = true;
 -            mFodCircleView.show();
 -        }
 -    }
@@ -869,9 +924,73 @@ index ca4fd6b99a0..00000000000
 -    @Override
 -    public void hideInDisplayFingerprintView() {
 -        if (mFodCircleView != null) {
+-            for (int i = 0; i < mCallbacks.size(); i++) {
+-                FODCircleViewImplCallback cb = mCallbacks.get(i).get();
+-                if (cb != null) {
+-                    cb.onFODStatusChange(false);
+-                }
+-            }
+-            mIsFODVisible = false;
 -            mFodCircleView.hide();
 -        }
 -    }
+-
+-    public void registerCallback(FODCircleViewImplCallback callback) {
+-        Assert.isMainThread();
+-        Slog.v(TAG, "*** register callback for " + callback);
+-        for (int i = 0; i < mCallbacks.size(); i++) {
+-            if (mCallbacks.get(i).get() == callback) {
+-                Slog.e(TAG, "Object tried to add another callback",
+-                        new Exception("Called by"));
+-                return;
+-            }
+-        }
+-        mCallbacks.add(new WeakReference<>(callback));
+-        removeCallback(null);
+-        sendUpdates(callback);
+-    }
+-
+-    public void removeCallback(FODCircleViewImplCallback callback) {
+-        Assert.isMainThread();
+-        Slog.v(TAG, "*** unregister callback for " + callback);
+-        mCallbacks.removeIf(el -> el.get() == callback);
+-    }
+-
+-    private void sendUpdates(FODCircleViewImplCallback callback) {
+-        callback.onFODStart();
+-        callback.onFODStatusChange(mIsFODVisible);
+-    }
+-}
+diff --git a/packages/SystemUI/src/com/android/systemui/biometrics/FODCircleViewImplCallback.java b/packages/SystemUI/src/com/android/systemui/biometrics/FODCircleViewImplCallback.java
+deleted file mode 100644
+index 5c11fb9061e..00000000000
+--- a/packages/SystemUI/src/com/android/systemui/biometrics/FODCircleViewImplCallback.java
++++ /dev/null
+@@ -1,25 +0,0 @@
+-/**
+- * Copyright (C) 2021 The LineageOS Project
+- *
+- * Licensed under the Apache License, Version 2.0 (the "License");
+- * you may not use this file except in compliance with the License.
+- * You may obtain a copy of the License at
+- *
+- *      http://www.apache.org/licenses/LICENSE-2.0
+- *
+- * Unless required by applicable law or agreed to in writing, software
+- * distributed under the License is distributed on an "AS IS" BASIS,
+- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+- * See the License for the specific language governing permissions and
+- * limitations under the License.
+- */
+-
+-package com.android.systemui.biometrics;
+-
+-public class FODCircleViewImplCallback {
+-
+-    public void onFODStart() {}
+-
+-    public void onFODStatusChange(boolean isVisible) {}
+-
 -}
 diff --git a/packages/SystemUI/src/com/android/systemui/dagger/SystemUIBinder.java b/packages/SystemUI/src/com/android/systemui/dagger/SystemUIBinder.java
 index a0a2e6f0dd6..413a522bccd 100644
@@ -1007,11 +1126,251 @@ index 5f3875701e4..39b6aa1a360 100644
                  case MSG_SET_BLOCKED_GESTURAL_NAVIGATION:
                      for (int i = 0; i < mCallbacks.size(); i++) {
                          mCallbacks.get(i).setBlockedGesturalNavigation((Boolean) msg.obj);
+diff --git a/packages/SystemUI/src/com/android/systemui/statusbar/notification/ActivityLaunchAnimator.java b/packages/SystemUI/src/com/android/systemui/statusbar/notification/ActivityLaunchAnimator.java
+index 1e1655256b1..382715a3fb7 100644
+--- a/packages/SystemUI/src/com/android/systemui/statusbar/notification/ActivityLaunchAnimator.java
++++ b/packages/SystemUI/src/com/android/systemui/statusbar/notification/ActivityLaunchAnimator.java
+@@ -20,12 +20,9 @@ import android.animation.Animator;
+ import android.animation.AnimatorListenerAdapter;
+ import android.animation.ValueAnimator;
+ import android.app.ActivityManager;
+-import android.content.Context;
+ import android.graphics.Matrix;
+ import android.graphics.Rect;
+-import android.hardware.fingerprint.IFingerprintService;
+ import android.os.RemoteException;
+-import android.os.ServiceManager;
+ import android.util.MathUtils;
+ import android.view.IRemoteAnimationFinishedCallback;
+ import android.view.IRemoteAnimationRunner;
+@@ -37,7 +34,6 @@ import android.view.View;
+ 
+ import com.android.internal.policy.ScreenDecorationsUtils;
+ import com.android.systemui.Interpolators;
+-import com.android.systemui.biometrics.FODCircleViewImpl;
+ import com.android.systemui.statusbar.NotificationShadeDepthController;
+ import com.android.systemui.statusbar.notification.row.ExpandableNotificationRow;
+ import com.android.systemui.statusbar.notification.stack.NotificationListContainer;
+@@ -74,8 +70,6 @@ public class ActivityLaunchAnimator {
+     private boolean mAnimationPending;
+     private boolean mAnimationRunning;
+     private boolean mIsLaunchForActivity;
+-    private IFingerprintService mFingerprintService;
+-    private FODCircleViewImpl mFODCircleViewImpl;
+ 
+     public ActivityLaunchAnimator(
+             NotificationShadeWindowViewController notificationShadeWindowViewController,
+@@ -83,8 +77,7 @@ public class ActivityLaunchAnimator {
+             NotificationPanelViewController notificationPanel,
+             NotificationShadeDepthController depthController,
+             NotificationListContainer container,
+-            Executor mainExecutor,
+-            FODCircleViewImpl fodCircleViewImpl) {
++            Executor mainExecutor) {
+         mNotificationPanel = notificationPanel;
+         mNotificationContainer = container;
+         mDepthController = depthController;
+@@ -94,9 +87,6 @@ public class ActivityLaunchAnimator {
+         mWindowCornerRadius = ScreenDecorationsUtils
+                 .getWindowCornerRadius(mNotificationShadeWindowViewController.getView()
+                         .getResources());
+-        mFODCircleViewImpl = fodCircleViewImpl;
+-        mFingerprintService = IFingerprintService.Stub.asInterface(
+-                ServiceManager.getService(Context.FINGERPRINT_SERVICE));
+     }
+ 
+     public RemoteAnimationAdapter getLaunchAnimation(
+@@ -273,15 +263,6 @@ public class ActivityLaunchAnimator {
+             mNotificationShadeWindowViewController.setExpandAnimationRunning(running);
+             mNotificationContainer.setExpandingNotification(running ? mSourceNotification : null);
+             mAnimationRunning = running;
+-            boolean isFPClientActive = false;
+-            try {
+-                isFPClientActive = mFingerprintService.isClientActive();
+-            } catch (Exception e) {
+-                // do nothing.
+-            }
+-            if (!isFPClientActive) {
+-                mFODCircleViewImpl.hideInDisplayFingerprintView();
+-            }
+             if (!running) {
+                 mCallback.onExpandAnimationFinished(mIsFullScreenLaunch);
+                 applyParamsToNotification(null);
+diff --git a/packages/SystemUI/src/com/android/systemui/statusbar/phone/StatusBar.java b/packages/SystemUI/src/com/android/systemui/statusbar/phone/StatusBar.java
+index f47a23287d3..b55d6a55bca 100644
+--- a/packages/SystemUI/src/com/android/systemui/statusbar/phone/StatusBar.java
++++ b/packages/SystemUI/src/com/android/systemui/statusbar/phone/StatusBar.java
+@@ -76,7 +76,6 @@ import android.content.res.Configuration;
+ import android.graphics.Point;
+ import android.graphics.PointF;
+ import android.hardware.display.DisplayManager;
+-import android.hardware.fingerprint.IFingerprintService;
+ import android.media.AudioAttributes;
+ import android.metrics.LogMaker;
+ import android.net.Uri;
+@@ -151,8 +150,6 @@ import com.android.systemui.R;
+ import com.android.systemui.SystemUI;
+ import com.android.systemui.SystemUIFactory;
+ import com.android.systemui.assist.AssistManager;
+-import com.android.systemui.biometrics.FODCircleViewImpl;
+-import com.android.systemui.biometrics.FODCircleViewImplCallback;
+ import com.android.systemui.broadcast.BroadcastDispatcher;
+ import com.android.systemui.bubbles.BubbleController;
+ import com.android.systemui.charging.WirelessChargingAnimation;
+@@ -241,7 +238,6 @@ import lineageos.providers.LineageSettings;
+ import java.io.FileDescriptor;
+ import java.io.PrintWriter;
+ import java.io.StringWriter;
+-import java.util.List;
+ import java.util.Map;
+ import java.util.Optional;
+ import java.util.concurrent.Executor;
+@@ -637,33 +633,6 @@ public class StatusBar extends SystemUI implements DemoMode,
+         }
+     };
+ 
+-    private ActivityManager mActivityManager;
+-    private boolean mFodVisibility;
+-    private boolean mIsDreaming;
+-    private FODCircleViewImpl mFODCircleViewImpl;
+-    private String mTopPkgClass;
+-    private FODCircleViewImplCallback mFODCircleViewImplCallback =
+-            new FODCircleViewImplCallback() {
+-                @Override
+-                public void onFODStatusChange(boolean isVisible) {
+-                    boolean isFPClientActive = false;
+-                    try {
+-                        isFPClientActive = mFingerprintService.isClientActive();
+-                    } catch (Exception e) {
+-                        // do nothing.
+-                    }
+-                    mFodVisibility = isVisible;
+-                    if (!isFPClientActive) {
+-                        // if the client is not active, we have to nullify mTopPkgClass before
+-                        // checking it against current foreground activity
+-                        mTopPkgClass = null;
+-                        return;
+-                    } else if (isVisible && !mIsKeyguard && !mIsDreaming) {
+-                        mTopPkgClass = getForegroundPackageNameAndClass();
+-                    }
+-                }
+-            };
+-
+     private KeyguardUserSwitcher mKeyguardUserSwitcher;
+     private final UserSwitcherController mUserSwitcherController;
+     private final NetworkController mNetworkController;
+@@ -692,7 +661,6 @@ public class StatusBar extends SystemUI implements DemoMode,
+             new KeyguardUpdateMonitorCallback() {
+                 @Override
+                 public void onDreamingStateChanged(boolean dreaming) {
+-                    mIsDreaming = dreaming;
+                     if (dreaming) {
+                         maybeEscalateHeadsUp();
+                     }
+@@ -717,7 +685,6 @@ public class StatusBar extends SystemUI implements DemoMode,
+     private Lazy<NotificationShadeDepthController> mNotificationShadeDepthControllerLazy;
+     private final BubbleController mBubbleController;
+     private final BubbleController.BubbleExpandListener mBubbleExpandListener;
+-    private final IFingerprintService mFingerprintService;
+ 
+     private ActivityIntentHelper mActivityIntentHelper;
+ 
+@@ -807,8 +774,7 @@ public class StatusBar extends SystemUI implements DemoMode,
+             DismissCallbackRegistry dismissCallbackRegistry,
+             Lazy<NotificationShadeDepthController> notificationShadeDepthControllerLazy,
+             StatusBarTouchableRegionManager statusBarTouchableRegionManager,
+-            TunerService tunerService,
+-            FODCircleViewImpl fodCircleViewImpl) {
++            TunerService tunerService) {
+         super(context);
+         mNotificationsController = notificationsController;
+         mLightBarController = lightBarController;
+@@ -886,7 +852,6 @@ public class StatusBar extends SystemUI implements DemoMode,
+         mIconPolicy = phoneStatusBarPolicy;
+         mDismissCallbackRegistry = dismissCallbackRegistry;
+         mTunerService = tunerService;
+-        mFODCircleViewImpl = fodCircleViewImpl;
+ 
+         mBubbleExpandListener =
+                 (isExpanding, key) -> {
+@@ -896,9 +861,6 @@ public class StatusBar extends SystemUI implements DemoMode,
+ 
+ 
+         DateTimeView.setReceiverHandler(timeTickHandler);
+-
+-        mFingerprintService = IFingerprintService.Stub.asInterface(
+-                ServiceManager.getService(Context.FINGERPRINT_SERVICE));
+     }
+ 
+     @Override
+@@ -1097,8 +1059,6 @@ public class StatusBar extends SystemUI implements DemoMode,
+                         }
+                     }
+                 }, OverlayPlugin.class, true /* Allow multiple plugins */);
+-                mActivityManager = mContext.getSystemService(ActivityManager.class);
+-                mFODCircleViewImpl.registerCallback(mFODCircleViewImplCallback);
+     }
+ 
+     // ================================================================================
+@@ -1407,8 +1367,7 @@ public class StatusBar extends SystemUI implements DemoMode,
+         mActivityLaunchAnimator = new ActivityLaunchAnimator(
+                 mNotificationShadeWindowViewController, this, mNotificationPanelViewController,
+                 mNotificationShadeDepthControllerLazy.get(),
+-                (NotificationListContainer) mStackScroller, mContext.getMainExecutor(),
+-                mFODCircleViewImpl);
++                (NotificationListContainer) mStackScroller, mContext.getMainExecutor());
+ 
+         // TODO: inject this.
+         mPresenter = new StatusBarNotificationPresenter(mContext, mNotificationPanelViewController,
+@@ -1923,12 +1882,6 @@ public class StatusBar extends SystemUI implements DemoMode,
+             clearNotificationEffects();
+         }
+ 
+-        if (isExpanded && mFodVisibility) {
+-            mFODCircleViewImpl.hideInDisplayFingerprintView();
+-        } else if (!isExpanded && getForegroundPackageNameAndClass().equals(mTopPkgClass)) {
+-            mFODCircleViewImpl.showInDisplayFingerprintView();
+-        }
+-
+         if (!isExpanded) {
+             mRemoteInputManager.onPanelCollapsed();
+         }
+@@ -2650,11 +2603,6 @@ public class StatusBar extends SystemUI implements DemoMode,
+     @Override
+     public void onRecentsAnimationStateChanged(boolean running) {
+         setInteracting(StatusBarManager.WINDOW_NAVIGATION_BAR, running);
+-        if (!running && getForegroundPackageNameAndClass().equals(mTopPkgClass)) {
+-            mFODCircleViewImpl.showInDisplayFingerprintView();
+-        } else {
+-            mFODCircleViewImpl.hideInDisplayFingerprintView();
+-        }
+     }
+ 
+     protected BarTransitions getStatusBarTransitions() {
+@@ -4680,18 +4628,4 @@ public class StatusBar extends SystemUI implements DemoMode,
+     public void suppressAmbientDisplay(boolean suppressed) {
+         mDozeServiceHost.setDozeSuppressed(suppressed);
+     }
+-
+-    private String getForegroundPackageNameAndClass() {
+-        List<ActivityManager.RunningTaskInfo> tasks = mActivityManager.getRunningTasks(1);
+-        if (tasks.isEmpty()) {
+-            return null;
+-        }
+-        ActivityManager.RunningTaskInfo currentTask = tasks.get(0);
+-        ComponentName currentActivity = currentTask.topActivity;
+-        if (currentActivity.getPackageName() != null) {
+-            return currentActivity.getPackageName().trim() +
+-                  currentActivity.getShortClassName().trim();
+-        }
+-        return null;
+-    }
+ }
 diff --git a/packages/SystemUI/src/com/android/systemui/statusbar/phone/StatusBarKeyguardViewManager.java b/packages/SystemUI/src/com/android/systemui/statusbar/phone/StatusBarKeyguardViewManager.java
-index ca9e61320fd..2097cbcf9fc 100644
+index 68b83fb68d5..b354e45bfde 100644
 --- a/packages/SystemUI/src/com/android/systemui/statusbar/phone/StatusBarKeyguardViewManager.java
 +++ b/packages/SystemUI/src/com/android/systemui/statusbar/phone/StatusBarKeyguardViewManager.java
-@@ -116,7 +116,6 @@ public class StatusBarKeyguardViewManager implements RemoteInputController.Callb
+@@ -115,7 +115,6 @@ public class StatusBarKeyguardViewManager implements RemoteInputController.Callb
  
          @Override
          public void onStartingToShow() {
@@ -1019,7 +1378,7 @@ index ca9e61320fd..2097cbcf9fc 100644
              updateLockIcon();
          }
  
-@@ -164,7 +163,6 @@ public class StatusBarKeyguardViewManager implements RemoteInputController.Callb
+@@ -163,7 +162,6 @@ public class StatusBarKeyguardViewManager implements RemoteInputController.Callb
      protected boolean mLastShowing;
      protected boolean mLastOccluded;
      private boolean mLastBouncerShowing;
@@ -1027,7 +1386,7 @@ index ca9e61320fd..2097cbcf9fc 100644
      private boolean mLastBouncerDismissible;
      protected boolean mLastRemoteInputActive;
      private boolean mLastDozing;
-@@ -811,7 +809,6 @@ public class StatusBarKeyguardViewManager implements RemoteInputController.Callb
+@@ -810,7 +808,6 @@ public class StatusBarKeyguardViewManager implements RemoteInputController.Callb
          boolean showing = mShowing;
          boolean occluded = mOccluded;
          boolean bouncerShowing = mBouncer.isShowing();
@@ -1035,7 +1394,7 @@ index ca9e61320fd..2097cbcf9fc 100644
          boolean bouncerDismissible = !mBouncer.isFullscreenBouncer();
          boolean remoteInputActive = mRemoteInputActive;
  
-@@ -840,11 +837,8 @@ public class StatusBarKeyguardViewManager implements RemoteInputController.Callb
+@@ -839,11 +836,8 @@ public class StatusBarKeyguardViewManager implements RemoteInputController.Callb
          if ((showing && !occluded) != (mLastShowing && !mLastOccluded) || mFirstUpdate) {
              mKeyguardUpdateManager.onKeyguardVisibilityChanged(showing && !occluded);
          }
@@ -1049,7 +1408,7 @@ index ca9e61320fd..2097cbcf9fc 100644
          }
  
          mFirstUpdate = false;
-@@ -852,7 +846,6 @@ public class StatusBarKeyguardViewManager implements RemoteInputController.Callb
+@@ -851,7 +845,6 @@ public class StatusBarKeyguardViewManager implements RemoteInputController.Callb
          mLastGlobalActionsVisible = mGlobalActionsVisible;
          mLastOccluded = occluded;
          mLastBouncerShowing = bouncerShowing;
@@ -1057,6 +1416,98 @@ index ca9e61320fd..2097cbcf9fc 100644
          mLastBouncerDismissible = bouncerDismissible;
          mLastRemoteInputActive = remoteInputActive;
          mLastDozing = mDozing;
+diff --git a/packages/SystemUI/src/com/android/systemui/statusbar/phone/dagger/StatusBarPhoneModule.java b/packages/SystemUI/src/com/android/systemui/statusbar/phone/dagger/StatusBarPhoneModule.java
+index dfd4c6b5d46..8c0dd002eb0 100644
+--- a/packages/SystemUI/src/com/android/systemui/statusbar/phone/dagger/StatusBarPhoneModule.java
++++ b/packages/SystemUI/src/com/android/systemui/statusbar/phone/dagger/StatusBarPhoneModule.java
+@@ -30,7 +30,6 @@ import com.android.keyguard.KeyguardUpdateMonitor;
+ import com.android.keyguard.ViewMediatorCallback;
+ import com.android.systemui.InitController;
+ import com.android.systemui.assist.AssistManager;
+-import com.android.systemui.biometrics.FODCircleViewImpl;
+ import com.android.systemui.broadcast.BroadcastDispatcher;
+ import com.android.systemui.bubbles.BubbleController;
+ import com.android.systemui.colorextraction.SysuiColorExtractor;
+@@ -201,8 +200,7 @@ public interface StatusBarPhoneModule {
+             Lazy<NotificationShadeDepthController> notificationShadeDepthController,
+             DismissCallbackRegistry dismissCallbackRegistry,
+             StatusBarTouchableRegionManager statusBarTouchableRegionManager,
+-            TunerService tunerService,
+-            FODCircleViewImpl fodCircleViewImpl) {
++            TunerService tunerService) {
+         return new StatusBar(
+                 context,
+                 notificationsController,
+@@ -281,7 +279,6 @@ public interface StatusBarPhoneModule {
+                 dismissCallbackRegistry,
+                 notificationShadeDepthController,
+                 statusBarTouchableRegionManager,
+-                tunerService,
+-                fodCircleViewImpl);
++                tunerService);
+     }
+ }
+diff --git a/packages/SystemUI/tests/src/com/android/systemui/statusbar/notification/ActivityLaunchAnimatorTest.java b/packages/SystemUI/tests/src/com/android/systemui/statusbar/notification/ActivityLaunchAnimatorTest.java
+index 3e5454d84d0..2fa6cf02d8b 100644
+--- a/packages/SystemUI/tests/src/com/android/systemui/statusbar/notification/ActivityLaunchAnimatorTest.java
++++ b/packages/SystemUI/tests/src/com/android/systemui/statusbar/notification/ActivityLaunchAnimatorTest.java
+@@ -30,7 +30,6 @@ import android.view.RemoteAnimationAdapter;
+ import android.view.View;
+ 
+ import com.android.systemui.SysuiTestCase;
+-import com.android.systemui.biometrics.FODCircleViewImpl;
+ import com.android.systemui.statusbar.NotificationShadeDepthController;
+ import com.android.systemui.statusbar.notification.row.ExpandableNotificationRow;
+ import com.android.systemui.statusbar.notification.stack.NotificationListContainer;
+@@ -70,8 +69,6 @@ public class ActivityLaunchAnimatorTest extends SysuiTestCase {
+     private NotificationShadeDepthController mNotificationShadeDepthController;
+     @Mock
+     private NotificationPanelViewController mNotificationPanelViewController;
+-    @Mock
+-    private FODCircleViewImpl mFODCircleViewImpl;
+     @Rule
+     public MockitoRule rule = MockitoJUnit.rule();
+ 
+@@ -87,8 +84,7 @@ public class ActivityLaunchAnimatorTest extends SysuiTestCase {
+                 mNotificationPanelViewController,
+                 mNotificationShadeDepthController,
+                 mNotificationContainer,
+-                mExecutor,
+-                mFODCircleViewImpl);
++                mExecutor);
+     }
+ 
+     @Test
+diff --git a/packages/SystemUI/tests/src/com/android/systemui/statusbar/phone/StatusBarTest.java b/packages/SystemUI/tests/src/com/android/systemui/statusbar/phone/StatusBarTest.java
+index c6dba6b8b80..474e9d7446f 100644
+--- a/packages/SystemUI/tests/src/com/android/systemui/statusbar/phone/StatusBarTest.java
++++ b/packages/SystemUI/tests/src/com/android/systemui/statusbar/phone/StatusBarTest.java
+@@ -79,7 +79,6 @@ import com.android.systemui.InitController;
+ import com.android.systemui.R;
+ import com.android.systemui.SysuiTestCase;
+ import com.android.systemui.assist.AssistManager;
+-import com.android.systemui.biometrics.FODCircleViewImpl;
+ import com.android.systemui.broadcast.BroadcastDispatcher;
+ import com.android.systemui.bubbles.BubbleController;
+ import com.android.systemui.classifier.FalsingManagerFake;
+@@ -241,7 +240,6 @@ public class StatusBarTest extends SysuiTestCase {
+     @Mock private DismissCallbackRegistry mDismissCallbackRegistry;
+     @Mock private StatusBarTouchableRegionManager mStatusBarTouchableRegionManager;
+     @Mock private TunerService mTunerService;
+-    @Mock private FODCircleViewImpl mFODCircleViewImpl;
+     @Mock private ScreenPinningRequest mScreenPinningRequest;
+     @Mock private LockscreenLockIconController mLockscreenLockIconController;
+     @Mock private StatusBarNotificationActivityStarter.Builder
+@@ -409,8 +407,7 @@ public class StatusBarTest extends SysuiTestCase {
+                 mDismissCallbackRegistry,
+                 mNotificationShadeDepthControllerLazy,
+                 mStatusBarTouchableRegionManager,
+-                mTunerService,
+-                mFODCircleViewImpl);
++                mTunerService);
+ 
+         when(mNotificationShadeWindowView.findViewById(R.id.lock_icon_container)).thenReturn(
+                 mLockIconContainer);
 diff --git a/services/core/Android.bp b/services/core/Android.bp
 index 2510f678381..30eea474c0e 100644
 --- a/services/core/Android.bp

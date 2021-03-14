@@ -60,6 +60,9 @@ cd ..
 cd packages/apps/LineageParts
 git am $BL/patches/0001-LineageParts-Invert-per-app-stretch-to-fullscreen.patch
 cd ../../..
+cd packages/apps/Trebuchet
+git am $BL/patches/0001-Trebuchet-Move-clear-all-button-to-actions-view.patch
+cd ../../..
 cd vendor/lineage
 git am $BL/patches/0001-vendor_lineage-Log-privapp-permissions-whitelist-vio.patch
 cd ../..

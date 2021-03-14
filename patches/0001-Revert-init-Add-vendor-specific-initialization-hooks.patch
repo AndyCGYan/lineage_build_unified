@@ -1,4 +1,4 @@
-From 22d48d3925e8741ab115e7f20c2faf20c2fe21b5 Mon Sep 17 00:00:00 2001
+From 3ecc72b4917790fa43867ce19438874a109de5d6 Mon Sep 17 00:00:00 2001
 From: Andy CrossGate Yan <GeForce8800Ultra@gmail.com>
 Date: Sat, 19 Dec 2020 15:57:27 +0000
 Subject: [PATCH] Revert "init: Add vendor-specific initialization hooks."
@@ -78,7 +78,7 @@ index 383d0f541..c5b1efa7a 100644
 -OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
 -IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 diff --git a/init/property_service.cpp b/init/property_service.cpp
-index 2852f4fb4..a89504e59 100644
+index 44b51c2cf..019955b16 100644
 --- a/init/property_service.cpp
 +++ b/init/property_service.cpp
 @@ -70,7 +70,6 @@
@@ -89,7 +89,7 @@ index 2852f4fb4..a89504e59 100644
  
  using namespace std::literals;
  
-@@ -913,9 +912,6 @@ void PropertyLoadBootDefaults() {
+@@ -976,9 +975,6 @@ void PropertyLoadBootDefaults() {
          }
      }
  
@@ -98,7 +98,7 @@ index 2852f4fb4..a89504e59 100644
 -
      property_initialize_ro_product_props();
      property_derive_build_fingerprint();
- 
+     property_initialize_ro_cpu_abilist();
 diff --git a/init/vendor_init.cpp b/init/vendor_init.cpp
 deleted file mode 100644
 index d3fd5ffe2..000000000

@@ -23,8 +23,6 @@ echo "Setting up build environment"
 source build/envsetup.sh &> /dev/null
 echo ""
 
-repopick -t eleven-dialer-master
-repopick -t eleven-telephony-master
 repopick 289372 # Messaging: Add "Mark as read" quick action for message notifications
 
 echo "Reverting LOS FOD implementation"

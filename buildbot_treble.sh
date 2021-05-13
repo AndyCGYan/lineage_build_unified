@@ -79,6 +79,7 @@ git revert 82b15278bad816632dcaeaed623b569978e9840d --no-edit # Update lineage.m
 git am $BL/patches/0001-Remove-fsck-SELinux-labels.patch
 git am $BL/patches/0001-treble-Add-overlay-lineage.patch
 git am $BL/patches/0001-treble-Don-t-specify-config_wallpaperCropperPackage.patch
+git am $BL/patches/0001-add-offline-charger-sepolicy.patch
 cd ../../..
 cd frameworks/av
 git revert 5a5606dbd92f01de322c797a7128fce69902d067 --no-edit # camera: Allow devices to load custom CameraParameter code

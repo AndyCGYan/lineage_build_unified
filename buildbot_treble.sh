@@ -6,6 +6,16 @@ echo "Executing in 5 seconds - CTRL-C to exit"
 echo ""
 sleep 5
 
+# Abort early on error
+set -eE
+trap '(\
+echo;\
+echo \!\!\! An error happened during script execution;\
+echo \!\!\! Please check console output for bad sync,;\
+echo \!\!\! failed patch application, etc.;\
+echo\
+)' ERR
+
 START=`date +%s`
 BUILD_DATE="$(date +%Y%m%d)"
 BL=$PWD/treble_build_los

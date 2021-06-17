@@ -1,4 +1,4 @@
-From 3ecc72b4917790fa43867ce19438874a109de5d6 Mon Sep 17 00:00:00 2001
+From 3e64de998c03e2d3c96127ed8e6af93af217e6a0 Mon Sep 17 00:00:00 2001
 From: Andy CrossGate Yan <GeForce8800Ultra@gmail.com>
 Date: Sat, 19 Dec 2020 15:57:27 +0000
 Subject: [PATCH] Revert "init: Add vendor-specific initialization hooks."

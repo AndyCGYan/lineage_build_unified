@@ -1,0 +1,76 @@
+From 397a0ba3d50c23e8e1ac45b1673c66ccaa9f0560 Mon Sep 17 00:00:00 2001
+From: Andy CrossGate Yan <GeForce8800Ultra@gmail.com>
+Date: Sun, 13 Sep 2020 03:55:54 +0000
+Subject: [PATCH] UI: Always render windows into cutouts
+
+Eliminates black letterboxing in landscape mode
+
+Change-Id: Ice5688b48844c341bd1166f7b4efe0bfc4c664bf
+---
+ .../com/android/server/wm/DisplayPolicy.java  | 50 -------------------
+ 1 file changed, 50 deletions(-)
+
+diff --git a/services/core/java/com/android/server/wm/DisplayPolicy.java b/services/core/java/com/android/server/wm/DisplayPolicy.java
+index 7d9f58376a0..6090835c1e0 100644
+--- a/services/core/java/com/android/server/wm/DisplayPolicy.java
++++ b/services/core/java/com/android/server/wm/DisplayPolicy.java
+@@ -2270,56 +2270,6 @@ public class DisplayPolicy {
+         final boolean floatingInScreenWindow = !attrs.isFullscreen() && layoutInScreen
+                 && type != TYPE_BASE_APPLICATION;
+ 
+-        // Ensure that windows with a DEFAULT or NEVER display cutout mode are laid out in
+-        // the cutout safe zone.
+-        if (cutoutMode != LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES) {
+-            final Rect displayCutoutSafeExceptMaybeBars = sTmpDisplayCutoutSafeExceptMaybeBarsRect;
+-            displayCutoutSafeExceptMaybeBars.set(displayFrames.mDisplayCutoutSafe);
+-            if (layoutInScreen && layoutInsetDecor && !requestedFullscreen
+-                    && cutoutMode == LAYOUT_IN_DISPLAY_CUTOUT_MODE_DEFAULT) {
+-                // At the top we have the status bar, so apps that are
+-                // LAYOUT_IN_SCREEN | LAYOUT_INSET_DECOR but not FULLSCREEN
+-                // already expect that there's an inset there and we don't need to exclude
+-                // the window from that area.
+-                displayCutoutSafeExceptMaybeBars.top = Integer.MIN_VALUE;
+-            }
+-            if (layoutInScreen && layoutInsetDecor && !requestedHideNavigation
+-                    && cutoutMode == LAYOUT_IN_DISPLAY_CUTOUT_MODE_DEFAULT) {
+-                // Same for the navigation bar.
+-                switch (mNavigationBarPosition) {
+-                    case NAV_BAR_BOTTOM:
+-                        displayCutoutSafeExceptMaybeBars.bottom = Integer.MAX_VALUE;
+-                        break;
+-                    case NAV_BAR_RIGHT:
+-                        displayCutoutSafeExceptMaybeBars.right = Integer.MAX_VALUE;
+-                        break;
+-                    case NAV_BAR_LEFT:
+-                        displayCutoutSafeExceptMaybeBars.left = Integer.MIN_VALUE;
+-                        break;
+-                }
+-            }
+-            if (type == TYPE_INPUT_METHOD && mNavigationBarPosition == NAV_BAR_BOTTOM) {
+-                // The IME can always extend under the bottom cutout if the navbar is there.
+-                displayCutoutSafeExceptMaybeBars.bottom = Integer.MAX_VALUE;
+-            }
+-            // Windows that are attached to a parent and laid out in said parent already avoid
+-            // the cutout according to that parent and don't need to be further constrained.
+-            // Floating IN_SCREEN windows get what they ask for and lay out in the full screen.
+-            // They will later be cropped or shifted using the displayFrame in WindowState,
+-            // which prevents overlap with the DisplayCutout.
+-            if (!attachedInParent && !floatingInScreenWindow) {
+-                sTmpRect.set(pf);
+-                pf.intersectUnchecked(displayCutoutSafeExceptMaybeBars);
+-                windowFrames.setParentFrameWasClippedByDisplayCutout(!sTmpRect.equals(pf));
+-            }
+-            // Make sure that NO_LIMITS windows clipped to the display don't extend under the
+-            // cutout.
+-            df.intersectUnchecked(displayCutoutSafeExceptMaybeBars);
+-        }
+-
+-        // Content should never appear in the cutout.
+-        cf.intersectUnchecked(displayFrames.mDisplayCutoutSafe);
+-
+         // TYPE_SYSTEM_ERROR is above the NavigationBar so it can't be allowed to extend over it.
+         // Also, we don't allow windows in multi-window mode to extend out of the screen.
+         if ((fl & FLAG_LAYOUT_NO_LIMITS) != 0 && type != TYPE_SYSTEM_ERROR
+-- 
+2.25.1
+

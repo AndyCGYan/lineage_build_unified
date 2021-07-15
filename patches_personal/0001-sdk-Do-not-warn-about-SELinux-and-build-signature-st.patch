@@ -1,0 +1,33 @@
+From 8a3d38d3148713836c12d85f7fc4a6a366cc00e4 Mon Sep 17 00:00:00 2001
+From: AndyCGYan <GeForce8800Ultra@gmail.com>
+Date: Mon, 4 Mar 2019 14:27:56 +0800
+Subject: [PATCH] sdk: Do not warn about SELinux and build signature status
+
+Change-Id: I6e1ca9f2c2f7763364a9a370f444dfe8059d0563
+---
+ .../org/lineageos/platform/internal/TrustInterfaceService.java   | 9 ---------
+ 1 file changed, 9 deletions(-)
+
+diff --git a/lineage/lib/main/java/org/lineageos/platform/internal/TrustInterfaceService.java b/lineage/lib/main/java/org/lineageos/platform/internal/TrustInterfaceService.java
+index 2dcb938..e9f2dca 100644
+--- a/lineage/lib/main/java/org/lineageos/platform/internal/TrustInterfaceService.java
++++ b/lineage/lib/main/java/org/lineageos/platform/internal/TrustInterfaceService.java
+@@ -197,15 +197,6 @@ public class TrustInterfaceService extends LineageSystemService {
+     }
+ 
+     private void runTestInternal() {
+-        int selinuxStatus = getSELinuxStatus();
+-        if (selinuxStatus != TrustInterface.TRUST_FEATURE_LEVEL_GOOD) {
+-            postNotificationForFeatureInternal(TrustInterface.TRUST_WARN_SELINUX);
+-        }
+-
+-        int keysStatus = getKeysStatus();
+-        if (keysStatus != TrustInterface.TRUST_FEATURE_LEVEL_GOOD) {
+-            postNotificationForFeatureInternal(TrustInterface.TRUST_WARN_PUBLIC_KEY);
+-        }
+     }
+ 
+     /* Utils */
+-- 
+2.7.4
+

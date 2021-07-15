@@ -1,0 +1,103 @@
+From 050effb33aa01822945cf98e0d53af8c3bcd8e03 Mon Sep 17 00:00:00 2001
+From: Andy CrossGate Yan <GeForce8800Ultra@gmail.com>
+Date: Sat, 2 Nov 2019 08:31:36 +0000
+Subject: [PATCH] Keyguard: Refine indication text
+
+- Always show "Swipe up to unlock" hint
+- Put the text in-line with bottom shortcuts
+- Fix font size inconsistency on reboot
+- Don't show charging state below lock status message (https://github.com/LineageOS/android_frameworks_base/commit/85e5a5768731d98a56982ee1b9a1b5cc86fb76f0)
+
+Change-Id: Ib771c35610f712a1de34736e817bcfe616ac37d8
+---
+ packages/SystemUI/res-keyguard/values/styles.xml      |  2 +-
+ packages/SystemUI/res/values-sw600dp-land/dimens.xml  |  2 +-
+ packages/SystemUI/res/values-sw600dp/dimens.xml       |  2 +-
+ packages/SystemUI/res/values/dimens.xml               |  2 +-
+ .../statusbar/KeyguardIndicationController.java       | 11 ++---------
+ 5 files changed, 6 insertions(+), 13 deletions(-)
+
+diff --git a/packages/SystemUI/res-keyguard/values/styles.xml b/packages/SystemUI/res-keyguard/values/styles.xml
+index fc8d0f7392f..63c1ab0a109 100644
+--- a/packages/SystemUI/res-keyguard/values/styles.xml
++++ b/packages/SystemUI/res-keyguard/values/styles.xml
+@@ -121,7 +121,7 @@
+     </style>
+ 
+     <style name="TextAppearance.Keyguard.BottomArea">
+-        <item name="android:textSize">16sp</item>
++        <item name="android:textSize">14sp</item>
+         <item name="android:maxLines">1</item>
+         <item name="android:textColor">?attr/wallpaperTextColor</item>
+     </style>
+diff --git a/packages/SystemUI/res/values-sw600dp-land/dimens.xml b/packages/SystemUI/res/values-sw600dp-land/dimens.xml
+index f2df4b9023b..7719a0ae0ba 100644
+--- a/packages/SystemUI/res/values-sw600dp-land/dimens.xml
++++ b/packages/SystemUI/res/values-sw600dp-land/dimens.xml
+@@ -18,7 +18,7 @@
+ <resources>
+     <dimen name="keyguard_clock_notifications_margin">36dp</dimen>
+ 
+-    <dimen name="keyguard_indication_margin_bottom">80dp</dimen>
++    <dimen name="keyguard_indication_margin_bottom">40dp</dimen>
+ 
+     <!-- Screen pinning request width (just a little bit bigger than the three buttons here -->
+     <dimen name="screen_pinning_request_width">490dp</dimen>
+diff --git a/packages/SystemUI/res/values-sw600dp/dimens.xml b/packages/SystemUI/res/values-sw600dp/dimens.xml
+index 89341838f3e..065aa4107c8 100644
+--- a/packages/SystemUI/res/values-sw600dp/dimens.xml
++++ b/packages/SystemUI/res/values-sw600dp/dimens.xml
+@@ -65,7 +65,7 @@
+      phone hints. -->
+     <dimen name="edge_tap_area_width">80dp</dimen>
+ 
+-    <dimen name="keyguard_indication_margin_bottom">90dp</dimen>
++    <dimen name="keyguard_indication_margin_bottom">40dp</dimen>
+ 
+     <!-- Margin on the right side of the system icon group on Keyguard. -->
+     <dimen name="system_icons_keyguard_padding_end">2dp</dimen>
+diff --git a/packages/SystemUI/res/values/dimens.xml b/packages/SystemUI/res/values/dimens.xml
+index ef4a8d524ee..566df2853b9 100644
+--- a/packages/SystemUI/res/values/dimens.xml
++++ b/packages/SystemUI/res/values/dimens.xml
+@@ -765,7 +765,7 @@
+     <dimen name="keyguard_lock_width">0dp</dimen>
+     <dimen name="keyguard_lock_padding">20dp</dimen>
+ 
+-    <dimen name="keyguard_indication_margin_bottom">40dp</dimen>
++    <dimen name="keyguard_indication_margin_bottom">20dp</dimen>
+ 
+     <!-- The text size for battery level -->
+     <dimen name="battery_level_text_size">12sp</dimen>
+diff --git a/packages/SystemUI/src/com/android/systemui/statusbar/KeyguardIndicationController.java b/packages/SystemUI/src/com/android/systemui/statusbar/KeyguardIndicationController.java
+index 0644a0ff737..289a875704d 100644
+--- a/packages/SystemUI/src/com/android/systemui/statusbar/KeyguardIndicationController.java
++++ b/packages/SystemUI/src/com/android/systemui/statusbar/KeyguardIndicationController.java
+@@ -432,14 +432,7 @@ public class KeyguardIndicationController implements StateListener,
+                 mTextView.setTextColor(mTransientTextColorState);
+             } else if (!TextUtils.isEmpty(trustGrantedIndication)
+                     && mKeyguardUpdateMonitor.getUserHasTrust(userId)) {
+-                if (powerIndication != null) {
+-                    String indication = mContext.getResources().getString(
+-                            R.string.keyguard_indication_trust_unlocked_plugged_in,
+-                            trustGrantedIndication, powerIndication);
+-                    mTextView.switchIndication(indication);
+-                } else {
+-                    mTextView.switchIndication(trustGrantedIndication);
+-                }
++                mTextView.switchIndication(trustGrantedIndication);
+                 mTextView.setTextColor(mInitialTextColorState);
+             } else if (!TextUtils.isEmpty(mAlignmentIndication)) {
+                 mTextView.switchIndication(mAlignmentIndication);
+@@ -460,7 +453,7 @@ public class KeyguardIndicationController implements StateListener,
+                 mTextView.switchIndication(trustManagedIndication);
+                 mTextView.setTextColor(mInitialTextColorState);
+             } else {
+-                mTextView.switchIndication(mRestingIndication);
++                mTextView.switchIndication(R.string.keyguard_unlock);
+                 mTextView.setTextColor(mInitialTextColorState);
+             }
+         }
+-- 
+2.17.1
+

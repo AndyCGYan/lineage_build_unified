@@ -1,0 +1,50 @@
+From 75b4ad8f26b5fafaf4acac63be76f77340c060fc Mon Sep 17 00:00:00 2001
+From: Andy CrossGate Yan <GeForce8800Ultra@gmail.com>
+Date: Wed, 3 Jun 2020 01:26:13 +0000
+Subject: [PATCH] [TEMP] UI: Restore status bar inset behaviour
+
+FFS Google!
+Offending commits:
+https://android.googlesource.com/platform/frameworks/base/+/ae242892e2ba416cfbf5fd707069faf2350ace9c
+https://android.googlesource.com/platform/frameworks/base/+/60023559ea0219273e0680a7b559392230172fd6
+Issue tracker:
+https://issuetracker.google.com/issues/158019858
+
+Change-Id: Icbea8ff375b990d1af803d7cdd99d8cb8be77279
+---
+ packages/SystemUI/res/layout/super_status_bar.xml             | 3 +--
+ .../android/systemui/statusbar/phone/PhoneStatusBarView.java  | 4 ----
+ 2 files changed, 1 insertion(+), 6 deletions(-)
+
+diff --git a/packages/SystemUI/res/layout/super_status_bar.xml b/packages/SystemUI/res/layout/super_status_bar.xml
+index c7dcbf60851..d7da49563c0 100644
+--- a/packages/SystemUI/res/layout/super_status_bar.xml
++++ b/packages/SystemUI/res/layout/super_status_bar.xml
+@@ -64,8 +64,7 @@
+         android:id="@+id/status_bar_container"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+-        android:background="@drawable/system_bar_background"
+-        sysui:ignoreRightInset="true" />
++        android:background="@drawable/system_bar_background" />
+ 
+     <include layout="@layout/status_bar_expanded"
+         android:layout_width="match_parent"
+diff --git a/packages/SystemUI/src/com/android/systemui/statusbar/phone/PhoneStatusBarView.java b/packages/SystemUI/src/com/android/systemui/statusbar/phone/PhoneStatusBarView.java
+index 3d705da65f2..1ce9766f350 100644
+--- a/packages/SystemUI/src/com/android/systemui/statusbar/phone/PhoneStatusBarView.java
++++ b/packages/SystemUI/src/com/android/systemui/statusbar/phone/PhoneStatusBarView.java
+@@ -399,10 +399,6 @@ public class PhoneStatusBarView extends PanelBar {
+         Point size = new Point();
+         display.getRealSize(size);
+ 
+-        if (rotationOrientation != RotationUtils.ROTATION_NONE) {
+-            return new Pair<>(cutout.getSafeInsetLeft(), cutout.getSafeInsetRight());
+-        }
+-
+         Rect bounds = new Rect();
+         boundsFromDirection(cutout, Gravity.TOP, bounds);
+ 
+-- 
+2.17.1
+

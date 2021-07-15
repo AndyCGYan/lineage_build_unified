@@ -1,0 +1,60 @@
+From b4b8f5d0f94edfd28a22d61b04f7777999a53768 Mon Sep 17 00:00:00 2001
+From: Andy CrossGate Yan <GeForce8800Ultra@gmail.com>
+Date: Tue, 8 Jun 2021 12:00:26 +0000
+Subject: [PATCH] Telephony: Disable SPN retrieval
+
+Kills "double carrier name" on lock screen
+Not ideal, but not worth wasting more time on
+
+Change-Id: I06dd17989194590972e526de85dbacf74eff805e
+---
+ .../internal/telephony/uicc/IccRecords.java   | 22 +++++--------------
+ 1 file changed, 6 insertions(+), 16 deletions(-)
+
+diff --git a/src/java/com/android/internal/telephony/uicc/IccRecords.java b/src/java/com/android/internal/telephony/uicc/IccRecords.java
+index 7944f6f4d..2ac7a913b 100644
+--- a/src/java/com/android/internal/telephony/uicc/IccRecords.java
++++ b/src/java/com/android/internal/telephony/uicc/IccRecords.java
+@@ -683,33 +683,23 @@ public abstract class IccRecords extends Handler implements IccConstants {
+     }
+ 
+     /**
+-     * Return Service Provider Name stored in SIM (EF_SPN=0x6F46) or in RUIM (EF_RUIM_SPN=0x6F41).
++     * Return null, disabling Service Provider Name.
+      *
+-     * @return null if SIM is not yet ready or no RUIM entry
++     * @return null
+      */
+     @UnsupportedAppUsage
+     public String getServiceProviderName() {
+-        if (mCarrierTestOverride.isInTestMode() && mCarrierTestOverride.getFakeSpn() != null) {
+-            return mCarrierTestOverride.getFakeSpn();
+-        }
+-        return mSpn;
++        return null;
+     }
+ 
+     /**
+-     * Return Service Provider Name stored in SIM (EF_SPN=0x6F46) or in RUIM (EF_RUIM_SPN=0x6F41) or
+-     * the brand override. The brand override has higher priority than the SPN from SIM.
++     * Return null, disabling Service Provider Name.
+      *
+-     * @return service provider name.
++     * @return null
+      */
+     @Nullable
+     public String getServiceProviderNameWithBrandOverride() {
+-        if (mParentApp != null && mParentApp.getUiccProfile() != null) {
+-            String brandOverride = mParentApp.getUiccProfile().getOperatorBrandOverride();
+-            if (!TextUtils.isEmpty(brandOverride)) {
+-                return brandOverride;
+-            }
+-        }
+-        return mSpn;
++        return null;
+     }
+ 
+     protected void setServiceProviderName(String spn) {
+-- 
+2.25.1
+

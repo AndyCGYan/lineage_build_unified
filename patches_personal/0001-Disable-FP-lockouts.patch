@@ -1,0 +1,53 @@
+From c20aa4ba6aad05f6f6bd747ff89c511cc6e46d8f Mon Sep 17 00:00:00 2001
+From: AndyCGYan <GeForce8800Ultra@gmail.com>
+Date: Fri, 22 Mar 2019 00:41:20 +0800
+Subject: [PATCH] Disable FP lockouts
+
+Both timed and permanent lockouts - GET THE FUCK OUT
+Android 10 seems to have unified biometrics procedures - only disable lockouts for FP for now
+
+Change-Id: I2d4b091f3546d4d7903bfb4d5585629212dc9915
+---
+ .../fingerprint/FingerprintService.java       | 19 +------------------
+ 1 file changed, 1 insertion(+), 18 deletions(-)
+
+diff --git a/services/core/java/com/android/server/biometrics/fingerprint/FingerprintService.java b/services/core/java/com/android/server/biometrics/fingerprint/FingerprintService.java
+index 972b4703860..59bcf3ceedc 100644
+--- a/services/core/java/com/android/server/biometrics/fingerprint/FingerprintService.java
++++ b/services/core/java/com/android/server/biometrics/fingerprint/FingerprintService.java
+@@ -162,15 +162,7 @@ public class FingerprintService extends BiometricServiceBase {
+ 
+         @Override
+         public int handleFailedAttempt() {
+-            final int currentUser = ActivityManager.getCurrentUser();
+-            mFailedAttempts.put(currentUser, mFailedAttempts.get(currentUser, 0) + 1);
+-            mTimedLockoutCleared.put(ActivityManager.getCurrentUser(), false);
+-
+-            if (getLockoutMode() != AuthenticationClient.LOCKOUT_NONE) {
+-                scheduleLockoutResetForUser(currentUser);
+-            }
+-
+-            return super.handleFailedAttempt();
++            return AuthenticationClient.LOCKOUT_NONE;
+         }
+ 
+         @Override
+@@ -931,15 +923,6 @@ public class FingerprintService extends BiometricServiceBase {
+ 
+     @Override
+     protected int getLockoutMode() {
+-        final int currentUser = ActivityManager.getCurrentUser();
+-        final int failedAttempts = mFailedAttempts.get(currentUser, 0);
+-        if (failedAttempts >= MAX_FAILED_ATTEMPTS_LOCKOUT_PERMANENT) {
+-            return AuthenticationClient.LOCKOUT_PERMANENT;
+-        } else if (failedAttempts > 0
+-                && !mTimedLockoutCleared.get(currentUser, false)
+-                && (failedAttempts % MAX_FAILED_ATTEMPTS_LOCKOUT_TIMED == 0)) {
+-            return AuthenticationClient.LOCKOUT_TIMED;
+-        }
+         return AuthenticationClient.LOCKOUT_NONE;
+     }
+ 
+-- 
+2.17.1
+

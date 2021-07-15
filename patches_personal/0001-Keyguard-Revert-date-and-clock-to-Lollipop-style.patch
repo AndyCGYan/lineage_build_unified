@@ -1,0 +1,246 @@
+From a4141da232bd5c4143933c3af127bb35758b82b2 Mon Sep 17 00:00:00 2001
+From: Andy CrossGate Yan <GeForce8800Ultra@gmail.com>
+Date: Sat, 2 Nov 2019 07:52:36 +0000
+Subject: [PATCH] Keyguard: Revert date and clock to Lollipop style
+
+Also ported dynamic date format based on alarm presence from Oreo
+
+Change-Id: I0f61c641ffb2a3e1e6b4da738792ee4ac1d77434
+---
+ .../layout/keyguard_clock_switch.xml          |  3 ---
+ .../layout/keyguard_status_view.xml           |  1 -
+ .../res-keyguard/values-h560dp/dimens.xml     |  2 +-
+ .../res-keyguard/values-h650dp/dimens.xml     |  2 +-
+ .../SystemUI/res-keyguard/values/dimens.xml   |  6 ++---
+ .../SystemUI/res-keyguard/values/strings.xml  |  4 ++--
+ .../SystemUI/res-keyguard/values/styles.xml   | 18 ++++-----------
+ .../res/layout/keyguard_status_bar.xml        |  2 +-
+ .../keyguard/KeyguardSliceProvider.java       | 22 +++++++++++--------
+ 9 files changed, 25 insertions(+), 35 deletions(-)
+
+diff --git a/packages/SystemUI/res-keyguard/layout/keyguard_clock_switch.xml b/packages/SystemUI/res-keyguard/layout/keyguard_clock_switch.xml
+index bf2963cd0b7..5fb06f38bd4 100644
+--- a/packages/SystemUI/res-keyguard/layout/keyguard_clock_switch.xml
++++ b/packages/SystemUI/res-keyguard/layout/keyguard_clock_switch.xml
+@@ -36,8 +36,6 @@
+              android:layout_height="wrap_content"
+              android:layout_gravity="center_horizontal"
+              android:gravity="center_horizontal"
+-             android:paddingBottom="@dimen/title_clock_padding"
+-             android:letterSpacing="0.02"
+              android:textColor="?attr/wallpaperTextColor"
+              android:singleLine="true"
+              style="@style/widget_big"
+@@ -51,7 +49,6 @@
+              android:layout_height="wrap_content"
+              android:layout_gravity="bottom|center_horizontal"
+              android:gravity="center_horizontal"
+-             android:letterSpacing="0.03"
+              android:textColor="?attr/wallpaperTextColor"
+              android:singleLine="true"
+              style="@style/widget_title_bold"
+diff --git a/packages/SystemUI/res-keyguard/layout/keyguard_status_view.xml b/packages/SystemUI/res-keyguard/layout/keyguard_status_view.xml
+index 10cd3cba713..9845a02399b 100644
+--- a/packages/SystemUI/res-keyguard/layout/keyguard_status_view.xml
++++ b/packages/SystemUI/res-keyguard/layout/keyguard_status_view.xml
+@@ -67,7 +67,6 @@
+             android:layout_centerHorizontal="true"
+             android:textColor="?attr/wallpaperTextColorSecondary"
+             android:textSize="@dimen/widget_label_font_size"
+-            android:letterSpacing="0.05"
+             android:ellipsize="marquee"
+             android:singleLine="true" />
+         <com.android.systemui.statusbar.phone.NotificationIconContainer
+diff --git a/packages/SystemUI/res-keyguard/values-h560dp/dimens.xml b/packages/SystemUI/res-keyguard/values-h560dp/dimens.xml
+index 669f8fb642d..345b3d9c707 100644
+--- a/packages/SystemUI/res-keyguard/values-h560dp/dimens.xml
++++ b/packages/SystemUI/res-keyguard/values-h560dp/dimens.xml
+@@ -16,5 +16,5 @@
+   -->
+ 
+ <resources>
+-    <dimen name="widget_big_font_size">54dp</dimen>
++    <dimen name="widget_big_font_size">88dp</dimen>
+ </resources>
+diff --git a/packages/SystemUI/res-keyguard/values-h650dp/dimens.xml b/packages/SystemUI/res-keyguard/values-h650dp/dimens.xml
+index 669f8fb642d..345b3d9c707 100644
+--- a/packages/SystemUI/res-keyguard/values-h650dp/dimens.xml
++++ b/packages/SystemUI/res-keyguard/values-h650dp/dimens.xml
+@@ -16,5 +16,5 @@
+   -->
+ 
+ <resources>
+-    <dimen name="widget_big_font_size">54dp</dimen>
++    <dimen name="widget_big_font_size">88dp</dimen>
+ </resources>
+diff --git a/packages/SystemUI/res-keyguard/values/dimens.xml b/packages/SystemUI/res-keyguard/values/dimens.xml
+index f9389ce24d9..cf3a8d79712 100644
+--- a/packages/SystemUI/res-keyguard/values/dimens.xml
++++ b/packages/SystemUI/res-keyguard/values/dimens.xml
+@@ -42,13 +42,13 @@
+     <dimen name="eca_overlap">-10dip</dimen>
+ 
+     <!-- Slice header -->
+-    <dimen name="widget_title_font_size">24dp</dimen>
++    <dimen name="widget_title_font_size">16dp</dimen>
+     <dimen name="header_subtitle_padding">12dp</dimen>
+     <dimen name="header_icon_size">16dp</dimen>
+     <!-- Slice subtitle -->
+-    <dimen name="widget_label_font_size">18dp</dimen>
++    <dimen name="widget_label_font_size">16dp</dimen>
+     <!-- Clock without header -->
+-    <dimen name="widget_big_font_size">54dp</dimen>
++    <dimen name="widget_big_font_size">88dp</dimen>
+     <dimen name="bottom_text_spacing_digital">0dp</dimen>
+     <dimen name="title_clock_padding">4dp</dimen>
+     <!-- Clock with header -->
+diff --git a/packages/SystemUI/res-keyguard/values/strings.xml b/packages/SystemUI/res-keyguard/values/strings.xml
+index 0fe7084bb14..ad7957b2cea 100644
+--- a/packages/SystemUI/res-keyguard/values/strings.xml
++++ b/packages/SystemUI/res-keyguard/values/strings.xml
+@@ -116,9 +116,9 @@
+     <string name="keyguard_carrier_name_with_sim_locked_template" translatable="false"><xliff:g id="carrier">%s</xliff:g> (<xliff:g id="message">%s</xliff:g>)</string>
+ 
+     <!-- Time format strings for fall-back clock widget -->
+-    <string name="keyguard_widget_12_hours_format" translatable="false">h:mm</string>
++    <string name="keyguard_widget_12_hours_format" translatable="false">hh:mm</string>
+     <!-- Time format strings for fall-back clock widget -->
+-    <string name="keyguard_widget_24_hours_format" translatable="false">kk:mm</string>
++    <string name="keyguard_widget_24_hours_format" translatable="false">HH:mm</string>
+     <!-- The character used in keyguard_widget_12_hours_format and keyguard_widget_24_hours_format
+          to represent a ":". -->
+     <string name="keyguard_fancy_colon" translatable="false"></string>
+diff --git a/packages/SystemUI/res-keyguard/values/styles.xml b/packages/SystemUI/res-keyguard/values/styles.xml
+index 67c4458de2f..fc8d0f7392f 100644
+--- a/packages/SystemUI/res-keyguard/values/styles.xml
++++ b/packages/SystemUI/res-keyguard/values/styles.xml
+@@ -62,29 +62,23 @@
+     <style name="widget_big">
+         <item name="android:textSize">@dimen/widget_big_font_size</item>
+         <item name="android:paddingBottom">@dimen/bottom_text_spacing_digital</item>
+-        <item name="android:fontFamily">@*android:string/config_headlineFontFamily</item>
++        <item name="android:fontFamily">sans-serif-thin</item>
+         <item name="android:fontFeatureSettings">@*android:string/config_headlineFontFeatureSettings</item>
+         <item name="android:ellipsize">none</item>
+-        <item name="android:shadowColor">@color/keyguard_shadow_color</item>
+-        <item name="android:shadowRadius">?attr/shadowRadius</item>
+     </style>
+     <style name="widget_title_bold">
+         <item name="android:textStyle">bold</item>
+         <item name="android:textSize">@dimen/widget_title_font_size</item>
+         <item name="android:paddingBottom">@dimen/widget_vertical_padding_clock</item>
+-        <item name="android:fontFamily">@*android:string/config_headlineFontFamily</item>
++        <item name="android:fontFamily">sans-serif</item>
+         <item name="android:ellipsize">none</item>
+-        <item name="android:shadowColor">@color/keyguard_shadow_color</item>
+-        <item name="android:shadowRadius">?attr/shadowRadius</item>
+     </style>
+     <style name="widget_small_bold">
+         <item name="android:textStyle">bold</item>
+         <item name="android:textSize">@dimen/widget_small_font_size</item>
+         <item name="android:paddingBottom">@dimen/bottom_text_spacing_digital</item>
+-        <item name="android:fontFamily">@*android:string/config_headlineFontFamily</item>
++        <item name="android:fontFamily">sans-serif</item>
+         <item name="android:ellipsize">none</item>
+-        <item name="android:shadowColor">@color/keyguard_shadow_color</item>
+-        <item name="android:shadowRadius">?attr/shadowRadius</item>
+     </style>
+ 
+     <style name="BouncerSecurityContainer">
+@@ -116,9 +110,7 @@
+         <item name="android:gravity">center</item>
+         <item name="android:ellipsize">end</item>
+         <item name="android:maxLines">2</item>
+-        <item name="android:fontFamily">@*android:string/config_headlineFontFamily</item>
+-        <item name="android:shadowColor">@color/keyguard_shadow_color</item>
+-        <item name="android:shadowRadius">?attr/shadowRadius</item>
++        <item name="android:fontFamily">sans-serif</item>
+     </style>
+ 
+     <style name="TextAppearance.Keyguard.Secondary">
+@@ -132,8 +124,6 @@
+         <item name="android:textSize">16sp</item>
+         <item name="android:maxLines">1</item>
+         <item name="android:textColor">?attr/wallpaperTextColor</item>
+-        <item name="android:shadowColor">@color/keyguard_shadow_color</item>
+-        <item name="android:shadowRadius">?attr/shadowRadius</item>
+     </style>
+ 
+ </resources>
+diff --git a/packages/SystemUI/res/layout/keyguard_status_bar.xml b/packages/SystemUI/res/layout/keyguard_status_bar.xml
+index 2b22cc196db..58343800c2e 100644
+--- a/packages/SystemUI/res/layout/keyguard_status_bar.xml
++++ b/packages/SystemUI/res/layout/keyguard_status_bar.xml
+@@ -73,7 +73,7 @@
+         android:gravity="center_vertical"
+         android:ellipsize="marquee"
+         android:textDirection="locale"
+-        android:textAppearance="@style/TextAppearance.StatusBar.Clock"
++        android:textAppearance="?android:attr/textAppearanceSmall"
+         android:textColor="?attr/wallpaperTextColorSecondary"
+         android:singleLine="true"
+         systemui:showMissingSim="true"
+diff --git a/packages/SystemUI/src/com/android/systemui/keyguard/KeyguardSliceProvider.java b/packages/SystemUI/src/com/android/systemui/keyguard/KeyguardSliceProvider.java
+index 50c50065915..474c62ea196 100644
+--- a/packages/SystemUI/src/com/android/systemui/keyguard/KeyguardSliceProvider.java
++++ b/packages/SystemUI/src/com/android/systemui/keyguard/KeyguardSliceProvider.java
+@@ -91,7 +91,7 @@ public class KeyguardSliceProvider extends SliceProvider implements
+      * Only show alarms that will ring within N hours.
+      */
+     @VisibleForTesting
+-    static final int ALARM_VISIBILITY_HOURS = 12;
++    static final int ALARM_VISIBILITY_HOURS = 24;
+ 
+     private static KeyguardSliceProvider sInstance;
+ 
+@@ -318,7 +318,10 @@ public class KeyguardSliceProvider extends SliceProvider implements
+             mNextAlarmController.addCallback(this);
+             mZenModeController = new ZenModeControllerImpl(getContext(), mHandler);
+             mZenModeController.addCallback(this);
+-            mDatePattern = getContext().getString(R.string.system_ui_aod_date_pattern);
++            boolean isNextAlarmPresent = withinNHoursLocked(mNextAlarmInfo, ALARM_VISIBILITY_HOURS);
++            mDatePattern = getContext().getString(isNextAlarmPresent
++                ? R.string.abbrev_wday_month_day_no_year_alarm
++                : R.string.abbrev_wday_month_day_no_year);
+             mPendingIntent = PendingIntent.getActivity(getContext(), 0,
+                     new Intent(getContext(), KeyguardSliceProvider.class), 0);
+             mMediaWakeLock = new SettableWakeLock(WakeLock.createPartial(getContext(), "media"),
+@@ -359,14 +362,17 @@ public class KeyguardSliceProvider extends SliceProvider implements
+         synchronized (this) {
+             if (withinNHoursLocked(mNextAlarmInfo, ALARM_VISIBILITY_HOURS)) {
+                 String pattern = android.text.format.DateFormat.is24HourFormat(getContext(),
+-                        ActivityManager.getCurrentUser()) ? "HH:mm" : "h:mm";
++                        ActivityManager.getCurrentUser()) ? "E HH:mm" : "E hh:mm";
+                 mNextAlarm = android.text.format.DateFormat.format(pattern,
+                         mNextAlarmInfo.getTriggerTime()).toString();
++                mDatePattern = getContext().getString(R.string.abbrev_wday_month_day_no_year_alarm);
+             } else {
+                 mNextAlarm = "";
++                mDatePattern = getContext().getString(R.string.abbrev_wday_month_day_no_year);
+             }
+         }
+         notifyChange();
++        updateClockLocked();
+     }
+ 
+     private boolean withinNHoursLocked(AlarmManager.AlarmClockInfo alarmClockInfo, int hours) {
+@@ -415,12 +421,10 @@ public class KeyguardSliceProvider extends SliceProvider implements
+     }
+ 
+     protected String getFormattedDateLocked() {
+-        if (mDateFormat == null) {
+-            final Locale l = Locale.getDefault();
+-            DateFormat format = DateFormat.getInstanceForSkeleton(mDatePattern, l);
+-            format.setContext(DisplayContext.CAPITALIZATION_FOR_STANDALONE);
+-            mDateFormat = format;
+-        }
++        final Locale l = Locale.getDefault();
++        DateFormat format = DateFormat.getInstanceForSkeleton(mDatePattern, l);
++        format.setContext(DisplayContext.CAPITALIZATION_FOR_STANDALONE);
++        mDateFormat = format;
+         mCurrentTime.setTime(System.currentTimeMillis());
+         return mDateFormat.format(mCurrentTime);
+     }
+-- 
+2.17.1
+

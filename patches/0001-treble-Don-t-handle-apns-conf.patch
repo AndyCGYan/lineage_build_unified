@@ -1,0 +1,53 @@
+From 0e30d9db18a2ff9bbdc99f0b61e666c29850f5af Mon Sep 17 00:00:00 2001
+From: Andy CrossGate Yan <GeForce8800Ultra@gmail.com>
+Date: Sun, 27 Jun 2021 15:37:56 +0000
+Subject: [PATCH] treble: Don't handle apns-conf
+
+LineageOS has its own well-maintained copy
+
+Change-Id: If568101f21098c75879af8b9b6141af179566960
+---
+ base-pre.mk | 3 ---
+ base.mk     | 8 ++------
+ 2 files changed, 2 insertions(+), 9 deletions(-)
+
+diff --git a/base-pre.mk b/base-pre.mk
+index 6a317e4..e69de29 100644
+--- a/base-pre.mk
++++ b/base-pre.mk
+@@ -1,3 +0,0 @@
+-#Use a more decent APN config
+-PRODUCT_COPY_FILES += \
+-	device/sample/etc/apns-full-conf.xml:system/etc/apns-conf.xml
+diff --git a/base.mk b/base.mk
+index b11fde5..54144f9 100644
+--- a/base.mk
++++ b/base.mk
+@@ -7,10 +7,6 @@ PRODUCT_COPY_FILES := \
+ 	frameworks/native/data/etc/android.hardware.bluetooth.xml:system/etc/permissions/android.hardware.bluetooth.xml \
+ 	frameworks/native/data/etc/android.hardware.bluetooth_le.xml:system/etc/permissions/android.hardware.bluetooth_le.xml \
+ 
+-#Use a more decent APN config
+-PRODUCT_COPY_FILES += \
+-	device/sample/etc/apns-full-conf.xml:system/etc/apns-conf.xml
+-
+ BOARD_PLAT_PRIVATE_SEPOLICY_DIR += device/phh/treble/sepolicy
+ DEVICE_PACKAGE_OVERLAYS += \
+ 	device/phh/treble/overlay \
+@@ -31,11 +27,11 @@ PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
+ 	ro.build.version.security_patch=$(PLATFORM_SECURITY_PATCH) \
+ 	ro.adb.secure=0 \
+ 	ro.logd.auditd=true
+-	
++
+ #Huawei HiSuite (also other OEM custom programs I guess) it's of no use in AOSP builds
+ PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
+ 	persist.sys.usb.config=adb \
+-	ro.cust.cdrom=/dev/null	
++	ro.cust.cdrom=/dev/null
+ 
+ #VNDK config files
+ PRODUCT_COPY_FILES += \
+-- 
+2.25.1
+

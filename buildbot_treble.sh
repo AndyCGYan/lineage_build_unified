@@ -80,6 +80,7 @@ git revert 82b15278bad816632dcaeaed623b569978e9840d --no-edit # Update lineage.m
 git am $BL/patches/0001-Remove-fsck-SELinux-labels.patch
 git am $BL/patches/0001-treble-Add-overlay-lineage.patch
 git am $BL/patches/0001-treble-Don-t-specify-config_wallpaperCropperPackage.patch
+git am $BL/patches/0001-treble-Don-t-handle-apns-conf.patch
 git am $BL/patches/0001-TEMP-treble-Fix-init.treble-environ.rc-hardcode-for-.patch
 cd ../../..
 cd frameworks/native

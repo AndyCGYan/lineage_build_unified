@@ -1,15 +1,15 @@
-From 07241aded9783e1ffb5611633d6eac13ed4e334f Mon Sep 17 00:00:00 2001
+From cfc6cf10b64ef3ecba6586ed87dcf90d32918b4e Mon Sep 17 00:00:00 2001
 From: Andy CrossGate Yan <GeForce8800Ultra@gmail.com>
-Date: Sun, 13 Dec 2020 02:22:12 +0000
+Date: Tue, 13 Jul 2021 16:01:31 +0000
 Subject: [PATCH] Squashed revert of LOS FOD implementation
 
 Better than having an ever-growing string of revert commands?
-
-Change-Id: I4650cef96617c32e52d5dd088c8afffb06ab5e1d
 ---
  .../internal/statusbar/IStatusBar.aidl        |   6 -
  .../internal/statusbar/IStatusBarService.aidl |   6 -
  data/etc/com.android.systemui.xml             |   1 -
+ .../car/statusbar/UnusedStatusBar.java        |   7 +-
+ .../car/statusbar/UnusedStatusBarModule.java  |   7 +-
  packages/SystemUI/Android.bp                  |   2 -
  packages/SystemUI/AndroidManifest.xml         |   1 -
  .../res-keyguard/values/lineage_dimens.xml    |  20 -
@@ -18,14 +18,17 @@ Change-Id: I4650cef96617c32e52d5dd088c8afffb06ab5e1d
  packages/SystemUI/res/values/config.xml       |   1 -
  .../SystemUI/res/values/lineage_config.xml    |   4 -
  .../keyguard/KeyguardSecurityContainer.java   |  15 +-
- .../systemui/biometrics/FODCircleView.java    | 544 ------------------
- .../biometrics/FODCircleViewImpl.java         | 128 -----
+ .../keyguard/KeyguardUpdateMonitor.java       |   9 +-
+ .../AuthBiometricFingerprintView.java         |  13 -
+ .../biometrics/AuthBiometricView.java         |  30 +-
+ .../systemui/biometrics/FODCircleView.java    | 555 ------------------
+ .../biometrics/FODCircleViewImpl.java         | 132 -----
  .../biometrics/FODCircleViewImplCallback.java |  25 -
  .../systemui/dagger/SystemUIBinder.java       |   7 -
  .../keyguard/KeyguardViewMediator.java        |  10 +-
  .../systemui/statusbar/CommandQueue.java      |  28 -
  .../notification/ActivityLaunchAnimator.java  |  21 +-
- .../systemui/statusbar/phone/StatusBar.java   |  70 +--
+ .../systemui/statusbar/phone/StatusBar.java   |  74 +--
  .../phone/StatusBarKeyguardViewManager.java   |  11 +-
  .../phone/dagger/StatusBarPhoneModule.java    |   7 +-
  .../ActivityLaunchAnimatorTest.java           |   6 +-
@@ -34,7 +37,7 @@ Change-Id: I4650cef96617c32e52d5dd088c8afffb06ab5e1d
  .../biometrics/BiometricServiceBase.java      |   2 +-
  .../fingerprint/FingerprintService.java       | 112 ----
  .../statusbar/StatusBarManagerService.java    |  22 -
- 27 files changed, 12 insertions(+), 1068 deletions(-)
+ 32 files changed, 20 insertions(+), 1145 deletions(-)
  delete mode 100644 packages/SystemUI/res-keyguard/values/lineage_dimens.xml
  delete mode 100644 packages/SystemUI/res/drawable-nodpi/fod_icon_pressed.png
  delete mode 100644 packages/SystemUI/res/drawable/fod_icon_default.xml
@@ -88,6 +91,69 @@ index 7af1de6a6ca..06f1dae30cd 100644
          <permission name="android.permission.MANAGE_SENSOR_PRIVACY"/>
          <permission name="android.permission.MANAGE_USB"/>
          <permission name="android.permission.MANAGE_USERS"/>
+diff --git a/packages/CarSystemUI/src/com/android/systemui/car/statusbar/UnusedStatusBar.java b/packages/CarSystemUI/src/com/android/systemui/car/statusbar/UnusedStatusBar.java
+index 6095928c4cf..b7b9431d69d 100644
+--- a/packages/CarSystemUI/src/com/android/systemui/car/statusbar/UnusedStatusBar.java
++++ b/packages/CarSystemUI/src/com/android/systemui/car/statusbar/UnusedStatusBar.java
+@@ -26,7 +26,6 @@ import com.android.keyguard.KeyguardUpdateMonitor;
+ import com.android.keyguard.ViewMediatorCallback;
+ import com.android.systemui.InitController;
+ import com.android.systemui.assist.AssistManager;
+-import com.android.systemui.biometrics.FODCircleViewImpl;
+ import com.android.systemui.broadcast.BroadcastDispatcher;
+ import com.android.systemui.bubbles.BubbleController;
+ import com.android.systemui.colorextraction.SysuiColorExtractor;
+@@ -185,8 +184,7 @@ public class UnusedStatusBar extends StatusBar {
+             DismissCallbackRegistry dismissCallbackRegistry,
+             Lazy<NotificationShadeDepthController> notificationShadeDepthControllerLazy,
+             StatusBarTouchableRegionManager statusBarTouchableRegionManager,
+-            TunerService tunerService,
+-            FODCircleViewImpl fodCircleViewImpl) {
++            TunerService tunerService) {
+         super(context, notificationsController, lightBarController, autoHideController,
+                 keyguardUpdateMonitor, statusBarIconController, pulseExpansionHandler,
+                 notificationWakeUpCoordinator, keyguardBypassController, keyguardStateController,
+@@ -213,8 +211,7 @@ public class UnusedStatusBar extends StatusBar {
+                 userInfoControllerImpl, phoneStatusBarPolicy, keyguardIndicationController,
+                 dismissCallbackRegistry, notificationShadeDepthControllerLazy,
+                 statusBarTouchableRegionManager,
+-                tunerService,
+-                fodCircleViewImpl);
++                tunerService);
+     }
+ 
+     @Override
+diff --git a/packages/CarSystemUI/src/com/android/systemui/car/statusbar/UnusedStatusBarModule.java b/packages/CarSystemUI/src/com/android/systemui/car/statusbar/UnusedStatusBarModule.java
+index 28bcaf6c144..f2cef14b558 100644
+--- a/packages/CarSystemUI/src/com/android/systemui/car/statusbar/UnusedStatusBarModule.java
++++ b/packages/CarSystemUI/src/com/android/systemui/car/statusbar/UnusedStatusBarModule.java
+@@ -30,7 +30,6 @@ import com.android.keyguard.KeyguardUpdateMonitor;
+ import com.android.keyguard.ViewMediatorCallback;
+ import com.android.systemui.InitController;
+ import com.android.systemui.assist.AssistManager;
+-import com.android.systemui.biometrics.FODCircleViewImpl;
+ import com.android.systemui.broadcast.BroadcastDispatcher;
+ import com.android.systemui.bubbles.BubbleController;
+ import com.android.systemui.colorextraction.SysuiColorExtractor;
+@@ -205,8 +204,7 @@ public interface UnusedStatusBarModule {
+             Lazy<NotificationShadeDepthController> notificationShadeDepthController,
+             DismissCallbackRegistry dismissCallbackRegistry,
+             StatusBarTouchableRegionManager statusBarTouchableRegionManager,
+-            TunerService tunerService,
+-            FODCircleViewImpl fodCircleViewImpl) {
++            TunerService tunerService) {
+         return new UnusedStatusBar(
+                 context,
+                 notificationsController,
+@@ -285,7 +283,6 @@ public interface UnusedStatusBarModule {
+                 dismissCallbackRegistry,
+                 notificationShadeDepthController,
+                 statusBarTouchableRegionManager,
+-                tunerService,
+-                fodCircleViewImpl);
++                tunerService);
+     }
+ }
 diff --git a/packages/SystemUI/Android.bp b/packages/SystemUI/Android.bp
 index c78630c05f0..84870f83ad2 100644
 --- a/packages/SystemUI/Android.bp
@@ -190,7 +256,7 @@ index 38e9d311128..00000000000
 -        android:pathData="M17.81,4.47c-0.08,0 -0.16,-0.02 -0.23,-0.06C15.66,3.42 14,3 12.01,3c-1.98,0 -3.86,0.47 -5.57,1.41 -0.24,0.13 -0.54,0.04 -0.68,-0.2 -0.13,-0.24 -0.04,-0.55 0.2,-0.68C7.82,2.52 9.86,2 12.01,2c2.13,0 3.99,0.47 6.03,1.52 0.25,0.13 0.34,0.43 0.21,0.67 -0.09,0.18 -0.26,0.28 -0.44,0.28zM3.5,9.72c-0.1,0 -0.2,-0.03 -0.29,-0.09 -0.23,-0.16 -0.28,-0.47 -0.12,-0.7 0.99,-1.4 2.25,-2.5 3.75,-3.27C9.98,4.04 14,4.03 17.15,5.65c1.5,0.77 2.76,1.86 3.75,3.25 0.16,0.22 0.11,0.54 -0.12,0.7 -0.23,0.16 -0.54,0.11 -0.7,-0.12 -0.9,-1.26 -2.04,-2.25 -3.39,-2.94 -2.87,-1.47 -6.54,-1.47 -9.4,0.01 -1.36,0.7 -2.5,1.7 -3.4,2.96 -0.08,0.14 -0.23,0.21 -0.39,0.21zM9.75,21.79c-0.13,0 -0.26,-0.05 -0.35,-0.15 -0.87,-0.87 -1.34,-1.43 -2.01,-2.64 -0.69,-1.23 -1.05,-2.73 -1.05,-4.34 0,-2.97 2.54,-5.39 5.66,-5.39s5.66,2.42 5.66,5.39c0,0.28 -0.22,0.5 -0.5,0.5s-0.5,-0.22 -0.5,-0.5c0,-2.42 -2.09,-4.39 -4.66,-4.39 -2.57,0 -4.66,1.97 -4.66,4.39 0,1.44 0.32,2.77 0.93,3.85 0.64,1.15 1.08,1.64 1.85,2.42 0.19,0.2 0.19,0.51 0,0.71 -0.11,0.1 -0.24,0.15 -0.37,0.15zM16.92,19.94c-1.19,0 -2.24,-0.3 -3.1,-0.89 -1.49,-1.01 -2.38,-2.65 -2.38,-4.39 0,-0.28 0.22,-0.5 0.5,-0.5s0.5,0.22 0.5,0.5c0,1.41 0.72,2.74 1.94,3.56 0.71,0.48 1.54,0.71 2.54,0.71 0.24,0 0.64,-0.03 1.04,-0.1 0.27,-0.05 0.53,0.13 0.58,0.41 0.05,0.27 -0.13,0.53 -0.41,0.58 -0.57,0.11 -1.07,0.12 -1.21,0.12zM14.91,22c-0.04,0 -0.09,-0.01 -0.13,-0.02 -1.59,-0.44 -2.63,-1.03 -3.72,-2.1 -1.4,-1.39 -2.17,-3.24 -2.17,-5.22 0,-1.62 1.38,-2.94 3.08,-2.94 1.7,0 3.08,1.32 3.08,2.94 0,1.07 0.93,1.94 2.08,1.94s2.08,-0.87 2.08,-1.94c0,-3.77 -3.25,-6.83 -7.25,-6.83 -2.84,0 -5.44,1.58 -6.61,4.03 -0.39,0.81 -0.59,1.76 -0.59,2.8 0,0.78 0.07,2.01 0.67,3.61 0.1,0.26 -0.03,0.55 -0.29,0.64 -0.26,0.1 -0.55,-0.04 -0.64,-0.29 -0.49,-1.31 -0.73,-2.61 -0.73,-3.96 0,-1.2 0.23,-2.29 0.68,-3.24 1.33,-2.79 4.28,-4.6 7.51,-4.6 4.55,0 8.25,3.51 8.25,7.83 0,1.62 -1.38,2.94 -3.08,2.94s-3.08,-1.32 -3.08,-2.94c0,-1.07 -0.93,-1.94 -2.08,-1.94s-2.08,0.87 -2.08,1.94c0,1.71 0.66,3.31 1.87,4.51 0.95,0.94 1.86,1.46 3.27,1.85 0.27,0.07 0.42,0.35 0.35,0.61 -0.05,0.23 -0.26,0.38 -0.47,0.38z" />
 -</vector>
 diff --git a/packages/SystemUI/res/values/config.xml b/packages/SystemUI/res/values/config.xml
-index d30b7b15de9..4166df94f95 100644
+index 367fe72d4da..d86f3fa277f 100644
 --- a/packages/SystemUI/res/values/config.xml
 +++ b/packages/SystemUI/res/values/config.xml
 @@ -319,7 +319,6 @@
@@ -277,12 +343,155 @@ index bace9324ac9..1db2e32b8cd 100644
          return insets.inset(0, 0, 0, inset);
      }
  
+diff --git a/packages/SystemUI/src/com/android/keyguard/KeyguardUpdateMonitor.java b/packages/SystemUI/src/com/android/keyguard/KeyguardUpdateMonitor.java
+index 4f644784974..8e5f128143d 100644
+--- a/packages/SystemUI/src/com/android/keyguard/KeyguardUpdateMonitor.java
++++ b/packages/SystemUI/src/com/android/keyguard/KeyguardUpdateMonitor.java
+@@ -106,8 +106,6 @@ import com.android.systemui.util.RingerModeTracker;
+ 
+ import com.google.android.collect.Lists;
+ 
+-import lineageos.app.LineageContextConstants;
+-
+ import java.io.FileDescriptor;
+ import java.io.PrintWriter;
+ import java.lang.ref.WeakReference;
+@@ -312,7 +310,6 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener, Dumpab
+     };
+ 
+     private final Handler mHandler;
+-    private final boolean mHasFod;
+ 
+     private final Observer<Integer> mRingerModeObserver = new Observer<Integer>() {
+         @Override
+@@ -1696,9 +1693,6 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener, Dumpab
+             }
+         };
+ 
+-        mHasFod = mContext.getPackageManager().hasSystemFeature(
+-                LineageContextConstants.Features.FOD);
+-
+         // Since device can't be un-provisioned, we only need to register a content observer
+         // to update mDeviceProvisioned when we are...
+         if (!mDeviceProvisioned) {
+@@ -1862,8 +1856,7 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener, Dumpab
+             return;
+         }
+         mHandler.removeCallbacks(mRetryFingerprintAuthentication);
+-        boolean hideFodForStrongAuth = mHasFod && userNeedsStrongAuth();
+-        boolean shouldListenForFingerprint = !hideFodForStrongAuth && shouldListenForFingerprint();
++        boolean shouldListenForFingerprint = shouldListenForFingerprint();
+         boolean runningOrRestarting = mFingerprintRunningState == BIOMETRIC_STATE_RUNNING
+                 || mFingerprintRunningState == BIOMETRIC_STATE_CANCELLING_RESTARTING;
+         if (runningOrRestarting && !shouldListenForFingerprint) {
+diff --git a/packages/SystemUI/src/com/android/systemui/biometrics/AuthBiometricFingerprintView.java b/packages/SystemUI/src/com/android/systemui/biometrics/AuthBiometricFingerprintView.java
+index c2671733ba0..45ee4ad9ae5 100644
+--- a/packages/SystemUI/src/com/android/systemui/biometrics/AuthBiometricFingerprintView.java
++++ b/packages/SystemUI/src/com/android/systemui/biometrics/AuthBiometricFingerprintView.java
+@@ -22,7 +22,6 @@ import android.graphics.drawable.AnimatedVectorDrawable;
+ import android.graphics.drawable.Drawable;
+ import android.util.AttributeSet;
+ import android.util.Log;
+-import android.view.View;
+ 
+ import com.android.systemui.R;
+ 
+@@ -77,18 +76,6 @@ public class AuthBiometricFingerprintView extends AuthBiometricView {
+         showTouchSensorString();
+     }
+ 
+-    @Override
+-    void onFinishInflateInternal() {
+-        super.onFinishInflateInternal();
+-        if (mHasFod) {
+-            mIconView.setVisibility(View.INVISIBLE);
+-            mIconView.setPadding(0, 0, 0, 0);
+-            // Add IndicatorView above the biometric icon
+-            removeView(mIndicatorView);
+-            addView(mIndicatorView, indexOfChild(mIconView));
+-        }
+-    }
+-
+     private void showTouchSensorString() {
+         mIndicatorView.setText(R.string.fingerprint_dialog_touch_sensor);
+         mIndicatorView.setTextColor(mTextColorHint);
+diff --git a/packages/SystemUI/src/com/android/systemui/biometrics/AuthBiometricView.java b/packages/SystemUI/src/com/android/systemui/biometrics/AuthBiometricView.java
+index dfcf59decc0..f9c6d32d1d1 100644
+--- a/packages/SystemUI/src/com/android/systemui/biometrics/AuthBiometricView.java
++++ b/packages/SystemUI/src/com/android/systemui/biometrics/AuthBiometricView.java
+@@ -24,7 +24,6 @@ import android.annotation.IntDef;
+ import android.annotation.NonNull;
+ import android.annotation.Nullable;
+ import android.content.Context;
+-import android.content.pm.PackageManager;
+ import android.hardware.biometrics.BiometricPrompt;
+ import android.os.Bundle;
+ import android.os.Handler;
+@@ -41,12 +40,8 @@ import android.widget.LinearLayout;
+ import android.widget.TextView;
+ 
+ import com.android.internal.annotations.VisibleForTesting;
+-import com.android.systemui.statusbar.phone.StatusBar;
+-import com.android.systemui.Dependency;
+ import com.android.systemui.R;
+ 
+-import lineageos.app.LineageContextConstants;
+-
+ import java.lang.annotation.Retention;
+ import java.lang.annotation.RetentionPolicy;
+ import java.util.ArrayList;
+@@ -191,8 +186,6 @@ public abstract class AuthBiometricView extends LinearLayout {
+     protected boolean mDialogSizeAnimating;
+     protected Bundle mSavedState;
+ 
+-    protected boolean mHasFod;
+-
+     /**
+      * Delay after authentication is confirmed, before the dialog should be animated away.
+      */
+@@ -255,10 +248,6 @@ public abstract class AuthBiometricView extends LinearLayout {
+ 
+         mAccessibilityManager = context.getSystemService(AccessibilityManager.class);
+ 
+-        PackageManager packageManager = context.getPackageManager();
+-        mHasFod = packageManager.hasSystemFeature(PackageManager.FEATURE_FINGERPRINT) &&
+-                packageManager.hasSystemFeature(LineageContextConstants.Features.FOD);
+-
+         mResetErrorRunnable = () -> {
+             updateState(getStateForAfterError());
+             handleResetAfterError();
+@@ -714,22 +703,9 @@ public abstract class AuthBiometricView extends LinearLayout {
+             final View child = getChildAt(i);
+ 
+             if (child.getId() == R.id.biometric_icon) {
+-                if (this instanceof AuthBiometricFingerprintView && mHasFod) {
+-                    final int buttonBarHeight =
+-                            findViewById(R.id.button_bar).getLayoutParams().height;
+-                    // The view is invisible, so it still takes space and
+-                    // we use that to adjust for the FOD icon
+-                    final int fodHeight = Dependency.get(StatusBar.class).getFodHeight(true) -
+-                            buttonBarHeight - findViewById(R.id.button_bar).getPaddingTop();
+-
+-                    child.measure(
+-                            MeasureSpec.makeMeasureSpec(newWidth, MeasureSpec.AT_MOST),
+-                            MeasureSpec.makeMeasureSpec(fodHeight, MeasureSpec.EXACTLY));
+-                } else {
+-                    child.measure(
+-                            MeasureSpec.makeMeasureSpec(newWidth, MeasureSpec.AT_MOST),
+-                            MeasureSpec.makeMeasureSpec(height, MeasureSpec.AT_MOST));
+-                }
++                child.measure(
++                        MeasureSpec.makeMeasureSpec(newWidth, MeasureSpec.AT_MOST),
++                        MeasureSpec.makeMeasureSpec(height, MeasureSpec.AT_MOST));
+             } else if (child.getId() == R.id.button_bar) {
+                 child.measure(
+                         MeasureSpec.makeMeasureSpec(newWidth, MeasureSpec.EXACTLY),
 diff --git a/packages/SystemUI/src/com/android/systemui/biometrics/FODCircleView.java b/packages/SystemUI/src/com/android/systemui/biometrics/FODCircleView.java
 deleted file mode 100644
-index a79e2d9e00f..00000000000
+index 10b304bb843..00000000000
 --- a/packages/SystemUI/src/com/android/systemui/biometrics/FODCircleView.java
 +++ /dev/null
-@@ -1,544 +0,0 @@
+@@ -1,555 +0,0 @@
 -/**
 - * Copyright (C) 2019-2020 The LineageOS Project
 - *
@@ -315,6 +524,7 @@ index a79e2d9e00f..00000000000
 -import android.os.Looper;
 -import android.os.RemoteException;
 -import android.provider.Settings;
+-import android.util.DisplayMetrics;
 -import android.view.Display;
 -import android.view.Gravity;
 -import android.view.MotionEvent;
@@ -708,6 +918,16 @@ index a79e2d9e00f..00000000000
 -        dispatchHide();
 -    }
 -
+-    public int getHeight(boolean includeDecor) {
+-        DisplayMetrics dm = new DisplayMetrics();
+-        if (includeDecor) {
+-            mWindowManager.getDefaultDisplay().getMetrics(dm);
+-        } else {
+-            mWindowManager.getDefaultDisplay().getRealMetrics(dm);
+-        }
+-        return dm.heightPixels - mPositionY + mSize / 2;
+-    }
+-
 -    private void updateAlpha() {
 -        setAlpha(mIsDreaming ? 0.5f : 1.0f);
 -    }
@@ -829,10 +1049,10 @@ index a79e2d9e00f..00000000000
 -}
 diff --git a/packages/SystemUI/src/com/android/systemui/biometrics/FODCircleViewImpl.java b/packages/SystemUI/src/com/android/systemui/biometrics/FODCircleViewImpl.java
 deleted file mode 100644
-index 1b179ef98f2..00000000000
+index 8f8f255d370..00000000000
 --- a/packages/SystemUI/src/com/android/systemui/biometrics/FODCircleViewImpl.java
 +++ /dev/null
-@@ -1,128 +0,0 @@
+@@ -1,132 +0,0 @@
 -/**
 - * Copyright (C) 2019 The Android Open Source Project
 - *
@@ -933,6 +1153,10 @@ index 1b179ef98f2..00000000000
 -            mIsFODVisible = false;
 -            mFodCircleView.hide();
 -        }
+-    }
+-
+-    public int getHeight(boolean includeDecor) {
+-         return mFodCircleView.getHeight(includeDecor);
 -    }
 -
 -    public void registerCallback(FODCircleViewImplCallback callback) {
@@ -1197,7 +1421,7 @@ index 1e1655256b1..382715a3fb7 100644
                  mCallback.onExpandAnimationFinished(mIsFullScreenLaunch);
                  applyParamsToNotification(null);
 diff --git a/packages/SystemUI/src/com/android/systemui/statusbar/phone/StatusBar.java b/packages/SystemUI/src/com/android/systemui/statusbar/phone/StatusBar.java
-index f47a23287d3..b55d6a55bca 100644
+index 8aca0846a67..b55d6a55bca 100644
 --- a/packages/SystemUI/src/com/android/systemui/statusbar/phone/StatusBar.java
 +++ b/packages/SystemUI/src/com/android/systemui/statusbar/phone/StatusBar.java
 @@ -76,7 +76,6 @@ import android.content.res.Configuration;
@@ -1347,7 +1571,7 @@ index f47a23287d3..b55d6a55bca 100644
      }
  
      protected BarTransitions getStatusBarTransitions() {
-@@ -4680,18 +4628,4 @@ public class StatusBar extends SystemUI implements DemoMode,
+@@ -4680,22 +4628,4 @@ public class StatusBar extends SystemUI implements DemoMode,
      public void suppressAmbientDisplay(boolean suppressed) {
          mDozeServiceHost.setDozeSuppressed(suppressed);
      }
@@ -1364,6 +1588,10 @@ index f47a23287d3..b55d6a55bca 100644
 -                  currentActivity.getShortClassName().trim();
 -        }
 -        return null;
+-    }
+-
+-    public int getFodHeight(boolean includeDecor) {
+-        return mFODCircleViewImpl.getHeight(includeDecor);
 -    }
  }
 diff --git a/packages/SystemUI/src/com/android/systemui/statusbar/phone/StatusBarKeyguardViewManager.java b/packages/SystemUI/src/com/android/systemui/statusbar/phone/StatusBarKeyguardViewManager.java
@@ -1509,10 +1737,10 @@ index c6dba6b8b80..474e9d7446f 100644
          when(mNotificationShadeWindowView.findViewById(R.id.lock_icon_container)).thenReturn(
                  mLockIconContainer);
 diff --git a/services/core/Android.bp b/services/core/Android.bp
-index 8416ba3244d..ca4b6ca2695 100644
+index 55e109e3329..7ad86fae59f 100644
 --- a/services/core/Android.bp
 +++ b/services/core/Android.bp
-@@ -134,7 +134,6 @@ java_library_static {
+@@ -141,7 +141,6 @@ java_library_static {
          "org.lineageos.platform.internal",
          "overlayable_policy_aidl-java",
          "SurfaceFlingerProperties",

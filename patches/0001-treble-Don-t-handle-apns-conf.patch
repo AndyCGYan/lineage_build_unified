@@ -1,0 +1,39 @@
+From 6dd98d86b9ee6d96e093f60739155f2eef552c4e Mon Sep 17 00:00:00 2001
+From: Andy CrossGate Yan <GeForce8800Ultra@gmail.com>
+Date: Sun, 27 Jun 2021 15:37:56 +0000
+Subject: [PATCH] treble: Don't handle apns-conf
+
+LineageOS has its own well-maintained copy
+
+Change-Id: If568101f21098c75879af8b9b6141af179566960
+---
+ base-pre.mk | 3 ---
+ base.mk     | 4 ----
+ 2 files changed, 7 deletions(-)
+
+diff --git a/base-pre.mk b/base-pre.mk
+index 6a317e4..e69de29 100644
+--- a/base-pre.mk
++++ b/base-pre.mk
+@@ -1,3 +0,0 @@
+-#Use a more decent APN config
+-PRODUCT_COPY_FILES += \
+-	device/sample/etc/apns-full-conf.xml:system/etc/apns-conf.xml
+diff --git a/base.mk b/base.mk
+index 5d16dbe..878aaae 100644
+--- a/base.mk
++++ b/base.mk
+@@ -8,10 +8,6 @@ PRODUCT_COPY_FILES := \
+ 	frameworks/native/data/etc/android.hardware.bluetooth_le.xml:system/etc/permissions/android.hardware.bluetooth_le.xml \
+ 	frameworks/native/data/etc/android.hardware.usb.host.xml:system/etc/permissions/android.hardware.usb.host.xml \
+ 
+-#Use a more decent APN config
+-PRODUCT_COPY_FILES += \
+-	device/sample/etc/apns-full-conf.xml:system/etc/apns-conf.xml
+-
+ BOARD_PLAT_PRIVATE_SEPOLICY_DIR += device/phh/treble/sepolicy
+ 
+ PRODUCT_PACKAGE_OVERLAYS += \
+-- 
+2.25.1
+

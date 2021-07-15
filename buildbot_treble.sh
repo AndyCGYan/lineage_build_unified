@@ -65,6 +65,9 @@ cd ../..
 cd lineage-sdk
 git am $BL/patches/0001-sdk-Invert-per-app-stretch-to-fullscreen.patch
 cd ..
+cd packages/apps/Jelly
+git am $BL/patches/0001-Jelly-MainActivity-Restore-applyThemeColor.patch
+cd ../../..
 cd packages/apps/LineageParts
 git am $BL/patches/0001-LineageParts-Invert-per-app-stretch-to-fullscreen.patch
 cd ../../..
@@ -89,6 +92,7 @@ git revert 82b15278bad816632dcaeaed623b569978e9840d --no-edit # Update lineage.m
 git am $BL/patches/0001-Remove-fsck-SELinux-labels.patch
 git am $BL/patches/0001-treble-Add-overlay-lineage.patch
 git am $BL/patches/0001-treble-Don-t-specify-config_wallpaperCropperPackage.patch
+git am $BL/patches/0001-treble-Don-t-handle-apns-conf.patch
 git am $BL/patches/0001-add-offline-charger-sepolicy.patch
 cd ../../..
 cd frameworks/av
@@ -103,7 +107,7 @@ cd ../../..
 cd system/core
 git am $BL/patches/0001-Revert-init-Add-vendor-specific-initialization-hooks.patch
 git am $BL/patches/0001-Panic-into-recovery-rather-than-bootloader.patch
-git am $BL/patches/0001-Restore-sbin.patch
+git am $BL/patches/0001-Restore-sbin-for-Magisk-compatibility.patch
 git am $BL/patches/0001-fix-offline-charger-v7.patch
 cd ../..
 cd system/hardware/interfaces

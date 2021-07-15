@@ -1,0 +1,34 @@
+From 6f9026e0548bd82e7b728ef29dd7d14db93b2105 Mon Sep 17 00:00:00 2001
+From: Andy CrossGate Yan <GeForce8800Ultra@gmail.com>
+Date: Sat, 26 Jun 2021 14:23:09 +0000
+Subject: [PATCH] Jelly: MainActivity: Restore applyThemeColor
+
+Fixes black statusbar on start
+
+Change-Id: I6816f5b1dcb3c7bcaee2736a9e2a3ecd63217bc6
+---
+ app/src/main/java/org/lineageos/jelly/MainActivity.kt | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/app/src/main/java/org/lineageos/jelly/MainActivity.kt b/app/src/main/java/org/lineageos/jelly/MainActivity.kt
+index 2902b0a..9ff74ed 100644
+--- a/app/src/main/java/org/lineageos/jelly/MainActivity.kt
++++ b/app/src/main/java/org/lineageos/jelly/MainActivity.kt
+@@ -193,6 +193,7 @@ class MainActivity : WebViewExtActivity(), SearchBarController.OnCancelListener,
+                 findViewById(R.id.search_menu_cancel),
+                 this)
+         setUiMode()
++        applyThemeColor(mThemeColor)
+         try {
+             val httpCacheDir = File(cacheDir, "suggestion_responses")
+             val httpCacheSize = 1024 * 1024.toLong() // 1 MiB
+@@ -763,4 +764,4 @@ class MainActivity : WebViewExtActivity(), SearchBarController.OnCancelListener,
+         private const val STORAGE_PERM_REQ = 423
+         private const val LOCATION_PERM_REQ = 424
+     }
+-}
+\ No newline at end of file
++}
+-- 
+2.25.1
+

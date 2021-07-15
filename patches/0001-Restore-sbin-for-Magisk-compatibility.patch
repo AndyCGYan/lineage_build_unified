@@ -1,16 +1,20 @@
-From 398f1882e09c12509c819a4568fb6b65f571418f Mon Sep 17 00:00:00 2001
-From: Andy CrossGate Yan <GeForce8800Ultra@gmail.com>
-Date: Sun, 10 Jan 2021 05:10:39 +0000
-Subject: [PATCH] Restore /sbin
+From 2b37e5ddbc451e312d6a4bcc36964d429e1342e3 Mon Sep 17 00:00:00 2001
+From: Victor Bo <bvoid@yandex.ru>
+Date: Wed, 3 Mar 2021 06:31:17 -0500
+Subject: [PATCH] Restore /sbin for Magisk compatibility
 
-This reverts "Do not create /sbin" and "Remove sbin from fs_config.cpp".
+Squash of:
+- Revert "Do not create /sbin"
+- Revert "Remove sbin from fs_config.cpp"
+- add /sbin to the PATH
 
-Change-Id: Iade1d5e8ec8df8e3dcfbdeef3367dbe56996ae6f
+Change-Id: I1224c9b64ce8eb14f7d15c8441c0633a7e6a20de
 ---
- CleanSpec.mk            | 2 --
- libcutils/fs_config.cpp | 3 +++
- rootdir/Android.mk      | 2 +-
- 3 files changed, 4 insertions(+), 3 deletions(-)
+ CleanSpec.mk               | 2 --
+ libcutils/fs_config.cpp    | 3 +++
+ rootdir/Android.mk         | 2 +-
+ rootdir/init.environ.rc.in | 1 +
+ 4 files changed, 5 insertions(+), 3 deletions(-)
 
 diff --git a/CleanSpec.mk b/CleanSpec.mk
 index 0a534a2bd..81150a0fa 100644
@@ -66,6 +70,18 @@ index 7d383f522..6d518dcb3 100644
      linkerconfig postinstall $(BOARD_ROOT_EXTRA_FOLDERS)); \
      ln -sf /system/bin $(TARGET_ROOT_OUT)/bin; \
      ln -sf /system/etc $(TARGET_ROOT_OUT)/etc; \
+diff --git a/rootdir/init.environ.rc.in b/rootdir/init.environ.rc.in
+index fdaaf1abe..72ba861a8 100644
+--- a/rootdir/init.environ.rc.in
++++ b/rootdir/init.environ.rc.in
+@@ -10,6 +10,7 @@ on early-init
+     export ANDROID_TZDATA_ROOT /apex/com.android.tzdata
+     export EXTERNAL_STORAGE /sdcard
+     export ASEC_MOUNTPOINT /mnt/asec
++    export PATH /sbin:/product/bin:/apex/com.android.runtime/bin:/apex/com.android.art/bin:/system_ext/bin:/system/bin:/system/xbin:/odm/bin:/vendor/bin:/vendor/xbin
+     export BOOTCLASSPATH %BOOTCLASSPATH%
+     export DEX2OATBOOTCLASSPATH %DEX2OATBOOTCLASSPATH%
+     export SYSTEMSERVERCLASSPATH %SYSTEMSERVERCLASSPATH%
 -- 
 2.25.1
 

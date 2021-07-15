@@ -1,4 +1,4 @@
-From 861c67194b96a8eac90f5d871f6d1b350791f05a Mon Sep 17 00:00:00 2001
+From 05528cb5c109d22f19ca1f4c2cb3aa4303a2fc7f Mon Sep 17 00:00:00 2001
 From: Andy CrossGate Yan <GeForce8800Ultra@gmail.com>
 Date: Mon, 5 Oct 2020 01:51:46 +0000
 Subject: [PATCH] build: Don't handle apns-conf
@@ -7,25 +7,23 @@ Leave it to vendor/lineage instead
 
 Change-Id: I51fb1436ee0ee2e33b20ca0810b69e827f3f34dc
 ---
- target/product/aosp_product.mk        | 7 -------
+ target/product/aosp_product.mk        | 5 -----
  target/product/full_base_telephony.mk | 5 -----
  target/product/mainline.mk            | 4 ----
- 3 files changed, 16 deletions(-)
+ 3 files changed, 14 deletions(-)
 
 diff --git a/target/product/aosp_product.mk b/target/product/aosp_product.mk
-index 4cdb28b30..dd38847f1 100644
+index 3e03e6213..1e370fce8 100644
 --- a/target/product/aosp_product.mk
 +++ b/target/product/aosp_product.mk
-@@ -39,13 +39,6 @@ PRODUCT_PACKAGES += \
-     preinstalled-packages-platform-aosp-product.xml \
+@@ -40,11 +40,6 @@ PRODUCT_PACKAGES += \
      WallpaperPicker \
  
+ ifeq ($(LINEAGE_BUILD),)
 -# Telephony:
 -#   Provide a APN configuration to GSI product
--ifeq ($(LINEAGE_BUILD),)
 -PRODUCT_COPY_FILES += \
 -    device/sample/etc/apns-full-conf.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/apns-conf.xml
--endif
 -
  # NFC:
  #   Provide a libnfc-nci.conf to GSI product

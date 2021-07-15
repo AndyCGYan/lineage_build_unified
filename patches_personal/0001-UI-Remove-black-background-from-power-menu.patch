@@ -1,0 +1,34 @@
+From c3729b2f1141b97a29906f47de5a169ecb7c8f0e Mon Sep 17 00:00:00 2001
+From: Vachounet <vachounet@live.fr>
+Date: Wed, 14 Oct 2020 11:43:10 +0200
+Subject: [PATCH] UI: Remove black background from power menu
+
+Change-Id: I87092d57ea457e6d6783c87b8a64b4e69dec2d8a
+---
+ .../android/systemui/globalactions/GlobalActionsDialog.java    | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/packages/SystemUI/src/com/android/systemui/globalactions/GlobalActionsDialog.java b/packages/SystemUI/src/com/android/systemui/globalactions/GlobalActionsDialog.java
+index b2e91643bed2..31632bbc51b0 100644
+--- a/packages/SystemUI/src/com/android/systemui/globalactions/GlobalActionsDialog.java
++++ b/packages/SystemUI/src/com/android/systemui/globalactions/GlobalActionsDialog.java
+@@ -2340,7 +2340,7 @@ public class GlobalActionsDialog implements DialogInterface.OnDismissListener,
+             initializeWalletView();
+             if (mBackgroundDrawable == null) {
+                 mBackgroundDrawable = new ScrimDrawable();
+-                mScrimAlpha = 1.0f;
++                mScrimAlpha = 0.45f;
+             }
+             getWindow().setBackgroundDrawable(mBackgroundDrawable);
+         }
+@@ -2377,7 +2377,6 @@ public class GlobalActionsDialog implements DialogInterface.OnDismissListener,
+             if (!(mBackgroundDrawable instanceof ScrimDrawable)) {
+                 return;
+             }
+-            ((ScrimDrawable) mBackgroundDrawable).setColor(Color.BLACK, animate);
+             View decorView = getWindow().getDecorView();
+             if (colors.supportsDarkText()) {
+                 decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR |
+-- 
+2.25.1
+

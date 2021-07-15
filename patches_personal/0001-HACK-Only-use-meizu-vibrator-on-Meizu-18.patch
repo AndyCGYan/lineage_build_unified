@@ -1,0 +1,115 @@
+From b31d35b66b2b5d46862e5da87d6f425fd711e04d Mon Sep 17 00:00:00 2001
+From: Andy CrossGate Yan <GeForce8800Ultra@gmail.com>
+Date: Sun, 27 Jun 2021 05:21:38 +0000
+Subject: [PATCH] [HACK] Only use meizu-vibrator on Meizu 18
+
+- Convert manifest to VINTF fragment
+- If not the target device, bind to dummy manifest on boot
+
+Change-Id: I97fc52a98a77aa72bbd5601f36abc0cf18efbaea
+---
+ framework_manifest.xml                                | 10 ----------
+ hal/meizu-vibrator/Android.bp                         |  1 +
+ .../android.hardware.vibrator@1.3-service.meizu.xml   | 11 +++++++++++
+ hal/meizu-vibrator/manifest_dummy.xml                 |  3 +++
+ rw-system.sh                                          | 10 ++++++++--
+ 5 files changed, 23 insertions(+), 12 deletions(-)
+ create mode 100644 hal/meizu-vibrator/android.hardware.vibrator@1.3-service.meizu.xml
+ create mode 100644 hal/meizu-vibrator/manifest_dummy.xml
+
+diff --git a/framework_manifest.xml b/framework_manifest.xml
+index 1b45b4a..cb37b49 100644
+--- a/framework_manifest.xml
++++ b/framework_manifest.xml
+@@ -19,15 +19,5 @@
+             <instance>default</instance>
+         </interface>
+     </hal>
+-
+-    <hal>
+-        <name>android.hardware.vibrator</name>
+-        <transport>hwbinder</transport>
+-        <version>1.3</version>
+-        <interface>
+-            <name>IVibrator</name>
+-            <instance>default</instance>
+-        </interface>
+-    </hal>
+ </manifest>
+ 
+diff --git a/hal/meizu-vibrator/Android.bp b/hal/meizu-vibrator/Android.bp
+index 4e3c1b9..276728c 100644
+--- a/hal/meizu-vibrator/Android.bp
++++ b/hal/meizu-vibrator/Android.bp
+@@ -15,6 +15,7 @@
+ cc_binary {
+     name: "android.hardware.vibrator@1.3-service.meizu",
+     relative_install_path: "hw",
++    vintf_fragments: ["android.hardware.vibrator@1.3-service.meizu.xml", "manifest_dummy.xml"],
+     init_rc: ["android.hardware.vibrator@1.3-service.meizu.rc"],
+     srcs: ["service.cpp", "Vibrator.cpp"],
+     cflags: ["-Wall", "-Werror"],
+diff --git a/hal/meizu-vibrator/android.hardware.vibrator@1.3-service.meizu.xml b/hal/meizu-vibrator/android.hardware.vibrator@1.3-service.meizu.xml
+new file mode 100644
+index 0000000..d1b836e
+--- /dev/null
++++ b/hal/meizu-vibrator/android.hardware.vibrator@1.3-service.meizu.xml
+@@ -0,0 +1,11 @@
++<manifest version="1.0" type="framework">
++    <hal format="hidl">
++        <name>android.hardware.vibrator</name>
++        <transport>hwbinder</transport>
++        <version>1.3</version>
++        <interface>
++            <name>IVibrator</name>
++            <instance>default</instance>
++        </interface>
++    </hal>
++</manifest>
+diff --git a/hal/meizu-vibrator/manifest_dummy.xml b/hal/meizu-vibrator/manifest_dummy.xml
+new file mode 100644
+index 0000000..b34a10b
+--- /dev/null
++++ b/hal/meizu-vibrator/manifest_dummy.xml
+@@ -0,0 +1,3 @@
++<!-- Dummy manifest XML -->
++<manifest version="1.0" type="framework">
++</manifest>
+diff --git a/rw-system.sh b/rw-system.sh
+index 43cdf55..2f05081 100644
+--- a/rw-system.sh
++++ b/rw-system.sh
+@@ -314,6 +314,12 @@ if [ "$foundFingerprint" = false ];then
+     mount -o bind system/phh/empty /system/etc/permissions/android.hardware.fingerprint.xml
+ fi
+ 
++if ! getprop ro.vendor.build.fingerprint | grep -qE 'meizu_18'; then
++    mount -o bind system/phh/empty /system/bin/hw/android.hardware.vibrator@1.3-service.meizu
++    mount -o bind system/phh/empty /system/etc/init/android.hardware.vibrator@1.3-service.meizu.rc
++    mount -o bind system/etc/vintf/manifest/manifest_dummy.xml /system/etc/vintf/manifest/android.hardware.vibrator@1.3-service.meizu.xml
++fi
++
+ if ! grep android.hardware.bluetooth /vendor/manifest.xml && ! grep android.hardware.bluetooth /vendor/etc/vintf/manifest.xml; then
+     mount -o bind system/phh/empty /system/etc/permissions/android.hardware.bluetooth.xml
+     mount -o bind system/phh/empty /system/etc/permissions/android.hardware.bluetooth_le.xml
+@@ -385,7 +391,7 @@ if getprop ro.build.overlay.deviceid |grep -q -e CPH1859 -e CPH1861 -e RMX1811 -
+     setprop persist.sys.qcom-brightness "$(cat /sys/class/leds/lcd-backlight/max_brightness)"
+ fi
+ 
+-if getprop ro.build.overlay.deviceid |grep -iq -e RMX2020 -e RMX2027 -e RMX2040 -e RMX2193 -e RMX2191;then	
++if getprop ro.build.overlay.deviceid |grep -iq -e RMX2020 -e RMX2027 -e RMX2040 -e RMX2193 -e RMX2191;then
+     setprop persist.sys.qcom-brightness 2047
+     setprop persist.sys.overlay.devinputjack true
+     setprop persist.sys.phh.fingerprint.nocleanup true
+@@ -872,7 +878,7 @@ if getprop ro.build.overlay.deviceid |grep -qiE -e '^RMX' -e '^CPH';then
+     setprop persist.sys.phh.fod.bbk true
+ fi
+ 
+-if getprop ro.build.overlay.deviceid |grep -iq -e RMX1941 -e RMX1945 -e RMX1943 -e RMX1942;then	
++if getprop ro.build.overlay.deviceid |grep -iq -e RMX1941 -e RMX1945 -e RMX1943 -e RMX1942;then
+     setprop persist.sys.qcom-brightness "$(cat /sys/class/leds/lcd-backlight/max_brightness)"
+     setprop persist.sys.phh.mainkeys 0
+ fi
+-- 
+2.25.1
+

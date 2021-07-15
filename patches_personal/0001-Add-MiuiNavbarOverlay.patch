@@ -1,0 +1,387 @@
+From 4dc1657489e222c97e28c2f45efe836e935c4078 Mon Sep 17 00:00:00 2001
+From: Andy CrossGate Yan <GeForce8800Ultra@gmail.com>
+Date: Sun, 20 Jun 2021 03:39:32 +0000
+Subject: [PATCH] Add MiuiNavbarOverlay
+
+Change-Id: I0e6791abc3c9521d7dc612df2fec2b041affe7e9
+---
+ packages/overlays/Android.mk                  |   1 +
+ .../overlays/MiuiNavbarOverlay/Android.mk     |  27 ++++++++++++++++++
+ .../MiuiNavbarOverlay/AndroidManifest.xml     |  21 ++++++++++++++
+ .../res/drawable-440dpi-v4/ic_sysbar_back.png | Bin 0 -> 2756 bytes
+ .../ic_sysbar_back_darkmode.png               | Bin 0 -> 2547 bytes
+ .../drawable-440dpi-v4/ic_sysbar_docked.png   | Bin 0 -> 3642 bytes
+ .../ic_sysbar_docked_darkmode.png             | Bin 0 -> 2810 bytes
+ .../res/drawable-440dpi-v4/ic_sysbar_home.png | Bin 0 -> 1362 bytes
+ .../ic_sysbar_home_darkmode.png               | Bin 0 -> 980 bytes
+ .../drawable-440dpi-v4/ic_sysbar_recent.png   | Bin 0 -> 278 bytes
+ .../ic_sysbar_recent_darkmode.png             | Bin 0 -> 205 bytes
+ 11 files changed, 49 insertions(+)
+ create mode 100644 packages/overlays/MiuiNavbarOverlay/Android.mk
+ create mode 100644 packages/overlays/MiuiNavbarOverlay/AndroidManifest.xml
+ create mode 100644 packages/overlays/MiuiNavbarOverlay/res/drawable-440dpi-v4/ic_sysbar_back.png
+ create mode 100644 packages/overlays/MiuiNavbarOverlay/res/drawable-440dpi-v4/ic_sysbar_back_darkmode.png
+ create mode 100644 packages/overlays/MiuiNavbarOverlay/res/drawable-440dpi-v4/ic_sysbar_docked.png
+ create mode 100644 packages/overlays/MiuiNavbarOverlay/res/drawable-440dpi-v4/ic_sysbar_docked_darkmode.png
+ create mode 100644 packages/overlays/MiuiNavbarOverlay/res/drawable-440dpi-v4/ic_sysbar_home.png
+ create mode 100644 packages/overlays/MiuiNavbarOverlay/res/drawable-440dpi-v4/ic_sysbar_home_darkmode.png
+ create mode 100644 packages/overlays/MiuiNavbarOverlay/res/drawable-440dpi-v4/ic_sysbar_recent.png
+ create mode 100644 packages/overlays/MiuiNavbarOverlay/res/drawable-440dpi-v4/ic_sysbar_recent_darkmode.png
+
+diff --git a/packages/overlays/Android.mk b/packages/overlays/Android.mk
+index 999ab080246..de3afebac43 100644
+--- a/packages/overlays/Android.mk
++++ b/packages/overlays/Android.mk
+@@ -72,6 +72,7 @@ LOCAL_REQUIRED_MODULES := \
+ 	IconShapeTaperedRectOverlay \
+ 	IconShapeTeardropOverlay \
+ 	IconShapeVesselOverlay \
++	MiuiNavbarOverlay \
+ 	NavigationBarMode3ButtonOverlay \
+ 	NavigationBarModeGesturalOverlay \
+ 	NavigationBarModeGesturalOverlayNarrowBack \
+diff --git a/packages/overlays/MiuiNavbarOverlay/Android.mk b/packages/overlays/MiuiNavbarOverlay/Android.mk
+new file mode 100644
+index 00000000000..3a577ef5920
+--- /dev/null
++++ b/packages/overlays/MiuiNavbarOverlay/Android.mk
+@@ -0,0 +1,27 @@
++#
++#  Copyright (C) 2020, The Android Open Source Project
++#
++# Licensed under the Apache License, Version 2.0 (the "License");
++# you may not use this file except in compliance with the License.
++# You may obtain a copy of the License at
++#
++#     http://www.apache.org/licenses/LICENSE-2.0
++#
++# Unless required by applicable law or agreed to in writing, software
++# distributed under the License is distributed on an "AS IS" BASIS,
++# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++# See the License for the specific language governing permissions and
++# limitations under the License.
++#
++
++LOCAL_PATH:= $(call my-dir)
++include $(CLEAR_VARS)
++
++LOCAL_PRODUCT_MODULE := true
++
++LOCAL_RESOURCE_DIR := $(LOCAL_PATH)/res
++
++LOCAL_PACKAGE_NAME := MiuiNavbarOverlay
++LOCAL_SDK_VERSION := current
++
++include $(BUILD_RRO_PACKAGE)
+diff --git a/packages/overlays/MiuiNavbarOverlay/AndroidManifest.xml b/packages/overlays/MiuiNavbarOverlay/AndroidManifest.xml
+new file mode 100644
+index 00000000000..3956effddfb
+--- /dev/null
++++ b/packages/overlays/MiuiNavbarOverlay/AndroidManifest.xml
+@@ -0,0 +1,21 @@
++<!--
++  ~ Copyright (C) 2020 The Android Open Source Project
++  ~
++  ~ Licensed under the Apache License, Version 2.0 (the "License");
++  ~ you may not use this file except in compliance with the License.
++  ~ You may obtain a copy of the License at
++  ~
++  ~      http://www.apache.org/licenses/LICENSE-2.0
++  ~
++  ~ Unless required by applicable law or agreed to in writing, software
++  ~ distributed under the License is distributed on an "AS IS" BASIS,
++  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++  ~ See the License for the specific language governing permissions and
++  ~ limitations under the License.
++  -->
++<manifest xmlns:android="http://schemas.android.com/apk/res/android"
++    package="com.miui.systemui.navbar.overlay"
++    android:versionCode="1"
++    android:versionName="1.0">
++    <overlay android:targetPackage="com.android.systemui" android:priority="1337" android:isStatic="true"/>
++</manifest>
+diff --git a/packages/overlays/MiuiNavbarOverlay/res/drawable-440dpi-v4/ic_sysbar_back.png b/packages/overlays/MiuiNavbarOverlay/res/drawable-440dpi-v4/ic_sysbar_back.png
+new file mode 100644
+index 0000000000000000000000000000000000000000..be2b145b4c698679bfdfdc3e5834ad12a56724c0
+GIT binary patch
+literal 2756
+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
+
+literal 0
+HcmV?d00001
+
+diff --git a/packages/overlays/MiuiNavbarOverlay/res/drawable-440dpi-v4/ic_sysbar_back_darkmode.png b/packages/overlays/MiuiNavbarOverlay/res/drawable-440dpi-v4/ic_sysbar_back_darkmode.png
+new file mode 100644
+index 0000000000000000000000000000000000000000..4873f84ff7f4750fa3adc70428ffb123502c1051
+GIT binary patch
+literal 2547
+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
+C-gtlj
+
+literal 0
+HcmV?d00001
+
+diff --git a/packages/overlays/MiuiNavbarOverlay/res/drawable-440dpi-v4/ic_sysbar_docked.png b/packages/overlays/MiuiNavbarOverlay/res/drawable-440dpi-v4/ic_sysbar_docked.png
+new file mode 100644
+index 0000000000000000000000000000000000000000..1c88fc5d571d0ec91b735082cb9c512603b9ceec
+GIT binary patch
+literal 3642
+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
+D=8d64
+
+literal 0
+HcmV?d00001
+
+diff --git a/packages/overlays/MiuiNavbarOverlay/res/drawable-440dpi-v4/ic_sysbar_docked_darkmode.png b/packages/overlays/MiuiNavbarOverlay/res/drawable-440dpi-v4/ic_sysbar_docked_darkmode.png
+new file mode 100644
+index 0000000000000000000000000000000000000000..fe51e11921ecb35c5535e7c446769af7f66be893
+GIT binary patch
+literal 2810
+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
+VfHkC3x%R(PPDlj%Qt&qYzX3LdVM71_
+
+literal 0
+HcmV?d00001
+
+diff --git a/packages/overlays/MiuiNavbarOverlay/res/drawable-440dpi-v4/ic_sysbar_home.png b/packages/overlays/MiuiNavbarOverlay/res/drawable-440dpi-v4/ic_sysbar_home.png
+new file mode 100644
+index 0000000000000000000000000000000000000000..20f1d887aedebaadec7f31184bdfe3e662401522
+GIT binary patch
+literal 1362
+zcma)5dsvcZ6eq3COPOfdW%DV^ZrZSmmu5@DVMeK8>Y7WZW@(O;T+M9eB{VT<`aG7k
+zn)f@oE<`v`G!hdlR3b#c8xe|l8>DE0=1%!ff9^cb_kQR6zW4o|-#O>~uHt;XmYJ+I
+zK_C#zum>?m;Z6Mb7#YIa&@1aeAQowH-T|Hv{vWHXtnBFM=<e<w92^`Q8&j**TCH|w
+zW=5ye&3!WP0UQ|_Q79BrskFVly|A!wfjKuf7x4M{d8JaBnwknAkw}F7z<|f&A$<GE
+z#9}dz$7^nGX0cc_8jVh;L(;OcvZ|`8#>Pg#+uGV-5Af^tdQj5Y*@;G@7g7WV2lw^$
+z&Cbrcy1D|=)YK%ANCpN5N=ix~<n#IPDIy{wJ3E`nWcKv*3=a<jJ~cJf+S&>ZaQ652
+zkB^VPe*JoAXb4sSfdMK7NivzNx3?D%jYb1`<#IVVU0q$En!#X*L?S?ds;;h1AP_)}
+zAPmlOI2^#?IGhE}g|<Kzp-{LW0Lq7!LM=f-K_n8XzP_H#W&;}}s;H>Q%*+JYC=?2V
+z!GL%y77OKo5-yhu+n_ns)zwrgwWXy6T1_UCp`W0EKp^Dh<v}6PaFC%=sbDCRlamt@
+z6CeiW0^~4=G>fQ@x1sX<QD1+=qAyI$kd`a0R;^yM1V^rBzv>>;Oz3t0N?$cpk-RL7
+z-Curq>S*LLrm$bkV3lSj#D<6Y;{swYW|gxi%Zs*{e(6A+T4!*U^3;3jAJaPzMpw75
+z7$ut5KkB^M^5?QL0f}~RdGFoYzGCL-{5n-sF6Va91!l$rZes=YHif6k(V{Rhzm^#u
+zalK`;ZDwOVJvHuRU~uxaZ`Dc^TF`p)x#X>!QNDJ?g&SrFgh3=0gAPcLj)}XDS)x}j
+zQJ<v!mA=U?%l=1~tj%`B)z`KbFE+KKzBz$GdPW=@wWdy+ogj$E`&FZwuZ!Zp<C4}~
+zVm#p%keE^NFI+55ke}Hcsp&xT<5FtE)tFl*wILQcp5N@wHNu;kTknn!mb^C}u(Xb{
+zz`fa%H*memyTCaq1Ap2W>D!)vB`lDpEI*IgAvkB_L`bG*pdVVjPYM(XQGXx5K?%)o
+zLs2>$w}*(t!qJq_*t<Eng8LR58%v)#oqHZo6K-pf@#;>Nf;aRca6{9uQ_PEv<)W-?
+z(KCaVz2Og5`HT(EW0DOY#`%Z2w?rbt$vWfcc*OArS@cn<@fq^g9Guwf{7Pas%bMNJ
+zdS?{t^03BBAX+^7!xLN9zWoH>T^@;-lRUM^DZ}5M%WCC|WMSxw>0+B=^sbRM4jZXO
+z$_Lnf*!02(cHH5lbT?VLt;YvjoU;yD7jgjM%PiY#eFT3yJ0;{s)Z^`kQt+<!k~_Qu
+zviuCA6KQS^l4A0z$7lHCo-;d7g&3e}+$(1}x<hC;kGbLH_zAlm>$e4s;^kW?4ngm_
+zE`Q~cX8O<Z(zEsV8qXf?Mb7nT$Cn62o198j$sS3_dA5Umo!g_|H>CWM;Mc75nWk1-
+zsTCC62DdZ&CLU}r=+K8QH9PflBu(;$$CuS~(S5S#8@}fRZa&GnX#a%YkXXbwx5=MX
+z``wiJ|MZgXydqYc;eH`$&5TsFXJu)BBv++(-ld-NA|wj=+9rOa!u0;M{>s}ZN=&zg
+jp|o;zi!=ZHCR`6amaD0~y#7)m{38ggr!VHdM;P%x23q9L
+
+literal 0
+HcmV?d00001
+
+diff --git a/packages/overlays/MiuiNavbarOverlay/res/drawable-440dpi-v4/ic_sysbar_home_darkmode.png b/packages/overlays/MiuiNavbarOverlay/res/drawable-440dpi-v4/ic_sysbar_home_darkmode.png
+new file mode 100644
+index 0000000000000000000000000000000000000000..96dc83e4a42d70c1b11ac5a55ea5eb8cd75e1e20
+GIT binary patch
+literal 980
+zcmeAS@N?(olHy`uVBq!ia0vp^O(4v{3?%p7eQ=(EfiWY%C&U%V?H>iS4*_MFJ{MqE
+zmzM<j1v8iwPFQ>B+}+pje*SoQ_Tb9?Tpg9&|JF;%JijfpWO-*ypo^KYc~ESA_nHsA
+ztz3e$KC_1!6n_!c@R_*xN!py_HCyTq=gggUaniy|?MuCzA69H^h|Zp|b=B<p2PGc`
+z0>b30*|@*0n4jWq;gIy|zKGh99kpj}USHgEp;$&A80||uT^vIyZoR$k8h+S8g!O?F
+zcj^bHLXDPyjKZ$qJ6m_`-hKM-Z=Y)^yB^s@+{vH0dq%aAaitu;AQIT=<@xp3rAvP$
+zy;7MXy;6S{7k&Q3%$mf?)m#uB5~Fl^!4@93r=m)tT64E<TJ6;MO6v5gt#7SPb6q!g
+zS=4*(tJ=ib0ZZOj6rVo7V5@I<#(RMk0++cf?<&vlvtrdMVZ3YmE^z(23+e$2<s}SK
+z3ljnsIEfmhoN8+nY~)&eV1{Nl6Oi%vK#S&VmSrqjKFn8_<*>~VU17l9;(OC(gF?VT
+zew|sHRA+K^s)$ZwynjDjB9%2Z@o9hj@z9yqKg!oksmhKrP8D1bl-3+)o+@o5{UvQu
+za+deA^S<)eZhOAF(C5HfE5hn~GjCG+m+o&3f0++AEUdr7$EqdsvefBVI!p9|LmNK}
+z*BAXVwz%BS@myD^`ADnrrX%|0>yoZt>&?Br{aWc8JyVg;b6@KwX1@Ay&*p-y%_*L#
+z{^ysm=`T&%{PpeY3#V^a$E?)Zo3}Wqvw!=8=ht19w|5|cm|EtWFQ%k?JmTvKOfn3f
+Lu6{1-oD!M<_NCyP
+
+literal 0
+HcmV?d00001
+
+diff --git a/packages/overlays/MiuiNavbarOverlay/res/drawable-440dpi-v4/ic_sysbar_recent.png b/packages/overlays/MiuiNavbarOverlay/res/drawable-440dpi-v4/ic_sysbar_recent.png
+new file mode 100644
+index 0000000000000000000000000000000000000000..4f0d314e2621d018c3cd2e4267cf4cf82a78943f
+GIT binary patch
+literal 278
+zcmeAS@N?(olHy`uVBq!ia0vp^O(4v{3?%p7eQ+K~IR*HHxB_W3aOlvXS731D$dNyP
+z{`~&^8>ry@`}c3(z6CO@t*tk0+O&D|W?NfZAou_O|I!nsR|8q1B|(0{3``sX!dw~0
+z&!m6(D0J#1t5jH`B>TrxD!+gV@;qG}Ln>~)y?T=OumO*&<LOWDj(nQ-FWQ&&(?pJ@
+znOy%Gk7P>$)d4|WP*!pH)Y~Ek3+0ck%$oDNf%ERC$_@LN)Si65+@j0wqw%{iOg5Zz
+u=kcQOsZZh^l}((KO_)H0lQP7Be}}|<Jmh~yiM-bb33$5txvX<aXaWF$9A~fq
+
+literal 0
+HcmV?d00001
+
+diff --git a/packages/overlays/MiuiNavbarOverlay/res/drawable-440dpi-v4/ic_sysbar_recent_darkmode.png b/packages/overlays/MiuiNavbarOverlay/res/drawable-440dpi-v4/ic_sysbar_recent_darkmode.png
+new file mode 100644
+index 0000000000000000000000000000000000000000..f53ec649e615e8491fb6abb63d169ab7e0faa1ce
+GIT binary patch
+literal 205
+zcmeAS@N?(olHy`uVBq!ia0vp^O(4v{3?%p7eQ+K~DF*n2xB}^ZynuIaZ52=vS4ogx
+zFoXa0-5=lXWwUX~o_?MiC>rSL;uunK>+RLuyayBnTpaC=HT>3}!PR$SSH`j?-mt2r
+zKs7+%uwa{9mTBst&#^sIIN#?w`Oh@C&bRjEiUzlg7B>c|g@RIyV08!V`R32zx~(4j
+Q*9XM+boFyt=akR{0CQqV3jhEB
+
+literal 0
+HcmV?d00001
+
+-- 
+2.25.1
+

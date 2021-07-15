@@ -1,0 +1,561 @@
+From e2510a51fca5911615bd6fcdc2a437ce4d2a2e8b Mon Sep 17 00:00:00 2001
+From: AndyCGYan <GeForce8800Ultra@gmail.com>
+Date: Wed, 26 Dec 2018 22:38:54 +0800
+Subject: [PATCH] DeskClock: Revert date and clock to Lollipop style
+
+Also added dynamic date format based on alarm presence
+
+Change-Id: I04ce41d4817c794edb1579dc3a493a1cf1e8d658
+---
+ res/layout-land/main_clock_frame.xml          |  1 +
+ res/layout/date_and_next_alarm_time.xml       |  6 ++----
+ res/layout/digital_widget.xml                 |  4 ++--
+ res/layout/digital_widget_sizer.xml           |  2 --
+ res/layout/main_clock_frame.xml               |  1 +
+ res/layout/stopwatch_time.xml                 |  1 -
+ res/layout/timer_setup_time.xml               |  2 +-
+ res/layout/world_clock_remote_list_item.xml   |  8 +++----
+ res/values-h560dp/dimens.xml                  |  2 +-
+ res/values-h650dp/dimens.xml                  |  2 +-
+ res/values-v21/styles.xml                     |  8 +++----
+ res/values-v23/styles.xml                     |  2 --
+ res/values/dimens.xml                         | 10 ++++-----
+ res/values/styles.xml                         |  5 +++--
+ .../alarmclock/DigitalAppWidgetProvider.java  | 10 +++++++--
+ src/com/android/deskclock/ClockFragment.java  | 21 ++++++++++++-------
+ src/com/android/deskclock/Screensaver.java    |  8 ++++---
+ .../deskclock/ScreensaverActivity.java        |  8 ++++---
+ src/com/android/deskclock/Utils.java          | 16 ++++++++++++--
+ 19 files changed, 70 insertions(+), 47 deletions(-)
+
+diff --git a/res/layout-land/main_clock_frame.xml b/res/layout-land/main_clock_frame.xml
+index b72f62333..a1fa3557d 100644
+--- a/res/layout-land/main_clock_frame.xml
++++ b/res/layout-land/main_clock_frame.xml
+@@ -38,6 +38,7 @@
+         <com.android.deskclock.widget.AutoSizingTextClock
+             android:id="@+id/digital_clock"
+             style="@style/display_time"
++            android:fontFamily="sans-serif-thin"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:ellipsize="none"
+diff --git a/res/layout/date_and_next_alarm_time.xml b/res/layout/date_and_next_alarm_time.xml
+index ad25502a8..e4edff237 100644
+--- a/res/layout/date_and_next_alarm_time.xml
++++ b/res/layout/date_and_next_alarm_time.xml
+@@ -25,8 +25,7 @@
+         android:id="@+id/date"
+         style="@style/body"
+         android:layout_width="wrap_content"
+-        android:layout_height="wrap_content"
+-        android:textAllCaps="true" />
++        android:layout_height="wrap_content" />
+ 
+     <TextView
+         android:id="@+id/nextAlarmIcon"
+@@ -45,7 +44,6 @@
+         android:id="@+id/nextAlarm"
+         style="@style/body"
+         android:layout_width="wrap_content"
+-        android:layout_height="wrap_content"
+-        android:textAllCaps="true" />
++        android:layout_height="wrap_content" />
+ 
+ </LinearLayout>
+\ No newline at end of file
+diff --git a/res/layout/digital_widget.xml b/res/layout/digital_widget.xml
+index c5b4837a6..7e2bae454 100644
+--- a/res/layout/digital_widget.xml
++++ b/res/layout/digital_widget.xml
+@@ -43,13 +43,13 @@
+         <TextClock
+             android:id="@+id/date"
+             style="@style/widget_label"
++            android:fontFamily="sans-serif"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_gravity="center"
+             android:ellipsize="none"
+             android:includeFontPadding="false"
+             android:singleLine="true"
+-            android:textAllCaps="true"
+             android:textColor="@color/white" />
+ 
+         <ImageView
+@@ -63,13 +63,13 @@
+         <TextView
+             android:id="@+id/nextAlarm"
+             style="@style/widget_label"
++            android:fontFamily="sans-serif"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_gravity="center"
+             android:ellipsize="none"
+             android:includeFontPadding="false"
+             android:singleLine="true"
+-            android:textAllCaps="true"
+             android:textColor="@color/white" />
+ 
+     </LinearLayout>
+diff --git a/res/layout/digital_widget_sizer.xml b/res/layout/digital_widget_sizer.xml
+index f524cf536..7b08ca590 100644
+--- a/res/layout/digital_widget_sizer.xml
++++ b/res/layout/digital_widget_sizer.xml
+@@ -46,7 +46,6 @@
+             android:includeFontPadding="false"
+             android:ellipsize="none"
+             android:singleLine="true"
+-            android:textAllCaps="true"
+             android:textColor="@color/white" />
+ 
+         <!-- This view is drawn to a Bitmap and sent to the widget as an icon. -->
+@@ -71,7 +70,6 @@
+             android:includeFontPadding="false"
+             android:ellipsize="none"
+             android:singleLine="true"
+-            android:textAllCaps="true"
+             android:textColor="@color/white" />
+ 
+     </LinearLayout>
+diff --git a/res/layout/main_clock_frame.xml b/res/layout/main_clock_frame.xml
+index ab960728f..2042c5b04 100644
+--- a/res/layout/main_clock_frame.xml
++++ b/res/layout/main_clock_frame.xml
+@@ -51,6 +51,7 @@
+             <com.android.deskclock.widget.AutoSizingTextClock
+                 android:id="@+id/digital_clock"
+                 style="@style/display_time"
++                android:fontFamily="sans-serif-thin"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:ellipsize="none"
+diff --git a/res/layout/stopwatch_time.xml b/res/layout/stopwatch_time.xml
+index c1895b488..71320fcd0 100644
+--- a/res/layout/stopwatch_time.xml
++++ b/res/layout/stopwatch_time.xml
+@@ -42,7 +42,6 @@
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:duplicateParentState="true"
+-        android:fontFamily="sans-serif"
+         android:includeFontPadding="false"
+         android:paddingEnd="30dp"
+         android:paddingStart="3dp"
+diff --git a/res/layout/timer_setup_time.xml b/res/layout/timer_setup_time.xml
+index 947723c00..04a1de608 100644
+--- a/res/layout/timer_setup_time.xml
++++ b/res/layout/timer_setup_time.xml
+@@ -30,7 +30,7 @@
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:ellipsize="none"
+-        android:fontFamily="sans-serif"
++        android:fontFamily="sans-serif-light"
+         android:fontFeatureSettings="tnum"
+         android:includeFontPadding="false"
+         android:singleLine="true"
+diff --git a/res/layout/world_clock_remote_list_item.xml b/res/layout/world_clock_remote_list_item.xml
+index 9a69cb517..f5f4eaa21 100644
+--- a/res/layout/world_clock_remote_list_item.xml
++++ b/res/layout/world_clock_remote_list_item.xml
+@@ -58,13 +58,13 @@
+                     <TextView
+                         android:id="@+id/city_name_left"
+                         style="@style/widget_label"
++                        android:fontFamily="sans-serif"
+                         android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+                         android:layout_gravity="end"
+                         android:ellipsize="end"
+                         android:includeFontPadding="false"
+                         android:singleLine="true"
+-                        android:textAllCaps="true"
+                         android:textColor="@color/white"
+                         android:textSize="@dimen/city_widget_name_font_size" />
+ 
+@@ -73,6 +73,7 @@
+                 <TextView
+                     android:id="@+id/city_day_left"
+                     style="@style/widget_label"
++                    android:fontFamily="sans-serif"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:layout_marginStart="@dimen/style_label_space"
+@@ -81,7 +82,6 @@
+                     android:format24Hour="@string/abbrev_wday"
+                     android:includeFontPadding="false"
+                     android:singleLine="true"
+-                    android:textAllCaps="true"
+                     android:textColor="@color/white"
+                     android:textSize="@dimen/city_widget_name_font_size" />
+ 
+@@ -120,13 +120,13 @@
+                     <TextView
+                         android:id="@+id/city_name_right"
+                         style="@style/widget_label"
++                        android:fontFamily="sans-serif"
+                         android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+                         android:layout_gravity="end"
+                         android:ellipsize="end"
+                         android:includeFontPadding="false"
+                         android:singleLine="true"
+-                        android:textAllCaps="true"
+                         android:textColor="@color/white"
+                         android:textSize="@dimen/city_widget_name_font_size" />
+ 
+@@ -135,6 +135,7 @@
+                 <TextView
+                     android:id="@+id/city_day_right"
+                     style="@style/widget_label"
++                    android:fontFamily="sans-serif"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:layout_marginStart="@dimen/style_label_space"
+@@ -143,7 +144,6 @@
+                     android:format24Hour="@string/abbrev_wday"
+                     android:includeFontPadding="false"
+                     android:singleLine="true"
+-                    android:textAllCaps="true"
+                     android:textColor="@color/white"
+                     android:textSize="@dimen/city_widget_name_font_size" />
+ 
+diff --git a/res/values-h560dp/dimens.xml b/res/values-h560dp/dimens.xml
+index 003a5ad9f..6e25621ab 100644
+--- a/res/values-h560dp/dimens.xml
++++ b/res/values-h560dp/dimens.xml
+@@ -16,5 +16,5 @@
+ 
+ <resources>
+     <!-- The maximum size of the font for the time in widgets. -->
+-    <dimen name="widget_max_clock_font_size">96dp</dimen>
++    <dimen name="widget_max_clock_font_size">88dp</dimen>
+ </resources>
+\ No newline at end of file
+diff --git a/res/values-h650dp/dimens.xml b/res/values-h650dp/dimens.xml
+index 2cc58cb32..6e25621ab 100644
+--- a/res/values-h650dp/dimens.xml
++++ b/res/values-h650dp/dimens.xml
+@@ -16,5 +16,5 @@
+ 
+ <resources>
+     <!-- The maximum size of the font for the time in widgets. -->
+-    <dimen name="widget_max_clock_font_size">100dp</dimen>
++    <dimen name="widget_max_clock_font_size">88dp</dimen>
+ </resources>
+\ No newline at end of file
+diff --git a/res/values-v21/styles.xml b/res/values-v21/styles.xml
+index f1dca16c0..7bc382a4d 100644
+--- a/res/values-v21/styles.xml
++++ b/res/values-v21/styles.xml
+@@ -18,17 +18,17 @@
+ <resources>
+ 
+     <style name="body">
+-        <item name="android:textSize">14sp</item>
++        <item name="android:textSize">16sp</item>
+         <item name="android:textColor">@color/white</item>
+-        <item name="android:fontFamily">sans-serif-medium</item>
++        <item name="android:fontFamily">sans-serif</item>
+     </style>
+ 
+     <style name="PrimaryLabelTextAppearance" parent="PrimaryLabelTextParentAppearance">
+-        <item name="android:fontFamily">sans-serif-medium</item>
++        <item name="android:fontFamily">sans-serif</item>
+     </style>
+ 
+     <style name="SecondaryLabelTextAppearance" parent="SecondaryLabelTextParentAppearance">
+-        <item name="android:fontFamily">sans-serif-medium</item>
++        <item name="android:fontFamily">sans-serif</item>
+     </style>
+ 
+ </resources>
+diff --git a/res/values-v23/styles.xml b/res/values-v23/styles.xml
+index 34dcf5d73..6bf964256 100644
+--- a/res/values-v23/styles.xml
++++ b/res/values-v23/styles.xml
+@@ -26,8 +26,6 @@
+     </style>
+ 
+     <style name="widget_label" parent="label">
+-        <item name="android:textAllCaps">true</item>
+-        <item name="android:letterSpacing">0.15</item>
+         <item name="android:shadowRadius">@dimen/widget_shadow_radius</item>
+         <item name="android:shadowColor">@color/widget_shadow_color</item>
+         <item name="android:shadowDx">@dimen/widget_shadow_dx</item>
+diff --git a/res/values/dimens.xml b/res/values/dimens.xml
+index 8c11977ac..39973aee8 100644
+--- a/res/values/dimens.xml
++++ b/res/values/dimens.xml
+@@ -44,7 +44,7 @@
+     <dimen name="alarm_lockscreen_bottom_margin">40dp</dimen>
+ 
+     <dimen name="main_clock_font_size">64sp</dimen>
+-    <dimen name="main_clock_digital_font_size">90sp</dimen>
++    <dimen name="main_clock_digital_font_size">88sp</dimen>
+     <dimen name="main_clock_digital_padding">24dp</dimen>
+     <dimen name="big_font_size">32sp</dimen>
+     <dimen name="label_font_size">16sp</dimen>
+@@ -98,15 +98,15 @@
+     <dimen name="digital_widget_city_24_medium_font_size">40sp</dimen>
+ 
+     <!-- The fixed size of the font for the city name / day of week in the city widget. -->
+-    <dimen name="city_widget_name_font_size">10dp</dimen>
++    <dimen name="city_widget_name_font_size">12dp</dimen>
+     <!-- The maximum size of the font for the time in widgets. -->
+     <dimen name="widget_max_clock_font_size">88dp</dimen>
+     <dimen name="widget_min_world_city_list_size">80dp</dimen>
+ 
+     <!-- shadow styles for widget text with drop shadows -->
+-    <item name="widget_shadow_radius" format="float" type="dimen">2.75</item>
+-    <item name="widget_shadow_dx" format="float" type="dimen">2.0</item>
+-    <item name="widget_shadow_dy" format="float" type="dimen">2.0</item>
++    <item name="widget_shadow_radius" format="float" type="dimen">0</item>
++    <item name="widget_shadow_dx" format="float" type="dimen">0</item>
++    <item name="widget_shadow_dy" format="float" type="dimen">0</item>
+ 
+     <!-- Divider height -->
+     <dimen name="hairline_height">1dp</dimen>
+diff --git a/res/values/styles.xml b/res/values/styles.xml
+index f247f655b..1a2f163cd 100644
+--- a/res/values/styles.xml
++++ b/res/values/styles.xml
+@@ -51,12 +51,13 @@
+     <style name="world_clock_time">
+         <item name="android:textSize">48sp</item>
+         <item name="android:textColor">@color/white</item>
+-        <item name="android:fontFamily">sans-serif-light</item>
++        <item name="android:fontFamily">sans-serif-thin</item>
+     </style>
+ 
+     <style name="body">
+-        <item name="android:textSize">14sp</item>
++        <item name="android:textSize">16sp</item>
+         <item name="android:textColor">@color/white</item>
++        <item name="android:fontFamily">sans-serif</item>
+     </style>
+ 
+     <style name="big_thin">
+diff --git a/src/com/android/alarmclock/DigitalAppWidgetProvider.java b/src/com/android/alarmclock/DigitalAppWidgetProvider.java
+index 3be07eca7..86f1d991e 100644
+--- a/src/com/android/alarmclock/DigitalAppWidgetProvider.java
++++ b/src/com/android/alarmclock/DigitalAppWidgetProvider.java
+@@ -453,7 +453,13 @@ public class DigitalAppWidgetProvider extends AppWidgetProvider {
+      */
+     private static String getDateFormat(Context context) {
+         final Locale locale = Locale.getDefault();
+-        final String skeleton = context.getString(R.string.abbrev_wday_month_day_no_year);
++        final String nextAlarmTime = Utils.getNextAlarm(context);
++        final String skeleton;
++        if (TextUtils.isEmpty(nextAlarmTime)) {
++            skeleton = context.getString(R.string.full_wday_month_day_no_year);
++        } else {
++            skeleton = context.getString(R.string.abbrev_wday_month_day_no_year);
++        }
+         return DateFormat.getBestDateTimePattern(locale, skeleton);
+     }
+ 
+@@ -495,7 +501,7 @@ public class DigitalAppWidgetProvider extends AppWidgetProvider {
+         private int getClockFontSizePx() { return mClockFontSizePx; }
+         private void setClockFontSizePx(int clockFontSizePx) {
+             mClockFontSizePx = clockFontSizePx;
+-            mFontSizePx = max(1, round(clockFontSizePx / 7.5f));
++            mFontSizePx = max(1, round(clockFontSizePx / 5.5f));
+             mIconFontSizePx = (int) (mFontSizePx * 1.4f);
+             mIconPaddingPx = mFontSizePx / 3;
+         }
+diff --git a/src/com/android/deskclock/ClockFragment.java b/src/com/android/deskclock/ClockFragment.java
+index 1536b55df..6a2767551 100644
+--- a/src/com/android/deskclock/ClockFragment.java
++++ b/src/com/android/deskclock/ClockFragment.java
+@@ -80,6 +80,7 @@ public final class ClockFragment extends DeskClockFragment {
+     private SelectedCitiesAdapter mCityAdapter;
+     private RecyclerView mCityList;
+     private String mDateFormat;
++    private String mDateFormatAlarm;
+     private String mDateFormatForAccessibility;
+ 
+     /**
+@@ -103,11 +104,12 @@ public final class ClockFragment extends DeskClockFragment {
+ 
+         final View fragmentView = inflater.inflate(R.layout.clock_fragment, container, false);
+ 
+-        mDateFormat = getString(R.string.abbrev_wday_month_day_no_year);
++        mDateFormat = getString(R.string.full_wday_month_day_no_year);
++        mDateFormatAlarm = getString(R.string.abbrev_wday_month_day_no_year);
+         mDateFormatForAccessibility = getString(R.string.full_wday_month_day_no_year);
+ 
+         mCityAdapter = new SelectedCitiesAdapter(getActivity(), mDateFormat,
+-                mDateFormatForAccessibility);
++                mDateFormatAlarm, mDateFormatForAccessibility);
+ 
+         mCityList = (RecyclerView) fragmentView.findViewById(R.id.cities);
+         mCityList.setLayoutManager(new LinearLayoutManager(getActivity()));
+@@ -129,7 +131,7 @@ public final class ClockFragment extends DeskClockFragment {
+             mDigitalClock = (TextClock) mClockFrame.findViewById(R.id.digital_clock);
+             mAnalogClock = (AnalogClock) mClockFrame.findViewById(R.id.analog_clock);
+             Utils.setClockIconTypeface(mClockFrame);
+-            Utils.updateDate(mDateFormat, mDateFormatForAccessibility, mClockFrame);
++            Utils.updateDate(getActivity(), mDateFormat, mDateFormatAlarm, mDateFormatForAccessibility, mClockFrame);
+             Utils.setClockStyle(mDigitalClock, mAnalogClock);
+             Utils.setClockSecondsEnabled(mDigitalClock, mAnalogClock);
+         }
+@@ -146,7 +148,8 @@ public final class ClockFragment extends DeskClockFragment {
+ 
+         final Activity activity = getActivity();
+ 
+-        mDateFormat = getString(R.string.abbrev_wday_month_day_no_year);
++        mDateFormat = getString(R.string.full_wday_month_day_no_year);
++        mDateFormatAlarm = getString(R.string.abbrev_wday_month_day_no_year);
+         mDateFormatForAccessibility = getString(R.string.full_wday_month_day_no_year);
+ 
+         // Watch for system events that effect clock time or format.
+@@ -343,13 +346,15 @@ public final class ClockFragment extends DeskClockFragment {
+         private final Context mContext;
+         private final boolean mIsPortrait;
+         private final boolean mShowHomeClock;
+-        private final String mDateFormat;
+-        private final String mDateFormatForAccessibility;
++        private static String mDateFormat;
++        private static String mDateFormatAlarm;
++        private static String mDateFormatForAccessibility;
+ 
+         private SelectedCitiesAdapter(Context context, String dateFormat,
+-                String dateFormatForAccessibility) {
++                String dateFormatAlarm, String dateFormatForAccessibility) {
+             mContext = context;
+             mDateFormat = dateFormat;
++            mDateFormatAlarm = dateFormatAlarm;
+             mDateFormatForAccessibility = dateFormatForAccessibility;
+             mInflater = LayoutInflater.from(context);
+             mIsPortrait = Utils.isPortrait(context);
+@@ -536,7 +541,7 @@ public final class ClockFragment extends DeskClockFragment {
+                     String dateFormatForAccessibility, boolean showHairline) {
+                 Utils.refreshAlarm(context, itemView);
+ 
+-                Utils.updateDate(dateFormat, dateFormatForAccessibility, itemView);
++                Utils.updateDate(context, mDateFormat, mDateFormatAlarm, mDateFormatForAccessibility, itemView);
+                 Utils.setClockStyle(mDigitalClock, mAnalogClock);
+                 mHairline.setVisibility(showHairline ? VISIBLE : GONE);
+ 
+diff --git a/src/com/android/deskclock/Screensaver.java b/src/com/android/deskclock/Screensaver.java
+index 427885e68..2619c1d4a 100644
+--- a/src/com/android/deskclock/Screensaver.java
++++ b/src/com/android/deskclock/Screensaver.java
+@@ -42,6 +42,7 @@ public final class Screensaver extends DreamService {
+     private MoveScreensaverRunnable mPositionUpdater;
+ 
+     private String mDateFormat;
++    private String mDateFormatAlarm;
+     private String mDateFormatForAccessibility;
+ 
+     private View mContentView;
+@@ -62,7 +63,7 @@ public final class Screensaver extends DreamService {
+     private final Runnable mMidnightUpdater = new Runnable() {
+         @Override
+         public void run() {
+-            Utils.updateDate(mDateFormat, mDateFormatForAccessibility, mContentView);
++            Utils.updateDate(Screensaver.this, mDateFormat, mDateFormatAlarm, mDateFormatForAccessibility, mContentView);
+         }
+     };
+ 
+@@ -83,7 +84,8 @@ public final class Screensaver extends DreamService {
+         setTheme(R.style.Theme_DeskClock);
+         super.onCreate();
+ 
+-        mDateFormat = getString(R.string.abbrev_wday_month_day_no_year);
++        mDateFormat = getString(R.string.full_wday_month_day_no_year);
++        mDateFormatAlarm = getString(R.string.abbrev_wday_month_day_no_year);
+         mDateFormatForAccessibility = getString(R.string.full_wday_month_day_no_year);
+     }
+ 
+@@ -128,7 +130,7 @@ public final class Screensaver extends DreamService {
+             getContentResolver().registerContentObserver(uri, false, mSettingsContentObserver);
+         }
+ 
+-        Utils.updateDate(mDateFormat, mDateFormatForAccessibility, mContentView);
++        Utils.updateDate(this, mDateFormat, mDateFormatAlarm, mDateFormatForAccessibility, mContentView);
+         Utils.refreshAlarm(this, mContentView);
+ 
+         startPositionUpdater();
+diff --git a/src/com/android/deskclock/ScreensaverActivity.java b/src/com/android/deskclock/ScreensaverActivity.java
+index 656cfc718..fef670c37 100644
+--- a/src/com/android/deskclock/ScreensaverActivity.java
++++ b/src/com/android/deskclock/ScreensaverActivity.java
+@@ -86,11 +86,12 @@ public class ScreensaverActivity extends BaseActivity {
+     private final Runnable mMidnightUpdater = new Runnable() {
+         @Override
+         public void run() {
+-            Utils.updateDate(mDateFormat, mDateFormatForAccessibility, mContentView);
++            Utils.updateDate(ScreensaverActivity.this, mDateFormat, mDateFormatAlarm, mDateFormatForAccessibility, mContentView);
+         }
+     };
+ 
+     private String mDateFormat;
++    private String mDateFormatAlarm;
+     private String mDateFormatForAccessibility;
+ 
+     private View mContentView;
+@@ -102,7 +103,8 @@ public class ScreensaverActivity extends BaseActivity {
+     protected void onCreate(Bundle savedInstanceState) {
+         super.onCreate(savedInstanceState);
+ 
+-        mDateFormat = getString(R.string.abbrev_wday_month_day_no_year);
++        mDateFormat = getString(R.string.full_wday_month_day_no_year);
++        mDateFormatAlarm = getString(R.string.abbrev_wday_month_day_no_year);
+         mDateFormatForAccessibility = getString(R.string.full_wday_month_day_no_year);
+ 
+         setContentView(R.layout.desk_clock_saver);
+@@ -159,7 +161,7 @@ public class ScreensaverActivity extends BaseActivity {
+     public void onResume() {
+         super.onResume();
+ 
+-        Utils.updateDate(mDateFormat, mDateFormatForAccessibility, mContentView);
++        Utils.updateDate(ScreensaverActivity.this, mDateFormat, mDateFormatAlarm, mDateFormatForAccessibility, mContentView);
+         Utils.refreshAlarm(ScreensaverActivity.this, mContentView);
+ 
+         startPositionUpdater();
+diff --git a/src/com/android/deskclock/Utils.java b/src/com/android/deskclock/Utils.java
+index 0c9daf603..cbab0ede7 100644
+--- a/src/com/android/deskclock/Utils.java
++++ b/src/com/android/deskclock/Utils.java
+@@ -346,6 +346,11 @@ public class Utils {
+             nextAlarmView.setVisibility(View.GONE);
+             nextAlarmIconView.setVisibility(View.GONE);
+         }
++
++        String mDateFormat = context.getString(R.string.full_wday_month_day_no_year);
++        String mDateFormatAlarm = context.getString(R.string.abbrev_wday_month_day_no_year);
++        String mDateFormatForAccessibility = context.getString(R.string.full_wday_month_day_no_year);
++        Utils.updateDate(context, mDateFormat, mDateFormatAlarm, mDateFormatForAccessibility, clock);
+     }
+ 
+     public static void setClockIconTypeface(View clock) {
+@@ -356,14 +361,21 @@ public class Utils {
+     /**
+      * Clock views can call this to refresh their date.
+      **/
+-    public static void updateDate(String dateSkeleton, String descriptionSkeleton, View clock) {
++    public static void updateDate(Context context, String dateSkeleton, String dateSkeletonAlarm, String descriptionSkeleton, View clock) {
+         final TextView dateDisplay = (TextView) clock.findViewById(R.id.date);
+         if (dateDisplay == null) {
+             return;
+         }
+ 
+         final Locale l = Locale.getDefault();
+-        final String datePattern = DateFormat.getBestDateTimePattern(l, dateSkeleton);
++        final String datePattern;
++        final String alarm = getNextAlarm(context);
++        if (!TextUtils.isEmpty(alarm)) {
++            datePattern = DateFormat.getBestDateTimePattern(l, dateSkeletonAlarm);
++        } else {
++            datePattern = DateFormat.getBestDateTimePattern(l, dateSkeleton);
++        }
++
+         final String descriptionPattern = DateFormat.getBestDateTimePattern(l, descriptionSkeleton);
+ 
+         final Date now = new Date();
+-- 
+2.17.1
+

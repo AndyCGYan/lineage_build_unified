@@ -1,0 +1,57 @@
+From ed75e73424f9c7f56e29a3c29d528ba8c585fb84 Mon Sep 17 00:00:00 2001
+From: Andy CrossGate Yan <GeForce8800Ultra@gmail.com>
+Date: Fri, 9 Mar 2018 15:41:26 +0800
+Subject: [PATCH] UI: Disable left (seascape) navigation bar optionally
+
+Toggle this behaviour with property "persist.ui.seascape.disable"
+
+Change-Id: Ieb58efa4b59feeb0c4ac70e497f4c59aa04210d6
+---
+ .../systemui/statusbar/phone/ReverseLinearLayout.java       | 6 ++++++
+ services/core/java/com/android/server/wm/DisplayPolicy.java | 5 +++--
+ 2 files changed, 9 insertions(+), 2 deletions(-)
+
+diff --git a/packages/SystemUI/src/com/android/systemui/statusbar/phone/ReverseLinearLayout.java b/packages/SystemUI/src/com/android/systemui/statusbar/phone/ReverseLinearLayout.java
+index d3ec187ef20..01d87cd12f7 100644
+--- a/packages/SystemUI/src/com/android/systemui/statusbar/phone/ReverseLinearLayout.java
++++ b/packages/SystemUI/src/com/android/systemui/statusbar/phone/ReverseLinearLayout.java
+@@ -16,6 +16,7 @@ package com.android.systemui.statusbar.phone;
+ 
+ import android.annotation.Nullable;
+ import android.content.Context;
++import android.os.SystemProperties;
+ import android.util.AttributeSet;
+ import android.view.Gravity;
+ import android.view.View;
+@@ -86,6 +87,11 @@ public class ReverseLinearLayout extends LinearLayout {
+         boolean isLayoutRtl = getLayoutDirection() == LAYOUT_DIRECTION_RTL;
+         boolean isLayoutReverse = isLayoutRtl ^ mIsAlternativeOrder;
+ 
++        boolean isSeascapeDisabled = SystemProperties.getBoolean("persist.ui.seascape.disable", false);
++        if (isSeascapeDisabled) {
++            isLayoutReverse = isLayoutRtl ^ true;
++        }
++
+         if (mIsLayoutReverse != isLayoutReverse) {
+             // reversity changed, swap the order of all views.
+             int childCount = getChildCount();
+diff --git a/services/core/java/com/android/server/wm/DisplayPolicy.java b/services/core/java/com/android/server/wm/DisplayPolicy.java
+index cf87203893c..7153337031c 100644
+--- a/services/core/java/com/android/server/wm/DisplayPolicy.java
++++ b/services/core/java/com/android/server/wm/DisplayPolicy.java
+@@ -3001,9 +3001,10 @@ public class DisplayPolicy {
+     @NavigationBarPosition
+     int navigationBarPosition(int displayWidth, int displayHeight, int displayRotation) {
+         if (navigationBarCanMove() && displayWidth > displayHeight) {
+-            if (displayRotation == Surface.ROTATION_270) {
++            boolean isSeascapeDisabled = SystemProperties.getBoolean("persist.ui.seascape.disable", false);
++            if (displayRotation == Surface.ROTATION_270 && !isSeascapeDisabled) {
+                 return NAV_BAR_LEFT;
+-            } else if (displayRotation == Surface.ROTATION_90) {
++            } else {
+                 return NAV_BAR_RIGHT;
+             }
+         }
+-- 
+2.17.1
+

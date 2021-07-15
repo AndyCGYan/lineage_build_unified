@@ -1,0 +1,107 @@
+From 3504120db3e9e1a9ea1d9f395e9def251982d02c Mon Sep 17 00:00:00 2001
+From: Andy CrossGate Yan <GeForce8800Ultra@gmail.com>
+Date: Tue, 29 Jun 2021 23:01:07 +0000
+Subject: [PATCH] UI: Force dark QS scrim
+
+Side effect from using light wallpapers
+
+Change-Id: I241dfd7cf8d8bfce1503e7872c5359c380fdbfed
+---
+ .../systemui/qs/QuickStatusBarHeader.java     |  5 -----
+ .../stack/NotificationStackScrollLayout.java  |  2 +-
+ .../statusbar/phone/ScrimController.java      | 21 ++++++-------------
+ 3 files changed, 7 insertions(+), 21 deletions(-)
+
+diff --git a/packages/SystemUI/src/com/android/systemui/qs/QuickStatusBarHeader.java b/packages/SystemUI/src/com/android/systemui/qs/QuickStatusBarHeader.java
+index 94fd996d085..f82ec46c1ea 100644
+--- a/packages/SystemUI/src/com/android/systemui/qs/QuickStatusBarHeader.java
++++ b/packages/SystemUI/src/com/android/systemui/qs/QuickStatusBarHeader.java
+@@ -411,11 +411,6 @@ public class QuickStatusBarHeader extends RelativeLayout implements
+     protected void onConfigurationChanged(Configuration newConfig) {
+         super.onConfigurationChanged(newConfig);
+         updateResources();
+-
+-        // Update color schemes in landscape to use wallpaperTextColor
+-        boolean shouldUseWallpaperTextColor =
+-                newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE;
+-        mClockView.useWallpaperTextColor(shouldUseWallpaperTextColor);
+     }
+ 
+     @Override
+diff --git a/packages/SystemUI/src/com/android/systemui/statusbar/notification/stack/NotificationStackScrollLayout.java b/packages/SystemUI/src/com/android/systemui/statusbar/notification/stack/NotificationStackScrollLayout.java
+index a4a58194a46..05199cec01a 100644
+--- a/packages/SystemUI/src/com/android/systemui/statusbar/notification/stack/NotificationStackScrollLayout.java
++++ b/packages/SystemUI/src/com/android/systemui/statusbar/notification/stack/NotificationStackScrollLayout.java
+@@ -541,7 +541,7 @@ public class NotificationStackScrollLayout extends ViewGroup implements ScrollAd
+ 
+     private SysuiColorExtractor.OnColorsChangedListener mOnColorsChangedListener =
+             (colorExtractor, which) -> {
+-                final boolean useDarkText = mColorExtractor.getNeutralColors().supportsDarkText();
++                final boolean useDarkText = false;
+                 updateDecorViews(useDarkText);
+             };
+ 
+diff --git a/packages/SystemUI/src/com/android/systemui/statusbar/phone/ScrimController.java b/packages/SystemUI/src/com/android/systemui/statusbar/phone/ScrimController.java
+index 686b8712723..96702a831cd 100644
+--- a/packages/SystemUI/src/com/android/systemui/statusbar/phone/ScrimController.java
++++ b/packages/SystemUI/src/com/android/systemui/statusbar/phone/ScrimController.java
+@@ -35,9 +35,7 @@ import android.view.animation.DecelerateInterpolator;
+ import android.view.animation.Interpolator;
+ 
+ import com.android.internal.annotations.VisibleForTesting;
+-import com.android.internal.colorextraction.ColorExtractor;
+ import com.android.internal.colorextraction.ColorExtractor.GradientColors;
+-import com.android.internal.colorextraction.ColorExtractor.OnColorsChangedListener;
+ import com.android.internal.graphics.ColorUtils;
+ import com.android.internal.util.function.TriConsumer;
+ import com.android.keyguard.KeyguardUpdateMonitor;
+@@ -69,8 +67,7 @@ import javax.inject.Singleton;
+  * security method gets shown).
+  */
+ @Singleton
+-public class ScrimController implements ViewTreeObserver.OnPreDrawListener, OnColorsChangedListener,
+-        Dumpable {
++public class ScrimController implements ViewTreeObserver.OnPreDrawListener, Dumpable {
+ 
+     static final String TAG = "ScrimController";
+     private static final boolean DEBUG = Log.isLoggable(TAG, Log.DEBUG);
+@@ -149,7 +146,6 @@ public class ScrimController implements ViewTreeObserver.OnPreDrawListener, OnCo
+     private final KeyguardVisibilityCallback mKeyguardVisibilityCallback;
+     private final Handler mHandler;
+ 
+-    private final SysuiColorExtractor mColorExtractor;
+     private GradientColors mColors;
+     private boolean mNeedsDrawableColorUpdate;
+ 
+@@ -226,9 +222,11 @@ public class ScrimController implements ViewTreeObserver.OnPreDrawListener, OnCo
+             }
+         });
+ 
+-        mColorExtractor = sysuiColorExtractor;
+-        mColorExtractor.addOnColorsChangedListener(this);
+-        mColors = mColorExtractor.getNeutralColors();
++        mColors = new GradientColors();
++        mColors.setMainColor(-14671580);
++        mColors.setSecondaryColor(-14671580);
++        mColors.setColorPalette(new int[] {-14671580});
++        mColors.setSupportsDarkText(false);
+         mNeedsDrawableColorUpdate = true;
+     }
+ 
+@@ -941,13 +939,6 @@ public class ScrimController implements ViewTreeObserver.OnPreDrawListener, OnCo
+         // Don't care in the base class.
+     }
+ 
+-    @Override
+-    public void onColorsChanged(ColorExtractor colorExtractor, int which) {
+-        mColors = mColorExtractor.getNeutralColors();
+-        mNeedsDrawableColorUpdate = true;
+-        scheduleUpdate();
+-    }
+-
+     @Override
+     public void dump(FileDescriptor fd, PrintWriter pw, String[] args) {
+         pw.println(" ScrimController: ");
+-- 
+2.25.1
+

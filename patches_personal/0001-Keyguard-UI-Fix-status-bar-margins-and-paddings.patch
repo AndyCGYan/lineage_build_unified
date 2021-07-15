@@ -1,0 +1,133 @@
+From 8b1714be0a6597ec1ed13465749e584c7938f98d Mon Sep 17 00:00:00 2001
+From: Andy CrossGate Yan <GeForce8800Ultra@gmail.com>
+Date: Sat, 20 Mar 2021 10:35:14 +0000
+Subject: [PATCH] Keyguard/UI: Fix status bar margins and paddings
+
+- Change keyguard_carrier_text_margin into a padding
+- Link keyguard paddings to status_bar_padding_{start|end}
+- Add status_bar_padding_{start|end} to quick settings header
+
+Change-Id: Ic91fa398813e1907297bb0892c444d96405950e7
+---
+ packages/SystemUI/res/layout/keyguard_status_bar.xml  |  2 +-
+ .../layout/quick_status_bar_header_system_icons.xml   |  6 ++++--
+ packages/SystemUI/res/values-sw600dp/dimens.xml       |  6 ------
+ packages/SystemUI/res/values/dimens.xml               |  4 ++--
+ .../statusbar/phone/KeyguardStatusBarView.java        | 11 -----------
+ 5 files changed, 7 insertions(+), 22 deletions(-)
+
+diff --git a/packages/SystemUI/res/layout/keyguard_status_bar.xml b/packages/SystemUI/res/layout/keyguard_status_bar.xml
+index 58343800c2e..3782df2539e 100644
+--- a/packages/SystemUI/res/layout/keyguard_status_bar.xml
++++ b/packages/SystemUI/res/layout/keyguard_status_bar.xml
+@@ -68,7 +68,7 @@
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:paddingTop="@dimen/status_bar_padding_top"
+-        android:layout_marginStart="@dimen/keyguard_carrier_text_margin"
++        android:paddingStart="@dimen/keyguard_carrier_text_margin"
+         android:layout_toStartOf="@id/system_icons_container"
+         android:gravity="center_vertical"
+         android:ellipsize="marquee"
+diff --git a/packages/SystemUI/res/layout/quick_status_bar_header_system_icons.xml b/packages/SystemUI/res/layout/quick_status_bar_header_system_icons.xml
+index 3c748018187..74bcbf2685e 100644
+--- a/packages/SystemUI/res/layout/quick_status_bar_header_system_icons.xml
++++ b/packages/SystemUI/res/layout/quick_status_bar_header_system_icons.xml
+@@ -32,7 +32,8 @@
+         android:layout_height="match_parent"
+         android:layout_weight="1"
+         android:orientation="horizontal"
+-        android:gravity="center_vertical|start" >
++        android:gravity="center_vertical|start"
++        android:paddingStart="@dimen/status_bar_padding_start" >
+ 
+     <com.android.systemui.statusbar.policy.Clock
+         android:id="@+id/clock"
+@@ -59,7 +60,8 @@
+         android:layout_height="match_parent"
+         android:layout_weight="1"
+         android:orientation="horizontal"
+-        android:gravity="center_vertical|end" >
++        android:gravity="center_vertical|end"
++        android:paddingEnd="@dimen/status_bar_padding_end" >
+ 
+     <include layout="@layout/ongoing_privacy_chip" />
+ 
+diff --git a/packages/SystemUI/res/values-sw600dp/dimens.xml b/packages/SystemUI/res/values-sw600dp/dimens.xml
+index d06906bab08..75fd4abba84 100644
+--- a/packages/SystemUI/res/values-sw600dp/dimens.xml
++++ b/packages/SystemUI/res/values-sw600dp/dimens.xml
+@@ -60,9 +60,6 @@
+     <!-- end margin for multi user switch in collapsed quick settings -->
+     <dimen name="multi_user_switch_keyguard_margin">6dp</dimen>
+ 
+-    <!-- Margin on the left side of the carrier text on Keyguard -->
+-    <dimen name="keyguard_carrier_text_margin">24dp</dimen>
+-
+     <!-- The width/height of the phone/camera/unlock icon on keyguard. -->
+     <dimen name="keyguard_affordance_height">80dp</dimen>
+     <dimen name="keyguard_affordance_width">120dp</dimen>
+@@ -73,9 +70,6 @@
+ 
+     <dimen name="keyguard_indication_margin_bottom">40dp</dimen>
+ 
+-    <!-- Margin on the right side of the system icon group on Keyguard. -->
+-    <dimen name="system_icons_keyguard_padding_end">2dp</dimen>
+-
+     <!-- Screen pinning request width -->
+     <dimen name="screen_pinning_request_width">400dp</dimen>
+     <!-- Screen pinning request bottom button circle widths -->
+diff --git a/packages/SystemUI/res/values/dimens.xml b/packages/SystemUI/res/values/dimens.xml
+index 7190def8786..9172bfa823e 100644
+--- a/packages/SystemUI/res/values/dimens.xml
++++ b/packages/SystemUI/res/values/dimens.xml
+@@ -784,7 +784,7 @@
+     <dimen name="kg_framed_avatar_size">54dp</dimen>
+ 
+     <!-- Margin on the left side of the carrier text on Keyguard -->
+-    <dimen name="keyguard_carrier_text_margin">16dp</dimen>
++    <dimen name="keyguard_carrier_text_margin">@dimen/status_bar_padding_start</dimen>
+ 
+     <!-- Margin on the left side of the battery % in the header. -->
+     <dimen name="header_battery_margin_expanded">6dp</dimen>
+@@ -793,7 +793,7 @@
+     <dimen name="header_battery_margin_keyguard">6dp</dimen>
+ 
+     <!-- Margin on the right side of the system icon group on Keyguard. -->
+-    <dimen name="system_icons_keyguard_padding_end">4dp</dimen>
++    <dimen name="system_icons_keyguard_padding_end">@dimen/status_bar_padding_end</dimen>
+ 
+     <!-- Additional translation (downwards) for appearing notifications when going to the full shade
+          from Keyguard. -->
+diff --git a/packages/SystemUI/src/com/android/systemui/statusbar/phone/KeyguardStatusBarView.java b/packages/SystemUI/src/com/android/systemui/statusbar/phone/KeyguardStatusBarView.java
+index 574f835401c..79c6b067fa1 100644
+--- a/packages/SystemUI/src/com/android/systemui/statusbar/phone/KeyguardStatusBarView.java
++++ b/packages/SystemUI/src/com/android/systemui/statusbar/phone/KeyguardStatusBarView.java
+@@ -234,7 +234,6 @@ public class KeyguardStatusBarView extends RelativeLayout
+         Pair<Integer, Integer> cornerCutoutMargins =
+                 StatusBarWindowView.cornerCutoutMargins(mDisplayCutout, getDisplay());
+         updatePadding(cornerCutoutMargins);
+-        updateCarrierLabelParams();
+         if (mDisplayCutout == null || cornerCutoutMargins != null) {
+             return updateLayoutParamsNoCutout();
+         } else {
+@@ -251,16 +250,6 @@ public class KeyguardStatusBarView extends RelativeLayout
+         setPadding(mPadding.first, waterfallTop, mPadding.second, 0);
+     }
+ 
+-    private void updateCarrierLabelParams() {
+-        int marginStart = calculateMargin(
+-                getResources().getDimensionPixelSize(R.dimen.keyguard_carrier_text_margin),
+-                mPadding.first);
+-        MarginLayoutParams lp = (MarginLayoutParams) mCarrierLabel.getLayoutParams();
+-        lp.setMarginStart(marginStart);
+-
+-        mCarrierLabel.setLayoutParams(lp);
+-    }
+-
+     private boolean updateLayoutParamsNoCutout() {
+         if (mLayoutState == LAYOUT_NO_CUTOUT) {
+             return false;
+-- 
+2.25.1
+

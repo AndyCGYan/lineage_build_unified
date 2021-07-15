@@ -1,0 +1,88 @@
+From 23cbee70787c06e6aac6c1cc884213505119b26c Mon Sep 17 00:00:00 2001
+From: Andy CrossGate Yan <GeForce8800Ultra@gmail.com>
+Date: Mon, 26 Oct 2020 14:06:56 +0000
+Subject: [PATCH] UI: Reconfigure power menu items
+
+- Show only the important items (GTFO Emergency)
+- Make 4 columns
+- Always include screenshot
+
+Change-Id: I32cca6e2c6bb64d891efee959127edf7c0802cbc
+---
+ core/res/res/values/config.xml               |  5 +----
+ packages/SystemUI/res/values-land/config.xml | 19 ++++++++-----------
+ packages/SystemUI/res/values/config.xml      |  2 +-
+ 3 files changed, 10 insertions(+), 16 deletions(-)
+
+diff --git a/core/res/res/values/config.xml b/core/res/res/values/config.xml
+index 79e9e203312..f39525c78bf 100644
+--- a/core/res/res/values/config.xml
++++ b/core/res/res/values/config.xml
+@@ -2777,13 +2777,10 @@
+          "logout" =  Logout the current user
+          -->
+     <string-array translatable="false" name="config_globalActionsList">
+-        <item>emergency</item>
+-        <item>lockdown</item>
+         <item>power</item>
+         <item>restart</item>
+-        <item>logout</item>
+         <item>screenshot</item>
+-        <item>bugreport</item>
++        <item>airplane</item>
+     </string-array>
+ 
+     <!-- Number of milliseconds to hold a wake lock to ensure that drawing is fully
+diff --git a/packages/SystemUI/res/values-land/config.xml b/packages/SystemUI/res/values-land/config.xml
+index 2f7fbaff4ed..8b7ae652846 100644
+--- a/packages/SystemUI/res/values-land/config.xml
++++ b/packages/SystemUI/res/values-land/config.xml
+@@ -3,16 +3,16 @@
+ /*
+ ** Copyright 2011, The Android Open Source Project
+ **
+-** Licensed under the Apache License, Version 2.0 (the "License"); 
+-** you may not use this file except in compliance with the License. 
+-** You may obtain a copy of the License at 
++** Licensed under the Apache License, Version 2.0 (the "License");
++** you may not use this file except in compliance with the License.
++** You may obtain a copy of the License at
+ **
+-**     http://www.apache.org/licenses/LICENSE-2.0 
++**     http://www.apache.org/licenses/LICENSE-2.0
+ **
+-** Unless required by applicable law or agreed to in writing, software 
+-** distributed under the License is distributed on an "AS IS" BASIS, 
+-** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+-** See the License for the specific language governing permissions and 
++** Unless required by applicable law or agreed to in writing, software
++** distributed under the License is distributed on an "AS IS" BASIS,
++** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++** See the License for the specific language governing permissions and
+ ** limitations under the License.
+ */
+ -->
+@@ -34,7 +34,4 @@
+ 
+     <!-- Max number of columns for quick controls area -->
+     <integer name="controls_max_columns">4</integer>
+-
+-    <!-- Max number of columns for power menu -->
+-    <integer name="power_menu_max_columns">4</integer>
+ </resources>
+diff --git a/packages/SystemUI/res/values/config.xml b/packages/SystemUI/res/values/config.xml
+index d30b7b15de9..6fe2974ae10 100644
+--- a/packages/SystemUI/res/values/config.xml
++++ b/packages/SystemUI/res/values/config.xml
+@@ -573,7 +573,7 @@
+     <integer name="controls_max_columns">2</integer>
+ 
+     <!-- Max number of columns for power menu -->
+-    <integer name="power_menu_max_columns">3</integer>
++    <integer name="power_menu_max_columns">4</integer>
+ 
+     <!-- If the dp width of the available space is <= this value, potentially adjust the number
+          of columns-->
+-- 
+2.25.1
+

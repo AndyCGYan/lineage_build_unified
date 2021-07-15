@@ -1,0 +1,30 @@
+From 1fcb9bc8c09a5ac6ebeec38d9b01c68f91b37ccc Mon Sep 17 00:00:00 2001
+From: AndyCGYan <GeForce8800Ultra@gmail.com>
+Date: Thu, 27 Dec 2018 16:38:19 +0800
+Subject: [PATCH] Keyguard: Show shortcuts by default
+
+Change-Id: I5655e0be26cec61214735719dffcda810286cd41
+---
+ packages/SystemUI/res/values/config.xml | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/packages/SystemUI/res/values/config.xml b/packages/SystemUI/res/values/config.xml
+index 754487f2f23..2a9651009d5 100644
+--- a/packages/SystemUI/res/values/config.xml
++++ b/packages/SystemUI/res/values/config.xml
+@@ -69,10 +69,10 @@
+     <integer translatable="false" name="config_search_panel_view_vibration_duration">20</integer>
+ 
+     <!-- Show mic or phone affordance on Keyguard -->
+-    <bool name="config_keyguardShowLeftAffordance">false</bool>
++    <bool name="config_keyguardShowLeftAffordance">true</bool>
+ 
+     <!-- Show camera affordance on Keyguard -->
+-    <bool name="config_keyguardShowCameraAffordance">false</bool>
++    <bool name="config_keyguardShowCameraAffordance">true</bool>
+ 
+     <!-- The length of the vibration when the notification pops open. -->
+     <integer name="one_finger_pop_duration_ms">10</integer>
+-- 
+2.17.1
+

@@ -1,0 +1,46 @@
+From 074e8b537d3dc078b18c4410624ae6327ad3773d Mon Sep 17 00:00:00 2001
+From: Andy CrossGate Yan <GeForce8800Ultra@gmail.com>
+Date: Wed, 7 Oct 2020 14:00:35 +0000
+Subject: [PATCH] UI: Always render windows into cutouts
+
+Eliminates black/white letterboxing
+Quick and dirty way to do the latter - wait for proper fix from Google
+
+Change-Id: I4661c7979bfa7de453329fcddbaeefc2009e2da3
+---
+ services/core/java/com/android/server/wm/DisplayPolicy.java | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
+
+diff --git a/services/core/java/com/android/server/wm/DisplayPolicy.java b/services/core/java/com/android/server/wm/DisplayPolicy.java
+index 2541411bc2c..929c949b31e 100644
+--- a/services/core/java/com/android/server/wm/DisplayPolicy.java
++++ b/services/core/java/com/android/server/wm/DisplayPolicy.java
+@@ -1704,7 +1704,6 @@ public class DisplayPolicy {
+     void simulateLayoutDisplay(DisplayFrames displayFrames, InsetsState insetsState,
+             SparseArray<Rect> barContentFrames) {
+         displayFrames.onBeginLayout();
+-        updateInsetsStateForDisplayCutout(displayFrames, insetsState);
+         insetsState.setDisplayFrame(displayFrames.mUnrestricted);
+         final WindowFrames simulatedWindowFrames = new WindowFrames();
+         if (mNavigationBar != null) {
+@@ -1733,8 +1732,6 @@ public class DisplayPolicy {
+      */
+     public void beginLayoutLw(DisplayFrames displayFrames, int uiMode) {
+         displayFrames.onBeginLayout();
+-        updateInsetsStateForDisplayCutout(displayFrames,
+-                mDisplayContent.getInsetsStateController().getRawInsetsState());
+         mSystemGestures.screenWidth = displayFrames.mUnrestricted.width();
+         mSystemGestures.screenHeight = displayFrames.mUnrestricted.height();
+ 
+@@ -2595,7 +2592,7 @@ public class DisplayPolicy {
+             }
+         }
+ 
+-        final int cutoutMode = attrs.layoutInDisplayCutoutMode;
++        final int cutoutMode = LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS;
+         final boolean attachedInParent = attached != null && !layoutInScreen;
+         final boolean requestedFullscreen = (fl & FLAG_FULLSCREEN) != 0
+                 || (requestedSysUiFl & View.SYSTEM_UI_FLAG_FULLSCREEN) != 0
+-- 
+2.25.1
+

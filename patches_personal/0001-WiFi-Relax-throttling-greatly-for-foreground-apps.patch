@@ -1,0 +1,28 @@
+From e89e2d8f376fcb77078ba06138afa395f91ab55d Mon Sep 17 00:00:00 2001
+From: AndyCGYan <GeForce8800Ultra@gmail.com>
+Date: Wed, 5 Jun 2019 05:10:00 +0000
+Subject: [PATCH] WiFi: Relax throttling greatly for foreground apps
+
+...to the extent that it virtually doesn't exist
+
+Change-Id: Ic01d08ef9c09de128ac08ecebb52aa7f90cf9e4e
+---
+ service/java/com/android/server/wifi/ScanRequestProxy.java | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/service/java/com/android/server/wifi/ScanRequestProxy.java b/service/java/com/android/server/wifi/ScanRequestProxy.java
+index 0a9a446ab..3cedc343e 100644
+--- a/service/java/com/android/server/wifi/ScanRequestProxy.java
++++ b/service/java/com/android/server/wifi/ScanRequestProxy.java
+@@ -67,7 +67,7 @@ public class ScanRequestProxy {
+     private static final String TAG = "WifiScanRequestProxy";
+ 
+     @VisibleForTesting
+-    public static final int SCAN_REQUEST_THROTTLE_TIME_WINDOW_FG_APPS_MS = 120 * 1000;
++    public static final int SCAN_REQUEST_THROTTLE_TIME_WINDOW_FG_APPS_MS = 1;
+     @VisibleForTesting
+     public static final int SCAN_REQUEST_THROTTLE_MAX_IN_TIME_WINDOW_FG_APPS = 4;
+     @VisibleForTesting
+-- 
+2.17.1
+

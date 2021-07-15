@@ -1,0 +1,36 @@
+From 2ca9b6c8cc63b5726c682b77ece6d7112e6652b9 Mon Sep 17 00:00:00 2001
+From: Andy CrossGate Yan <GeForce8800Ultra@gmail.com>
+Date: Sun, 20 Jun 2021 09:09:15 +0000
+Subject: [PATCH] build: Integrate prop modifications (2/2)
+
+Change-Id: I076973f902ab20011964e50955e4326c18d5b34e
+---
+ build/core/main_version.mk | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
+
+diff --git a/build/core/main_version.mk b/build/core/main_version.mk
+index dddeee77..dd86cbfd 100644
+--- a/build/core/main_version.mk
++++ b/build/core/main_version.mk
+@@ -5,17 +5,12 @@ ADDITIONAL_BUILD_PROPERTIES += \
+ endif
+ 
+ # LineageOS System Version
++# Do not set Display Versions here, due to Makefile not playing nice with spaces
+ ADDITIONAL_BUILD_PROPERTIES += \
+-    ro.lineage.version=$(LINEAGE_VERSION) \
+     ro.lineage.releasetype=$(LINEAGE_BUILDTYPE) \
+     ro.lineage.build.version=$(PRODUCT_VERSION_MAJOR).$(PRODUCT_VERSION_MINOR) \
+-    ro.modversion=$(LINEAGE_VERSION) \
+     ro.lineagelegal.url=https://lineageos.org/legal
+ 
+-# LineageOS Platform Display Version
+-ADDITIONAL_BUILD_PROPERTIES += \
+-    ro.lineage.display.version=$(LINEAGE_DISPLAY_VERSION)
+-
+ # LineageOS Platform SDK Version
+ ADDITIONAL_BUILD_PROPERTIES += \
+     ro.lineage.build.version.plat.sdk=$(LINEAGE_PLATFORM_SDK_VERSION)
+-- 
+2.25.1
+

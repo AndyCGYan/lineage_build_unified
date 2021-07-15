@@ -1,0 +1,31 @@
+From d216c498168b513becb119873fd47b507686fce9 Mon Sep 17 00:00:00 2001
+From: Andy CrossGate Yan <GeForce8800Ultra@gmail.com>
+Date: Sat, 2 Nov 2019 06:41:03 +0000
+Subject: [PATCH] Keyguard: Hide padlock
+
+It's just fking ugly.
+Please Google, stop your UI designers.
+
+Change-Id: Ie91e80ca5c6637a51a8acc72fb28cd6ac2a7abb6
+---
+ packages/SystemUI/res/values/dimens.xml | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/packages/SystemUI/res/values/dimens.xml b/packages/SystemUI/res/values/dimens.xml
+index 352640b7d06..5ab891ddb92 100644
+--- a/packages/SystemUI/res/values/dimens.xml
++++ b/packages/SystemUI/res/values/dimens.xml
+@@ -757,8 +757,8 @@
+     <dimen name="keyguard_affordance_width">56dp</dimen>
+ 
+     <!-- The width/height of the unlock icon view on keyguard. -->
+-    <dimen name="keyguard_lock_height">42dp</dimen>
+-    <dimen name="keyguard_lock_width">42dp</dimen>
++    <dimen name="keyguard_lock_height">0dp</dimen>
++    <dimen name="keyguard_lock_width">0dp</dimen>
+     <dimen name="keyguard_lock_padding">20dp</dimen>
+ 
+     <dimen name="keyguard_indication_margin_bottom">40dp</dimen>
+-- 
+2.17.1
+

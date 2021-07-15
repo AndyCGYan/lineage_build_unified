@@ -1,0 +1,26 @@
+From 3de1b65db101e08ba47940c79b04204b0760fa81 Mon Sep 17 00:00:00 2001
+From: Andy CrossGate Yan <GeForce8800Ultra@gmail.com>
+Date: Wed, 3 Jun 2020 01:31:34 +0000
+Subject: [PATCH] UI: Increase default status bar height
+
+Change-Id: Ibbcf63159e19bb2bb2b1094ea07ab85917630b07
+---
+ core/res/res/values/dimens.xml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/core/res/res/values/dimens.xml b/core/res/res/values/dimens.xml
+index ebaf85c64a1..4f845977971 100644
+--- a/core/res/res/values/dimens.xml
++++ b/core/res/res/values/dimens.xml
+@@ -35,7 +35,7 @@
+     <dimen name="status_bar_height">@dimen/status_bar_height_portrait</dimen>
+     <!-- Height of the status bar in portrait. The height should be
+          Max((status bar content height + waterfall top size), top cutout size) -->
+-    <dimen name="status_bar_height_portrait">24dp</dimen>
++    <dimen name="status_bar_height_portrait">28dp</dimen>
+     <!-- Height of the status bar in landscape. The height should be
+          Max((status bar content height + waterfall top size), top cutout size) -->
+     <dimen name="status_bar_height_landscape">@dimen/status_bar_height_portrait</dimen>
+-- 
+2.25.1
+

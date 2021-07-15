@@ -1,0 +1,54 @@
+From d4d4ba1db635471773f4e8a064b38dbfe8a39128 Mon Sep 17 00:00:00 2001
+From: Andy CrossGate Yan <GeForce8800Ultra@gmail.com>
+Date: Sat, 2 Nov 2019 11:11:07 +0000
+Subject: [PATCH] Keyguard: Fix clock position
+
+New method - way easier than what was done on Pie
+Still not perfect:
+- Notification padding has to be taken care of in some other way - directly altering stackScrollerPadding causes visual glitches
+
+Change-Id: Ia5cebd04c2cb4b324c04019afdf045d5489cf2b8
+---
+ .../statusbar/phone/KeyguardClockPositionAlgorithm.java   | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/packages/SystemUI/src/com/android/systemui/statusbar/phone/KeyguardClockPositionAlgorithm.java b/packages/SystemUI/src/com/android/systemui/statusbar/phone/KeyguardClockPositionAlgorithm.java
+index 4e91e4c84e9..0277b341a00 100644
+--- a/packages/SystemUI/src/com/android/systemui/statusbar/phone/KeyguardClockPositionAlgorithm.java
++++ b/packages/SystemUI/src/com/android/systemui/statusbar/phone/KeyguardClockPositionAlgorithm.java
+@@ -177,7 +177,8 @@ public class KeyguardClockPositionAlgorithm {
+     }
+ 
+     private int getMaxClockY() {
+-        return mHeight / 2 - mKeyguardStatusHeight - mClockNotificationsMargin;
++        // Align the center of the clock at 1/3 of the screen
++        return mHeight / 3 - mKeyguardStatusHeight / 2;
+     }
+ 
+     private int getPreferredClockY() {
+@@ -214,12 +215,11 @@ public class KeyguardClockPositionAlgorithm {
+     }
+ 
+     private int getClockY(float panelExpansion) {
+-        // Dark: Align the bottom edge of the clock at about half of the screen:
+         float clockYDark = (mHasCustomClock ? getPreferredClockY() : getMaxClockY())
+                 + burnInPreventionOffsetY();
+         clockYDark = MathUtils.max(0, clockYDark);
+ 
+-        float clockYRegular = getExpandedPreferredClockY();
++        float clockYRegular = getMaxClockY();
+         float clockYBouncer = -mKeyguardStatusHeight;
+ 
+         // Move clock up while collapsing the shade
+@@ -240,7 +240,7 @@ public class KeyguardClockPositionAlgorithm {
+      * @return Alpha from 0 to 1.
+      */
+     private float getClockAlpha(int y) {
+-        float alphaKeyguard = Math.max(0, y / Math.max(1f, getClockY(1f)));
++        float alphaKeyguard = Math.max(0, y / Math.max(1f, getMaxClockY()));
+         alphaKeyguard = Interpolators.ACCELERATE.getInterpolation(alphaKeyguard);
+         return MathUtils.lerp(alphaKeyguard, 1f, mDarkAmount);
+     }
+-- 
+2.17.1
+

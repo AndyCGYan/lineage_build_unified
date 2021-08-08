@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest>
+  <remote fetch="https://gitlab.pixelexperience.org" name="gitlab-pe" />
+  <project name="AndyCGYan/device_xiaomi_raphael" path="device/xiaomi/raphael" remote="github" />
+  <project name="PixelExperience-Devices/kernel_xiaomi_raphael" path="kernel/xiaomi/raphael" remote="github" revision="eleven" />
+  <!-- <project name="kdrag0n/proton-clang" path="prebuilts/clang/host/linux-x86/clang-proton" remote="github" revision="master" /> -->
+  <project name="android/vendor-blobs/vendor_xiaomi_raphael" path="vendor/xiaomi/raphael" remote="gitlab-pe" revision="eleven" />
+  <project name="PixelExperience/packages_resources_devicesettings-custom" path="packages/resources/devicesettings-custom" remote="github" revision="eleven" />
+</manifest>

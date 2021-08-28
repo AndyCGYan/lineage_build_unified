@@ -6,6 +6,16 @@ echo "Executing in 5 seconds - CTRL-C to exit"
 echo ""
 sleep 5
 
+# Abort early on error
+set -eE
+trap '(\
+echo;\
+echo \!\!\! An error happened during script execution;\
+echo \!\!\! Please check console output for bad sync,;\
+echo \!\!\! failed patch application, etc.;\
+echo\
+)' ERR
+
 START=`date +%s`
 BUILD_DATE="$(date +%Y%m%d)"
 BL=$PWD/treble_build_los
@@ -25,15 +35,14 @@ echo ""
 
 echo "Applying PHH patches"
 cd frameworks/base
-git revert e0a5469cf5a2345fae7e81d16d717d285acd3a6e --no-edit # FODCircleView: defer removal to next re-layout
-git revert 817541a8353014e40fa07a1ee27d9d2f35ea2c16 --no-edit # Initial support for in-display fingerprint sensors
+git am $BL/patches/0001-Squashed-revert-of-LOS-FOD-implementation.patch
 cd ../..
 rm -f device/*/sepolicy/common/private/genfs_contexts
 cd device/phh/treble
 git clean -fdx
 bash generate.sh lineage
 cd ../../..
-bash ~/treble_experimentations/apply-patches.sh treble_patches
+bash ~/treble_experimentations/apply-patches.sh treble_patches/patches
 echo ""
 
 echo "Applying universal patches"
@@ -66,6 +75,9 @@ git am $BL/patches/0001-Increase-system-partition-size-for-arm_ab.patch
 cd ../../..
 cd external/tinycompress
 git revert fbe2bd5c3d670234c3c92f875986acc148e6d792 --no-edit # tinycompress: Use generated kernel headers
+cd ../..
+cd vendor/interfaces
+git revert 0611b67d96f7f7f71b12079a1b345022fe7bd323 --no-edit # Include Samsung Q camera provider
 cd ../..
 cd vendor/lineage
 git am $BL/patches/0001-build_soong-Disable-generated_kernel_headers.patch

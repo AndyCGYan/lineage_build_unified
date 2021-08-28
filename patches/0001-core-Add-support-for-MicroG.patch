@@ -1,4 +1,4 @@
-From 51c79844320ca6dcb8d9c145709f0dc394f3146a Mon Sep 17 00:00:00 2001
+From 89a3a0102026ad3621a89b0f1c3b25eb3ad49329 Mon Sep 17 00:00:00 2001
 From: Andy CrossGate Yan <GeForce8800Ultra@gmail.com>
 Date: Fri, 17 May 2019 03:36:35 +0000
 Subject: [PATCH] core: Add support for MicroG
@@ -14,7 +14,7 @@ Change-Id: I0e5a0aca9fccbd4372de8ce3af76c53cc7c35f28
  4 files changed, 35 insertions(+), 2 deletions(-)
 
 diff --git a/core/res/AndroidManifest.xml b/core/res/AndroidManifest.xml
-index 34d26f0da90..08f95ec1fdf 100644
+index af1a6fa9e3c..c9e9daea1ba 100644
 --- a/core/res/AndroidManifest.xml
 +++ b/core/res/AndroidManifest.xml
 @@ -2357,6 +2357,13 @@
@@ -32,7 +32,7 @@ index 34d26f0da90..08f95ec1fdf 100644
           {@link android.content.pm.PackageManager#addPackageToPreferred}
           for details. -->
 diff --git a/core/res/res/values/config.xml b/core/res/res/values/config.xml
-index f7b06f98512..703a63ff5f1 100644
+index bd84a6d720b..977ae5cfe10 100644
 --- a/core/res/res/values/config.xml
 +++ b/core/res/res/values/config.xml
 @@ -1716,6 +1716,8 @@
@@ -61,12 +61,12 @@ index f6600462ea7..bd96a09684f 100644
      <string name="permlab_statusBar">disable or modify status bar</string>
      <!-- Description of an application permission, listed so the user can choose whether they want to allow the application to do this. -->
 diff --git a/services/core/java/com/android/server/pm/PackageManagerService.java b/services/core/java/com/android/server/pm/PackageManagerService.java
-index 9b50a1545a5..f12509e36e7 100644
+index f3938b32333..1b069e34891 100644
 --- a/services/core/java/com/android/server/pm/PackageManagerService.java
 +++ b/services/core/java/com/android/server/pm/PackageManagerService.java
-@@ -4001,8 +4001,9 @@ public class PackageManagerService extends IPackageManager.Stub
-             final Set<String> permissions = ArrayUtils.isEmpty(p.requestedPermissions)
-                     ? Collections.<String>emptySet() : permissionsState.getPermissions(userId);
+@@ -4063,8 +4063,9 @@ public class PackageManagerService extends IPackageManager.Stub
+                 });
+             }
  
 -            PackageInfo packageInfo = PackageParser.generatePackageInfo(p, gids, flags,
 -                    ps.firstInstallTime, ps.lastUpdateTime, permissions, state, userId);
@@ -76,7 +76,7 @@ index 9b50a1545a5..f12509e36e7 100644
  
              if (packageInfo == null) {
                  return null;
-@@ -4038,6 +4039,24 @@ public class PackageManagerService extends IPackageManager.Stub
+@@ -4100,6 +4101,24 @@ public class PackageManagerService extends IPackageManager.Stub
          }
      }
  
@@ -102,5 +102,5 @@ index 9b50a1545a5..f12509e36e7 100644
      public void checkPackageStartable(String packageName, int userId) {
          final int callingUid = Binder.getCallingUid();
 -- 
-2.17.1
+2.25.1
 

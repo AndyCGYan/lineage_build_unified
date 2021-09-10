@@ -56,8 +56,6 @@ source build/envsetup.sh &> /dev/null
 mkdir -p ~/build-output
 echo ""
 
-repopick 289372 # Messaging: Add "Mark as read" quick action for message notifications
-
 apply_patches() {
     echo "Applying patch group ${1}"
     bash ~/treble_experimentations/apply-patches.sh ./lineage_patches_unified/${1}

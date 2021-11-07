@@ -51,19 +51,24 @@ echo "Syncing repos"
 repo sync -c --force-sync --no-clone-bundle --no-tags -j$(nproc --all)
 echo ""
 
-./vendor/lineage/build/tools/repopick.py -t twelve-monet
-./vendor/lineage/build/tools/repopick.py 317119 # Unset BOARD_EXT4_SHARE_DUP_BLOCKS
-./vendor/lineage/build/tools/repopick.py 317574 -f # ThemePicker: Grant missing wallpaper permissions
-./vendor/lineage/build/tools/repopick.py 317602 # Keyguard: don't use large clock on landscape
-./vendor/lineage/build/tools/repopick.py 317606 # LineageParts: Temporary hax
-./vendor/lineage/build/tools/repopick.py 317608 # Support for device specific key handlers
-./vendor/lineage/build/tools/repopick.py 317609 # Allow adjusting progress on touch events.
-./vendor/lineage/build/tools/repopick.py 318037 # Statusbar: show vibration icon in collapsed statusbar
-
 echo "Setting up build environment"
 source build/envsetup.sh &> /dev/null
 mkdir -p ~/build-output
 echo ""
+
+repopick -t android-12.0.0_r12
+repopick -t twelve-monet
+repopick -Q "status:open+project:LineageOS/android_packages_apps_AudioFX+branch:lineage-19.0"
+repopick -Q "status:open+project:LineageOS/android_packages_apps_Etar+branch:lineage-19.0"
+repopick 317119 # Unset BOARD_EXT4_SHARE_DUP_BLOCKS
+repopick 317574 -f # ThemePicker: Grant missing wallpaper permissions
+repopick 317602 # Keyguard: don't use large clock on landscape
+repopick 317606 # LineageParts: Temporary hax
+repopick 317608 # Support for device specific key handlers
+repopick 317609 # Allow adjusting progress on touch events.
+repopick 318037 # Statusbar: show vibration icon in collapsed statusbar
+repopick 318379 # Partially revert "lineage-sdk: Comment out LineageAudioService"
+repopick 318380 # lineage: Temporarily disable LineageAudioService overlay
 
 apply_patches() {
     echo "Applying patch group ${1}"

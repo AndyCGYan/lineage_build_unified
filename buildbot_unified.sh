@@ -94,7 +94,7 @@ build_treble() {
         ("64B") TARGET=treble_arm64_bvS;;
         (*) echo "Invalid target - exiting"; exit 1;;
     esac
-    lunch ${TARGET}-userdebug
+    lunch lineage_${TARGET}-userdebug
     make installclean
     make -j$(nproc --all) systemimage
     make vndk-test-sepolicy

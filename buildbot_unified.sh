@@ -108,7 +108,7 @@ build_treble() {
         ("64B") TARGET=treble_arm64_bvS;;
         (*) echo "Invalid target - exiting"; exit 1;;
     esac
-    lunch ${TARGET}-userdebug
+    lunch lineage_${TARGET}-userdebug
     make installclean
     make -j$(nproc --all) systemimage
     mv $OUT/system.img ~/build-output/lineage-19.0-$BUILD_DATE-UNOFFICIAL-${TARGET}$(${PERSONAL} && echo "-personal" || echo "").img

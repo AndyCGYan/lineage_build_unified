@@ -1,7 +1,6 @@
 #!/bin/bash
 echo ""
 echo "LineageOS 19.x Unified Buildbot"
-echo "ATTENTION: this script syncs repo on each run"
 echo "Executing in 5 seconds - CTRL-C to exit"
 echo ""
 sleep 5
@@ -21,11 +20,19 @@ then
     exit 1
 fi
 
+NOSYNC=false
 PERSONAL=false
-if [ ${!#} == "personal" ]
-then
-    PERSONAL=true
-fi
+for var in "${@:2}"
+do
+    if [ ${var} == "nosync" ]
+    then
+        NOSYNC=true
+    fi
+    if [ ${var} == "personal" ]
+    then
+        PERSONAL=true
+    fi
+done
 
 # Abort early on error
 set -eE
@@ -42,33 +49,27 @@ BUILD_DATE="$(date +%Y%m%d)"
 WITHOUT_CHECK_API=true
 WITH_SU=true
 
-echo "Preparing local manifests"
-mkdir -p .repo/local_manifests
-cp ./lineage_build_unified/local_manifests_${MODE}/*.xml .repo/local_manifests
-echo ""
+prep_build() {
+    echo "Preparing local manifests"
+    mkdir -p .repo/local_manifests
+    cp ./lineage_build_unified/local_manifests_${MODE}/*.xml .repo/local_manifests
+    echo ""
 
-echo "Syncing repos"
-repo sync -c --force-sync --no-clone-bundle --no-tags -j$(nproc --all)
-echo ""
+    echo "Syncing repos"
+    repo sync -c --force-sync --no-clone-bundle --no-tags -j$(nproc --all)
+    echo ""
 
-echo "Setting up build environment"
-source build/envsetup.sh &> /dev/null
-mkdir -p ~/build-output
-echo ""
+    echo "Setting up build environment"
+    source build/envsetup.sh &> /dev/null
+    mkdir -p ~/build-output
+    echo ""
 
-repopick -t android-12.0.0_r12
-repopick -t twelve-monet
-repopick -Q "status:open+project:LineageOS/android_packages_apps_AudioFX+branch:lineage-19.0"
-repopick -Q "status:open+project:LineageOS/android_packages_apps_Etar+branch:lineage-19.0"
-repopick 317119 # Unset BOARD_EXT4_SHARE_DUP_BLOCKS
-repopick 317574 -f # ThemePicker: Grant missing wallpaper permissions
-repopick 317602 # Keyguard: don't use large clock on landscape
-repopick 317606 # LineageParts: Temporary hax
-repopick 317608 # Support for device specific key handlers
-repopick 317609 # Allow adjusting progress on touch events.
-repopick 318037 # Statusbar: show vibration icon in collapsed statusbar
-repopick 318379 # Partially revert "lineage-sdk: Comment out LineageAudioService"
-repopick 318380 # lineage: Temporarily disable LineageAudioService overlay
+    repopick -t twelve-monet
+    repopick -Q "status:open+project:LineageOS/android_packages_apps_AudioFX+branch:lineage-19.0"
+    repopick -Q "status:open+project:LineageOS/android_packages_apps_Etar+branch:lineage-19.0+NOT+317685"
+    repopick -Q "status:open+project:LineageOS/android_packages_apps_Trebuchet+branch:lineage-19.0+NOT+317783+NOT+318387"
+    repopick 318971 # Move Seedvault to /system_ext partition
+}
 
 apply_patches() {
     echo "Applying patch group ${1}"
@@ -97,15 +98,23 @@ finalize_treble() {
 }
 
 build_device() {
-    brunch ${1}
-    mv $OUT/lineage-*.zip ~/build-output/lineage-19.0-$BUILD_DATE-UNOFFICIAL-${1}$($PERSONAL && echo "-personal" || echo "").zip
+    if [ ${1} == "arm64" ]
+    then
+        lunch lineage_arm64-userdebug
+        make -j$(nproc --all) systemimage
+        mv $OUT/system.img ~/build-output/lineage-19.0-$BUILD_DATE-UNOFFICIAL-arm64$(${PERSONAL} && echo "-personal" || echo "").img
+    else
+        brunch ${1}
+        mv $OUT/lineage-*.zip ~/build-output/lineage-19.0-$BUILD_DATE-UNOFFICIAL-${1}$($PERSONAL && echo "-personal" || echo "").zip
+    fi
 }
 
 build_treble() {
     case "${1}" in
-        #("32B") TARGET=treble_arm_bvS;;
         ("A64B") TARGET=treble_a64_bvS;;
+        ("A64BG") TARGET=treble_a64_bgS;;
         ("64B") TARGET=treble_arm64_bvS;;
+        ("64BG") TARGET=treble_arm64_bgS;;
         (*) echo "Invalid target - exiting"; exit 1;;
     esac
     lunch lineage_${TARGET}-userdebug
@@ -115,21 +124,32 @@ build_treble() {
     make vndk-test-sepolicy
 }
 
-echo "Applying patches"
-prep_${MODE}
-apply_patches patches_platform
-apply_patches patches_${MODE}
-if ${PERSONAL}
+if ${NOSYNC}
 then
-    apply_patches patches_platform_personal
-    apply_patches patches_${MODE}_personal
+    echo "ATTENTION: syncing/patching skipped!"
+    echo ""
+    echo "Setting up build environment"
+    source build/envsetup.sh &> /dev/null
+    echo ""
+else
+    prep_build
+    echo "Applying patches"
+    prep_${MODE}
+    apply_patches patches_platform
+    apply_patches patches_${MODE}
+    if ${PERSONAL}
+    then
+        apply_patches patches_platform_personal
+        apply_patches patches_${MODE}_personal
+    fi
+    finalize_${MODE}
+    echo ""
 fi
-finalize_${MODE}
-echo ""
+
 
 for var in "${@:2}"
 do
-    if [ ${var} == "personal" ]
+    if [ ${var} == "nosync" ] || [ ${var} == "personal" ]
     then
         continue
     fi

@@ -66,9 +66,33 @@ prep_build() {
 
     repopick -t twelve-monet
     repopick -Q "status:open+project:LineageOS/android_packages_apps_AudioFX+branch:lineage-19.0"
-    repopick -Q "status:open+project:LineageOS/android_packages_apps_Etar+branch:lineage-19.0+NOT+317685"
-    repopick -Q "status:open+project:LineageOS/android_packages_apps_Trebuchet+branch:lineage-19.0+NOT+317783+NOT+318387"
-    repopick 318971 # Move Seedvault to /system_ext partition
+    repopick -Q "status:open+project:LineageOS/android_packages_apps_Etar+branch:lineage-19.0"
+    repopick -Q "status:open+project:LineageOS/android_packages_apps_Trebuchet+branch:lineage-19.0+NOT+317783+NOT+318747"
+    repopick -t twelve-burnin
+    repopick -t twelve-FlipFlap
+    repopick -t twelve-buttons
+    repopick -t twelve-fingerprint
+    repopick -t twelve-volume-panel-location
+    repopick -t twelve-swap-volume-buttons
+    repopick -t twelve-camera-button
+    repopick -t twelve-navbar-runtime-toggle
+    repopick -t twelve-buttons-lights
+    repopick -t twelve-keyboard-lights
+    repopick -t twelve-proximity-check
+    repopick 320923 # SystemUI: Add quick settings pull down with one finger
+    repopick -t twelve-dt2s
+    repopick -t twelve-touchscreen-gestures
+    repopick -t twelve-lights
+    repopick -t twelve-visualizer
+    repopick -t twelve-ls-media-art
+    repopick -t twelve-long-screen
+    repopick -t twelve-wake-on-plug
+    repopick -t twelve-statusbar-brightness-and-qs-slider
+    repopick -t twelve-notification-sound-timeout
+    repopick -t twelve-powermenu
+    repopick 321337 # Deprioritize important developer notifications
+    repopick 321338 # Allow disabling important developer notifications
+    repopick 321339 # Allow disabling USB notifications
 }
 
 apply_patches() {

@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<manifest>
-  <project name="AndyCGYan/android_device_oneplus_instantnoodle" path="device/oneplus/instantnoodle" remote="github" />
-  <project name="LineageOS/android_device_oneplus_sm8250-common" path="device/oneplus/sm8250-common" remote="github" />
-  <project name="LineageOS/android_device_oneplus_common" path="device/oneplus/common" remote="github" />
-  <project name="LineageOS/android_kernel_oneplus_sm8250" path="kernel/oneplus/sm8250" remote="github" />
-  <project name="TheMuppets/proprietary_vendor_oneplus" path="vendor/oneplus" remote="github" />
-</manifest>

@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<manifest>
-  <project name="LineageOS/android_device_google_blueline" path="device/google/blueline" remote="github" />
-  <project name="AndyCGYan/android_device_google_crosshatch" path="device/google/crosshatch" remote="github" />
-  <project name="LineageOS/android_kernel_google_msm-4.9" path="kernel/google/msm-4.9" remote="github" />
-  <project name="razorloves/proprietary_vendor_google" path="vendor/google" remote="github" />
-</manifest>

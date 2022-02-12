@@ -4,6 +4,7 @@
   <project name="phhusson/device_phh_treble" path="device/phh/treble" remote="github" revision="android-12.0" />
   <project name="phhusson/vendor_vndk-tests" path="vendor/vndk-tests" remote="github" revision="master" />
   <project name="phhusson/vendor_interfaces" path="vendor/interfaces" remote="github" revision="android-11.0" />
+  <project name="phhusson/vendor_lptools" path="vendor/lptools" remote="github" revision="master" />
   <project name="phhusson/vendor_magisk" path="vendor/magisk" remote="github" revision="android-10.0" />
   <remote name="gitlab" fetch="https://gitlab.com/" />
   <project name="davi.sh/gms-android-12" path="vendor/partner_gms" remote="gitlab" revision="master" />

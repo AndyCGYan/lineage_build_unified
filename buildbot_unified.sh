@@ -46,8 +46,6 @@ echo\
 
 START=`date +%s`
 BUILD_DATE="$(date +%Y%m%d)"
-WITHOUT_CHECK_API=true
-WITH_SU=true
 
 prep_build() {
     echo "Preparing local manifests"
@@ -64,21 +62,9 @@ prep_build() {
     mkdir -p ~/build-output
     echo ""
 
-    repopick -t twelve-monet
-    repopick -Q "status:open+project:LineageOS/android_packages_apps_AudioFX+branch:lineage-19.0"
-    repopick -Q "status:open+project:LineageOS/android_packages_apps_Etar+branch:lineage-19.0"
-    repopick -Q "status:open+project:LineageOS/android_packages_apps_Trebuchet+branch:lineage-19.0+NOT+317783+NOT+318747"
+    repopick -Q "status:open+project:LineageOS/android_packages_apps_Trebuchet+branch:lineage-19.1"
     repopick -t twelve-burnin
-    repopick -t twelve-buttons
     repopick -t twelve-fingerprint
-    repopick -t twelve-volume-panel-location
-    repopick -t twelve-swap-volume-buttons
-    repopick -t twelve-camera-button
-    repopick -t twelve-navbar-runtime-toggle
-    repopick -t twelve-buttons-lights
-    repopick -t twelve-keyboard-lights
-    repopick -t twelve-statusbar-brightness-and-qs-slider
-    repopick -t twelve-powermenu
     repopick 321337 # Deprioritize important developer notifications
     repopick 321338 # Allow disabling important developer notifications
     repopick 321339 # Allow disabling USB notifications
@@ -86,7 +72,7 @@ prep_build() {
 
 apply_patches() {
     echo "Applying patch group ${1}"
-    bash ~/treble_experimentations/apply-patches.sh ./lineage_patches_unified/${1}
+    bash ./lineage_build_unified/apply_patches.sh ./lineage_patches_unified/${1}
 }
 
 prep_device() {
@@ -115,25 +101,25 @@ build_device() {
     then
         lunch lineage_arm64-userdebug
         make -j$(nproc --all) systemimage
-        mv $OUT/system.img ~/build-output/lineage-19.0-$BUILD_DATE-UNOFFICIAL-arm64$(${PERSONAL} && echo "-personal" || echo "").img
+        mv $OUT/system.img ~/build-output/lineage-19.1-$BUILD_DATE-UNOFFICIAL-arm64$(${PERSONAL} && echo "-personal" || echo "").img
     else
         brunch ${1}
-        mv $OUT/lineage-*.zip ~/build-output/lineage-19.0-$BUILD_DATE-UNOFFICIAL-${1}$($PERSONAL && echo "-personal" || echo "").zip
+        mv $OUT/lineage-*.zip ~/build-output/lineage-19.1-$BUILD_DATE-UNOFFICIAL-${1}$($PERSONAL && echo "-personal" || echo "").zip
     fi
 }
 
 build_treble() {
     case "${1}" in
-        ("A64B") TARGET=treble_a64_bvS;;
-        ("A64BG") TARGET=treble_a64_bgS;;
-        ("64B") TARGET=treble_arm64_bvS;;
-        ("64BG") TARGET=treble_arm64_bgS;;
+        ("A64B") TARGET=a64_bvS;;
+        ("A64BG") TARGET=a64_bgS;;
+        ("64B") TARGET=arm64_bvS;;
+        ("64BG") TARGET=arm64_bgS;;
         (*) echo "Invalid target - exiting"; exit 1;;
     esac
     lunch lineage_${TARGET}-userdebug
     make installclean
     make -j$(nproc --all) systemimage
-    mv $OUT/system.img ~/build-output/lineage-19.0-$BUILD_DATE-UNOFFICIAL-${TARGET}$(${PERSONAL} && echo "-personal" || echo "").img
+    mv $OUT/system.img ~/build-output/lineage-19.1-$BUILD_DATE-UNOFFICIAL-${TARGET}$(${PERSONAL} && echo "-personal" || echo "").img
     make vndk-test-sepolicy
 }
 
@@ -170,6 +156,11 @@ do
     build_${MODE} ${var}
 done
 ls ~/build-output | grep 'lineage' || true
+if [ ${MODE} == "treble" ]
+then
+    echo "OTA timestamp: $START"
+    echo ""
+fi
 
 END=`date +%s`
 ELAPSEDM=$(($(($END-$START))/60))

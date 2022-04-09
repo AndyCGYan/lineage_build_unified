@@ -64,10 +64,11 @@ prep_build() {
 
     repopick -Q "status:open+project:LineageOS/android_packages_apps_Trebuchet+branch:lineage-19.1"
     repopick -t twelve-burnin
-    repopick -t twelve-fingerprint
     repopick 321337 # Deprioritize important developer notifications
     repopick 321338 # Allow disabling important developer notifications
     repopick 321339 # Allow disabling USB notifications
+    repopick 326712 # overlay: show all icons in collapsed statusbar
+    repopick 327113 # Keystore 2.0: Add CREATION_DATETIME only for Keymint V1 and higher.
 }
 
 apply_patches() {

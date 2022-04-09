@@ -8,6 +8,4 @@
   <project name="phhusson/vendor_magisk" path="vendor/magisk" remote="github" revision="android-10.0" />
   <remote name="gitlab" fetch="https://gitlab.com/" />
   <project name="davi.sh/gms-android-12" path="vendor/partner_gms" remote="gitlab" revision="master" />
-  <remove-project name="platform/packages/apps/Gallery2" />
-  <project name="LineageOS/android_packages_apps_Gallery2" path="packages/apps/Gallery2" remote="github" revision="lineage-18.1" />
 </manifest>

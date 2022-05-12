@@ -62,13 +62,14 @@ prep_build() {
     mkdir -p ~/build-output
     echo ""
 
-    repopick -Q "status:open+project:LineageOS/android_packages_apps_Trebuchet+branch:lineage-19.1"
+    repopick -Q "(status:open+NOT+is:wip)+project:LineageOS/android_packages_apps_Trebuchet+branch:lineage-19.1"
     repopick -t twelve-burnin
     repopick 321337 # Deprioritize important developer notifications
     repopick 321338 # Allow disabling important developer notifications
     repopick 321339 # Allow disabling USB notifications
-    repopick 326712 # overlay: show all icons in collapsed statusbar
-    repopick 327113 # Keystore 2.0: Add CREATION_DATETIME only for Keymint V1 and higher.
+    repopick 329229 -f # Alter model name to avoid SafetyNet HW attestation enforcement
+    repopick 329230 -f # keystore: Block key attestation for SafetyNet
+    repopick 329409 # SystemUI: screenshot: open the screenshot instead of edit
 }
 
 apply_patches() {

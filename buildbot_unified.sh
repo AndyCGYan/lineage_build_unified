@@ -62,14 +62,18 @@ prep_build() {
     mkdir -p ~/build-output
     echo ""
 
-    repopick -Q "(status:open+NOT+is:wip)+project:LineageOS/android_packages_apps_Trebuchet+branch:lineage-19.1"
+    repopick -Q "(status:open+AND+NOT+is:wip)+(label:Code-Review>=0+AND+label:Verified>=0)+project:LineageOS/android_packages_apps_Trebuchet+branch:lineage-19.1+NOT+332083"
     repopick -t twelve-burnin
+    repopick -t qs-lightmode
+    repopick -t powermenu-lightmode
     repopick 321337 # Deprioritize important developer notifications
     repopick 321338 # Allow disabling important developer notifications
     repopick 321339 # Allow disabling USB notifications
     repopick 329229 -f # Alter model name to avoid SafetyNet HW attestation enforcement
     repopick 329230 -f # keystore: Block key attestation for SafetyNet
     repopick 329409 # SystemUI: screenshot: open the screenshot instead of edit
+    repopick 331534 -f # SystemUI: Add support to add/remove QS tiles with one tap
+    repopick 331791 # Skip checking SystemUI's permission for observing sensor privacy
 }
 
 apply_patches() {
@@ -160,8 +164,7 @@ done
 ls ~/build-output | grep 'lineage' || true
 if [ ${MODE} == "treble" ]
 then
-    echo "OTA timestamp: $START"
-    echo ""
+    echo $START > ~/build-output/ota-timestamp.txt
 fi
 
 END=`date +%s`

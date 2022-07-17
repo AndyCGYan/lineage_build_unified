@@ -90,8 +90,12 @@ build_device() {
 build_treble() {
     case "${1}" in
         ("32B") TARGET=arm_bvS;;
+        ("32BO") TARGET=arm_boS;;
         ("A64B") TARGET=a64_bvS;;
+        ("A64BG") TARGET=a64_bgS;;
+        ("A64BO") TARGET=a64_boS;;
         ("64B") TARGET=arm64_bvS;;
+        ("64BG") TARGET=arm64_bgS;;
         (*) echo "Invalid target - exiting"; exit 1;;
     esac
     lunch lineage_${TARGET}-userdebug

@@ -54,7 +54,7 @@ prep_build() {
     echo ""
 
     echo "Syncing repos"
-    repo sync -c --force-sync --no-clone-bundle --no-tags -j$(nproc --all)
+    repo sync -c --force-sync --no-clone-bundle --no-tags -j$(nproc --all) $(cat $BL/manifest.xml | grep "path=\"" | sed "s/.*path=\"//g" | cut -f1 -d'"' | tr '\n' ' ')
     echo ""
 
     echo "Setting up build environment"

@@ -70,7 +70,8 @@ prep_build() {
     repopick 329229 -f # Alter model name to avoid SafetyNet HW attestation enforcement
     repopick 329230 -f # keystore: Block key attestation for SafetyNet
     repopick 331534 -f # SystemUI: Add support to add/remove QS tiles with one tap
-    repopick 331791 # Skip checking SystemUI's permission for observing sensor privacy
+    repopick 331791 -f # Skip checking SystemUI's permission for observing sensor privacy
+    repopick 334388 # SystemUI: Fix QS header clock color
 }
 
 apply_patches() {

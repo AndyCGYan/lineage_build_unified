@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest>
+  <project name="AndyCGYan/android_device_lineage_gsi" path="device/lineage/gsi" remote="github" revision="lineage-20" />
+  <project name="AndyCGYan/android_packages_apps_QcRilAm" path="packages/apps/QcRilAm" remote="github" revision="master" />
+  <project name="phhusson/vendor_hardware_overlay" path="vendor/hardware_overlay" remote="github" revision="pie" />
+  <remove-project name="LineageOS/android_packages_apps_Camera2" />
+</manifest>

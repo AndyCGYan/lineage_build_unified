@@ -66,6 +66,7 @@ prep_build() {
     repopick 321338 -f # Allow disabling important developer notifications
     repopick 321339 -f # Allow disabling USB notifications
     repopick 331534 -f # SystemUI: Add support to add/remove QS tiles with one tap
+    repopick 340916 # SystemUI: add burnIn protection
 }
 
 apply_patches() {
@@ -96,13 +97,15 @@ build_device() {
 
 build_treble() {
     case "${1}" in
-        ("64VN") TARGET=gsi_arm64_vN;;
-        ("64VS") TARGET=gsi_arm64_vS;;
+        ("64VN") TARGET=gsi_arm64_vN; SECURE=true;;
+        ("64VS") TARGET=gsi_arm64_vS; SECURE=false;;
+        ("64GN") TARGET=gsi_arm64_gN; SECURE=true;;
         (*) echo "Invalid target - exiting"; exit 1;;
     esac
     lunch lineage_${TARGET}-userdebug
+    make installclean
     make -j$(nproc --all) systemimage
-    mv $OUT/system.img ~/build-output/lineage-20.0-$BUILD_DATE-UNOFFICIAL-${TARGET}$(${PERSONAL} && echo "-personal" || echo "").img
+    mv $OUT/system.img ~/build-output/lineage-20.0-$BUILD_DATE-UNOFFICIAL-${TARGET}$(${SECURE} && echo "-secure" || echo "")$(${PERSONAL} && echo "-personal" || echo "").img
 }
 
 if ${NOSYNC}
@@ -138,10 +141,6 @@ do
     build_${MODE} ${var}
 done
 ls ~/build-output | grep 'lineage' || true
-if [ ${MODE} == "treble" ]
-then
-    echo $START > ~/build-output/ota-timestamp.txt
-fi
 
 END=`date +%s`
 ELAPSEDM=$(($(($END-$START))/60))

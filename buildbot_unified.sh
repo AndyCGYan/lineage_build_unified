@@ -97,15 +97,15 @@ build_device() {
 
 build_treble() {
     case "${1}" in
-        ("64VN") TARGET=gsi_arm64_vN; SECURE=true;;
-        ("64VS") TARGET=gsi_arm64_vS; SECURE=false;;
-        ("64GN") TARGET=gsi_arm64_gN; SECURE=true;;
+        ("64VN") TARGET=gsi_arm64_vN;;
+        ("64VS") TARGET=gsi_arm64_vS;;
+        ("64GN") TARGET=gsi_arm64_gN;;
         (*) echo "Invalid target - exiting"; exit 1;;
     esac
     lunch lineage_${TARGET}-userdebug
     make installclean
     make -j$(nproc --all) systemimage
-    mv $OUT/system.img ~/build-output/lineage-20.0-$BUILD_DATE-UNOFFICIAL-${TARGET}$(${SECURE} && echo "-secure" || echo "")$(${PERSONAL} && echo "-personal" || echo "").img
+    mv $OUT/system.img ~/build-output/lineage-20.0-$BUILD_DATE-UNOFFICIAL-${TARGET}$(${PERSONAL} && echo "-personal" || echo "").img
 }
 
 if ${NOSYNC}

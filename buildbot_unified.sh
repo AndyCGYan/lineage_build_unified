@@ -113,18 +113,18 @@ build_device() {
 
 build_treble() {
     case "${1}" in
-        ("A64VN") TARGET=a64_bvN; SECURE=true;;
-        ("A64VS") TARGET=a64_bvS; SECURE=false;;
-        ("A64GN") TARGET=a64_bgN; SECURE=true;;
-        ("64VN") TARGET=arm64_bvN; SECURE=true;;
-        ("64VS") TARGET=arm64_bvS; SECURE=false;;
-        ("64GN") TARGET=arm64_bgN; SECURE=true;;
+        ("A64VN") TARGET=a64_bvN;;
+        ("A64VS") TARGET=a64_bvS;;
+        ("A64GN") TARGET=a64_bgN;;
+        ("64VN") TARGET=arm64_bvN;;
+        ("64VS") TARGET=arm64_bvS;;
+        ("64GN") TARGET=arm64_bgN;;
         (*) echo "Invalid target - exiting"; exit 1;;
     esac
     lunch lineage_${TARGET}-userdebug
     make installclean
     make -j$(nproc --all) systemimage
-    mv $OUT/system.img ~/build-output/lineage-19.1-$BUILD_DATE-UNOFFICIAL-${TARGET}$(${SECURE} && echo "-secure" || echo "")$(${PERSONAL} && echo "-personal" || echo "").img
+    mv $OUT/system.img ~/build-output/lineage-19.1-$BUILD_DATE-UNOFFICIAL-${TARGET}$(${PERSONAL} && echo "-personal" || echo "").img
     make vndk-test-sepolicy
 }
 

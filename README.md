@@ -9,7 +9,7 @@ First, open a new Terminal window, which defaults to your home directory. Create
 
 Initialize your LineageOS workspace:
 
-    repo init -u https://github.com/LineageOS/android.git -b lineage-19.1
+    repo init -u https://github.com/LineageOS/android.git -b lineage-19.1 --git-lfs
 
 Clone both this and the patches repos:
 

@@ -64,9 +64,9 @@ prep_build() {
 
     repopick -Q "(status:open+AND+NOT+is:wip)+(label:Code-Review>=0+AND+label:Verified>=0)+project:LineageOS/android_packages_apps_Trebuchet+branch:lineage-19.1+NOT+332083"
     repopick -t twelve-burnin
-    repopick 321337 # Deprioritize important developer notifications
-    repopick 321338 # Allow disabling important developer notifications
-    repopick 321339 # Allow disabling USB notifications
+    repopick 321337 -f # Deprioritize important developer notifications
+    repopick 321338 -f # Allow disabling important developer notifications
+    repopick 321339 -f # Allow disabling USB notifications
     repopick 329229 -f # Alter model name to avoid SafetyNet HW attestation enforcement
     repopick 329230 -f # keystore: Block key attestation for SafetyNet
     repopick 331534 -f # SystemUI: Add support to add/remove QS tiles with one tap

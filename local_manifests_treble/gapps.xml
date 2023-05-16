@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest>
+	<remote name="davish" fetch="https://gitlab.com/davi.sh/" />
+	<project path="vendor/partner_gms" name="gms-13"
+		remote="davish" revision="a9a65b27b795f5c8f7642d8955fba87563bfcab1" />
+
+</manifest>

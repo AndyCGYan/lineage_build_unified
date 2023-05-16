@@ -18,7 +18,7 @@ then
     exit 1
 fi
 
-NOSYNC=false
+NOSYNC=true
 PERSONAL=false
 for var in "${@:2}"
 do
@@ -159,3 +159,8 @@ ELAPSEDM=$(($(($END-$START))/60))
 ELAPSEDS=$(($(($END-$START))-$ELAPSEDM*60))
 echo "Buildbot completed in $ELAPSEDM minutes and $ELAPSEDS seconds"
 echo ""
+
+( cd sas-creator; bash securize.sh $OUT/system.img; xz -c s-secure.img -T0 > ../release/$BUILD_DATE/lineage-20.0-$BUILD_DATE-UNOFFICIAL-${TARGET}$(${PERSONAL} && echo "-personal" || echo "")-secure.img.xz )
+( cd sas-creator; bash lite-adapter.sh 64 $OUT/system.img; xz -c s.img -T0 > ../release/$BUILD_DATE/lineage-20.0-$BUILD_DATE-UNOFFICIAL-${TARGET}$(${PERSONAL} && echo "-personal" || echo "")-vndklite.img.xz )
+( cd sas-creator; bash securize.sh s.img; xz -c s-secure.img -T0 > ../release/$BUILD_DATE/lineage-20.0-$BUILD_DATE-UNOFFICIAL-${TARGET}$(${PERSONAL} && echo "-personal" || echo "")-vndklite-secure.img.xz )
+

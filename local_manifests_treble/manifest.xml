@@ -7,6 +7,4 @@
   <project name="phhusson/vendor_lptools" path="vendor/lptools" remote="github" revision="master" />
   <project name="phhusson/vendor_magisk" path="vendor/magisk" remote="github" revision="android-10.0" />
   <project name="AndyCGYan/android_packages_apps_QcRilAm" path="packages/apps/QcRilAm" remote="github" revision="master" />
-  <remote name="gitlab" fetch="https://gitlab.com/" />
-  <project name="MindTheGapps/vendor_gapps" path="vendor/gapps" remote="gitlab" revision="tau" />
 </manifest>

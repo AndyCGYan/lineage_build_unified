@@ -92,7 +92,6 @@ finalize_device() {
 }
 
 finalize_treble() {
-    rm -f device/*/sepolicy/common/private/genfs_contexts
     cd device/phh/treble
     git clean -fdx
     bash generate.sh lineage
@@ -161,10 +160,6 @@ do
     build_${MODE} ${var}
 done
 ls ~/build-output | grep 'lineage' || true
-if [ ${MODE} == "treble" ]
-then
-    echo $START > ~/build-output/ota-timestamp.txt
-fi
 
 END=`date +%s`
 ELAPSEDM=$(($(($END-$START))/60))

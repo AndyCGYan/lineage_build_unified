@@ -92,7 +92,6 @@ finalize_device() {
 }
 
 finalize_treble() {
-    rm -f device/*/sepolicy/common/private/genfs_contexts
     cd device/phh/treble
     git clean -fdx
     bash generate.sh lineage

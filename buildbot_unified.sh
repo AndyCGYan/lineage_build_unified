@@ -58,7 +58,7 @@ echo ""
 
 apply_patches() {
     echo "Applying patch group ${1}"
-    bash ~/treble_experimentations/apply-patches.sh ./lineage_patches_unified/${1}
+    bash ./lineage_build_unified/apply_patches.sh ./lineage_patches_unified/${1}
 }
 
 prep_device() {

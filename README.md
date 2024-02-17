@@ -5,16 +5,16 @@ Set up your environment by referring to [LineageOS Wiki](https://wiki.lineageos.
 
 Create a new working directory for your LineageOS build and navigate to it:
 
-    mkdir lineage-20-build-td; cd lineage-20-build-td
+    mkdir lineage-21-build-td; cd lineage-21-build-td
 
 Initialize your LineageOS workspace:
 
-    repo init -u https://github.com/LineageOS/android.git -b lineage-20.0 --git-lfs
+    repo init -u https://github.com/LineageOS/android.git -b lineage-21.0 --git-lfs
 
 Clone both this and the patches repos:
 
-    git clone https://github.com/AndyCGYan/lineage_build_unified lineage_build_unified -b lineage-20-td
-    git clone https://github.com/AndyCGYan/lineage_patches_unified lineage_patches_unified -b lineage-20-td
+    git clone https://github.com/AndyCGYan/lineage_build_unified lineage_build_unified -b lineage-21-td
+    git clone https://github.com/AndyCGYan/lineage_patches_unified lineage_patches_unified -b lineage-21-td
 
 Finally, start the build script - for example, to build for all supported archs:
 

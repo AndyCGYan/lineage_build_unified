@@ -27,3 +27,13 @@ This script is also used to make device-specific and/or personal builds. To do s
 
 ### Issues
 [Open Issue](https://github.com/moxi-u7/LineageOS_gsi/issues/new)
+
+Thanks to:
+
+- The LineageOS team - helping me out  even when they don't offer GSIs themselves
+
+- [phhusson](https://github.com/phhusson) - shaped the treble  community, and even the "Light" approach  uses his fixes/infra extensively
+
+- [PeterCxy](https://github.com/PeterCxy) - inspired me with his  personal-use GSI, and coded critical fixes such as sysbta
+
+ - ...and more

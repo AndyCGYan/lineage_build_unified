@@ -1,5 +1,5 @@
 
-## Building "generic" LineageOS GSIs ##
+## Building "generic" LineageOS-light GSIs ##
 
 Set up your environment by referring to [LineageOS Wiki](https://wiki.lineageos.org/devices/TP1803/build) (mainly "Install the build packages" and "Install the repo command").
 
@@ -25,3 +25,6 @@ Be sure to update the cloned repos from time to time!
 ---
 
 This script is also used to make device-specific and/or personal builds. To do so, understand the script, and try the `device` and `personal` keywords.
+
+### Issues
+[Open Issue](https://github.com/moxi-u7/LineageOS_gsi/issues/new)

@@ -1,4 +1,3 @@
-
 ## Building "generic" LineageOS-light GSIs ##
 
 Set up your environment by referring to [LineageOS Wiki](https://wiki.lineageos.org/devices/TP1803/build) (mainly "Install the build packages" and "Install the repo command").
@@ -13,8 +12,8 @@ Initialize your LineageOS workspace:
 
 Clone both this and the patches repos:
 
-    git clone https://github.com/AndyCGYan/lineage_build_unified lineage_build_unified -b lineage-21-light
-    git clone https://github.com/AndyCGYan/lineage_patches_unified lineage_patches_unified -b lineage-21-light
+    git clone https://github.com/moxi-u7/LineageOS_gsi lineage_build_gsi -b lineage-21-light
+    git clone https://github.com/moxi-u7/lineage_patches_unified lineage_patches_unified -b lineage-21-light
 
 Finally, start the build script - for example, to build for all supported archs:
 

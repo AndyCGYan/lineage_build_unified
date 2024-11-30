@@ -28,7 +28,7 @@ This script is also used to make device-specific and/or personal builds. To do s
 ### Issues
 [Open Issue](https://github.com/moxi-u7/LineageOS_gsi/issues/new)
 
-Thanks to:
+### Thanks to:
 
 - The LineageOS team - helping me out  even when they don't offer GSIs themselves
 

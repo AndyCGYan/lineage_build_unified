@@ -36,4 +36,5 @@ This script is also used to make device-specific and/or personal builds. To do s
 
 - [PeterCxy](https://github.com/PeterCxy) - inspired me with his  personal-use GSI, and coded critical fixes such as sysbta
 
+- [andycgyan](https://github.com/andycgyan) inspired me to start making GSIs.
  - ...and more

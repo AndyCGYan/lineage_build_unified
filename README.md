@@ -1,7 +1,5 @@
 ## Building "generic" LineageOS-light GSIs ##
 
-[![Download MoxiuGSIs](https://img.shields.io/sourceforge/dm/moxiugsis.svg)](https://sourceforge.net/projects/moxiugsis/files/latest/download)
-
 Set up your environment by referring to [LineageOS Wiki](https://wiki.lineageos.org/devices/TP1803/build) (mainly "Install the build packages" and "Install the repo command").
 
 Create a new working directory for your LineageOS build and navigate to it:

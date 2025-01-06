@@ -1,6 +1,6 @@
 #!/bin/bash
 echo ""
-echo "LineageOS 21 Unified Buildbot"
+echo "LineageOS 22 Unified Build Script"
 echo "Executing in 5 seconds - CTRL-C to exit"
 echo ""
 sleep 5
@@ -73,7 +73,7 @@ prep_build() {
     repopick 321337 -r -f # Deprioritize important developer notifications
     repopick 321338 -r -f # Allow disabling important developer notifications
     repopick 321339 -r -f # Allow disabling USB notifications
-    repopick 368923 -r -f # Launcher3: Show clear all button in recents overview
+    #repopick 368923 -r -f # Launcher3: Show clear all button in recents overview
 }
 
 apply_patches() {
@@ -99,19 +99,18 @@ finalize_treble() {
 
 build_device() {
     brunch ${1}
-    mv $OUT/lineage-*.zip ~/build-output/lineage-21.0-$BUILD_DATE-UNOFFICIAL-${1}$($PERSONAL && echo "-personal" || echo "").zip
+    mv $OUT/lineage-*.zip ~/build-output/lineage-22.1-$BUILD_DATE-UNOFFICIAL-${1}$($PERSONAL && echo "-personal" || echo "").zip
 }
 
 build_treble() {
     case "${1}" in
         ("64VN") TARGET=gsi_arm64_vN;;
-        ("64VS") TARGET=gsi_arm64_vS;;
         ("64GN") TARGET=gsi_arm64_gN;;
         (*) echo "Invalid target - exiting"; exit 1;;
     esac
     lunch lineage_${TARGET}-${aosp_target_release}-userdebug
     make installclean
-    make -j$(lscpu -b -p=Core,Socket | grep -v '^#' | sort -u | wc -l) systemimage
+    WITH_ADB_INSECURE=true make -j$(lscpu -b -p=Core,Socket | grep -v '^#' | sort -u | wc -l) systemimage
     SIGNED=false
     if [ ${SIGNABLE} = true ] && [[ ${TARGET} == *_g? ]]
     then
@@ -121,7 +120,7 @@ build_treble() {
         SIGNED=true
         echo ""
     fi
-    mv $OUT/system.img ~/build-output/lineage-21.0-$BUILD_DATE-UNOFFICIAL-${TARGET}$(${PERSONAL} && echo "-personal" || echo "")$(${SIGNED} && echo "-signed" || echo "").img
+    mv $OUT/system.img ~/build-output/lineage-22.1-$BUILD_DATE-UNOFFICIAL-${TARGET}$(${PERSONAL} && echo "-personal" || echo "")$(${SIGNED} && echo "-signed" || echo "").img
 }
 
 if ${NOSYNC}

@@ -22,6 +22,7 @@ sign_target_files_apks -o -d ~/.android-certs --allow_gsi_debug_sepolicy \
     --extra_apks com.android.adservices.apex=$HOME/.android-certs/com.android.adservices \
     --extra_apks com.android.adservices.api.apex=$HOME/.android-certs/com.android.adservices.api \
     --extra_apks com.android.appsearch.apex=$HOME/.android-certs/com.android.appsearch \
+    --extra_apks com.android.appsearch.apk.apex=$HOME/.android-certs/com.android.appsearch.apk \
     --extra_apks com.android.art.apex=$HOME/.android-certs/com.android.art \
     --extra_apks com.android.bluetooth.apex=$HOME/.android-certs/com.android.bluetooth \
     --extra_apks com.android.btservices.apex=$HOME/.android-certs/com.android.btservices \
@@ -33,10 +34,13 @@ sign_target_files_apks -o -d ~/.android-certs --allow_gsi_debug_sepolicy \
     --extra_apks com.android.devicelock.apex=$HOME/.android-certs/com.android.devicelock \
     --extra_apks com.android.extservices.apex=$HOME/.android-certs/com.android.extservices \
     --extra_apks com.android.graphics.pdf.apex=$HOME/.android-certs/com.android.graphics.pdf \
+    --extra_apks com.android.hardware.authsecret.apex=$HOME/.android-certs/com.android.hardware.authsecret \
     --extra_apks com.android.hardware.biometrics.face.virtual.apex=$HOME/.android-certs/com.android.hardware.biometrics.face.virtual \
     --extra_apks com.android.hardware.biometrics.fingerprint.virtual.apex=$HOME/.android-certs/com.android.hardware.biometrics.fingerprint.virtual \
     --extra_apks com.android.hardware.boot.apex=$HOME/.android-certs/com.android.hardware.boot \
     --extra_apks com.android.hardware.cas.apex=$HOME/.android-certs/com.android.hardware.cas \
+    --extra_apks com.android.hardware.neuralnetworks.apex=$HOME/.android-certs/com.android.hardware.neuralnetworks \
+    --extra_apks com.android.hardware.rebootescrow.apex=$HOME/.android-certs/com.android.hardware.rebootescrow \
     --extra_apks com.android.hardware.wifi.apex=$HOME/.android-certs/com.android.hardware.wifi \
     --extra_apks com.android.healthfitness.apex=$HOME/.android-certs/com.android.healthfitness \
     --extra_apks com.android.hotspot2.osulogin.apex=$HOME/.android-certs/com.android.hotspot2.osulogin \
@@ -48,9 +52,11 @@ sign_target_files_apks -o -d ~/.android-certs --allow_gsi_debug_sepolicy \
     --extra_apks com.android.nearby.halfsheet.apex=$HOME/.android-certs/com.android.nearby.halfsheet \
     --extra_apks com.android.networkstack.tethering.apex=$HOME/.android-certs/com.android.networkstack.tethering \
     --extra_apks com.android.neuralnetworks.apex=$HOME/.android-certs/com.android.neuralnetworks \
+    --extra_apks com.android.nfcservices.apex=$HOME/.android-certs/com.android.nfcservices \
     --extra_apks com.android.ondevicepersonalization.apex=$HOME/.android-certs/com.android.ondevicepersonalization \
     --extra_apks com.android.os.statsd.apex=$HOME/.android-certs/com.android.os.statsd \
     --extra_apks com.android.permission.apex=$HOME/.android-certs/com.android.permission \
+    --extra_apks com.android.profiling.apex=$HOME/.android-certs/com.android.profiling \
     --extra_apks com.android.resolv.apex=$HOME/.android-certs/com.android.resolv \
     --extra_apks com.android.rkpd.apex=$HOME/.android-certs/com.android.rkpd \
     --extra_apks com.android.runtime.apex=$HOME/.android-certs/com.android.runtime \
@@ -77,6 +83,7 @@ sign_target_files_apks -o -d ~/.android-certs --allow_gsi_debug_sepolicy \
     --extra_apex_payload_key com.android.adservices.apex=$HOME/.android-certs/com.android.adservices.pem \
     --extra_apex_payload_key com.android.adservices.api.apex=$HOME/.android-certs/com.android.adservices.api.pem \
     --extra_apex_payload_key com.android.appsearch.apex=$HOME/.android-certs/com.android.appsearch.pem \
+    --extra_apex_payload_key com.android.appsearch.apk.apex=$HOME/.android-certs/com.android.appsearch.apk.pem \
     --extra_apex_payload_key com.android.art.apex=$HOME/.android-certs/com.android.art.pem \
     --extra_apex_payload_key com.android.bluetooth.apex=$HOME/.android-certs/com.android.bluetooth.pem \
     --extra_apex_payload_key com.android.btservices.apex=$HOME/.android-certs/com.android.btservices.pem \
@@ -88,10 +95,13 @@ sign_target_files_apks -o -d ~/.android-certs --allow_gsi_debug_sepolicy \
     --extra_apex_payload_key com.android.devicelock.apex=$HOME/.android-certs/com.android.devicelock.pem \
     --extra_apex_payload_key com.android.extservices.apex=$HOME/.android-certs/com.android.extservices.pem \
     --extra_apex_payload_key com.android.graphics.pdf.apex=$HOME/.android-certs/com.android.graphics.pdf.pem \
+    --extra_apex_payload_key com.android.hardware.authsecret.apex=$HOME/.android-certs/com.android.hardware.authsecret.pem \
     --extra_apex_payload_key com.android.hardware.biometrics.face.virtual.apex=$HOME/.android-certs/com.android.hardware.biometrics.face.virtual.pem \
     --extra_apex_payload_key com.android.hardware.biometrics.fingerprint.virtual.apex=$HOME/.android-certs/com.android.hardware.biometrics.fingerprint.virtual.pem \
     --extra_apex_payload_key com.android.hardware.boot.apex=$HOME/.android-certs/com.android.hardware.boot.pem \
     --extra_apex_payload_key com.android.hardware.cas.apex=$HOME/.android-certs/com.android.hardware.cas.pem \
+    --extra_apex_payload_key com.android.hardware.neuralnetworks.apex=$HOME/.android-certs/com.android.hardware.neuralnetworks.pem \
+    --extra_apex_payload_key com.android.hardware.rebootescrow.apex=$HOME/.android-certs/com.android.hardware.rebootescrow.pem \
     --extra_apex_payload_key com.android.hardware.wifi.apex=$HOME/.android-certs/com.android.hardware.wifi.pem \
     --extra_apex_payload_key com.android.healthfitness.apex=$HOME/.android-certs/com.android.healthfitness.pem \
     --extra_apex_payload_key com.android.hotspot2.osulogin.apex=$HOME/.android-certs/com.android.hotspot2.osulogin.pem \
@@ -103,9 +113,11 @@ sign_target_files_apks -o -d ~/.android-certs --allow_gsi_debug_sepolicy \
     --extra_apex_payload_key com.android.nearby.halfsheet.apex=$HOME/.android-certs/com.android.nearby.halfsheet.pem \
     --extra_apex_payload_key com.android.networkstack.tethering.apex=$HOME/.android-certs/com.android.networkstack.tethering.pem \
     --extra_apex_payload_key com.android.neuralnetworks.apex=$HOME/.android-certs/com.android.neuralnetworks.pem \
+    --extra_apex_payload_key com.android.nfcservices.apex=$HOME/.android-certs/com.android.nfcservices.pem \
     --extra_apex_payload_key com.android.ondevicepersonalization.apex=$HOME/.android-certs/com.android.ondevicepersonalization.pem \
     --extra_apex_payload_key com.android.os.statsd.apex=$HOME/.android-certs/com.android.os.statsd.pem \
     --extra_apex_payload_key com.android.permission.apex=$HOME/.android-certs/com.android.permission.pem \
+    --extra_apex_payload_key com.android.profiling.apex=$HOME/.android-certs/com.android.profiling.pem \
     --extra_apex_payload_key com.android.resolv.apex=$HOME/.android-certs/com.android.resolv.pem \
     --extra_apex_payload_key com.android.rkpd.apex=$HOME/.android-certs/com.android.rkpd.pem \
     --extra_apex_payload_key com.android.runtime.apex=$HOME/.android-certs/com.android.runtime.pem \

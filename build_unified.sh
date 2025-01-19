@@ -74,6 +74,7 @@ prep_build() {
     repopick 321338 -r -f # Allow disabling important developer notifications
     repopick 321339 -r -f # Allow disabling USB notifications
     #repopick 368923 -r -f # Launcher3: Show clear all button in recents overview
+    repopick 415945 -r -f # SystemUI: Fix burn-in translations not applying to keyguard slices
 }
 
 apply_patches() {
@@ -114,7 +115,7 @@ build_treble() {
     SIGNED=false
     if [ ${SIGNABLE} = true ] && [[ ${TARGET} == *_g? ]]
     then
-        make -j$(lscpu -b -p=Core,Socket | grep -v '^#' | sort -u | wc -l) target-files-package otatools
+        WITH_ADB_INSECURE=true make -j$(lscpu -b -p=Core,Socket | grep -v '^#' | sort -u | wc -l) target-files-package otatools
         bash ./lineage_build_unified/sign_target_files.sh $OUT/signed-target_files.zip
         unzip -joq $OUT/signed-target_files.zip IMAGES/system.img -d $OUT
         SIGNED=true

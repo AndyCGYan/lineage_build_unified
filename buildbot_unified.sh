@@ -115,7 +115,7 @@ build_treble() {
     SIGNED=false
     if [ ${SIGNABLE} = true ] && [[ ${TARGET} == *_g? ]]
     then
-        make -j$(lscpu -b -p=Core,Socket | grep -v '^#' | sort -u | wc -l) target-files-package otatools
+        WITH_ADB_INSECURE=true make -j$(lscpu -b -p=Core,Socket | grep -v '^#' | sort -u | wc -l) target-files-package otatools
         bash ./lineage_build_unified/sign_target_files.sh $OUT/signed-target_files.zip
         unzip -joq $OUT/signed-target_files.zip IMAGES/system.img -d $OUT
         SIGNED=true

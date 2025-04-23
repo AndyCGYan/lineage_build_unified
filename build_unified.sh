@@ -73,8 +73,6 @@ prep_build() {
     repopick 321337 -r -f # Deprioritize important developer notifications
     repopick 321338 -r -f # Allow disabling important developer notifications
     repopick 321339 -r -f # Allow disabling USB notifications
-    #repopick 368923 -r -f # Launcher3: Show clear all button in recents overview
-    repopick 415945 -r -f # SystemUI: Fix burn-in translations not applying to keyguard slices
 }
 
 apply_patches() {
@@ -100,7 +98,7 @@ finalize_treble() {
 
 build_device() {
     brunch ${1}
-    mv $OUT/lineage-*.zip ~/build-output/lineage-22.1-$BUILD_DATE-UNOFFICIAL-${1}$($PERSONAL && echo "-personal" || echo "").zip
+    mv $OUT/lineage-*.zip ~/build-output/lineage-22.2-$BUILD_DATE-UNOFFICIAL-${1}$($PERSONAL && echo "-personal" || echo "").zip
 }
 
 build_treble() {
@@ -121,7 +119,7 @@ build_treble() {
         SIGNED=true
         echo ""
     fi
-    mv $OUT/system.img ~/build-output/lineage-22.1-$BUILD_DATE-UNOFFICIAL-${TARGET}$(${PERSONAL} && echo "-personal" || echo "")$(${SIGNED} && echo "-signed" || echo "").img
+    mv $OUT/system.img ~/build-output/lineage-22.2-$BUILD_DATE-UNOFFICIAL-${TARGET}$(${PERSONAL} && echo "-personal" || echo "")$(${SIGNED} && echo "-signed" || echo "").img
 }
 
 if ${NOSYNC}

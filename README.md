@@ -9,7 +9,7 @@ Create a new working directory for your LineageOS build and navigate to it:
 
 Initialize your LineageOS workspace:
 
-    repo init -u https://github.com/LineageOS/android.git -b lineage-22.1 --git-lfs
+    repo init -u https://github.com/LineageOS/android.git -b lineage-22.2 --git-lfs
 
 Clone both this and the patches repos:
 

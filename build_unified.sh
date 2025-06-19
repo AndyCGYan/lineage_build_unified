@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 echo ""
 echo "LineageOS 22 Unified Build Script"
 echo "Executing in 5 seconds - CTRL-C to exit"

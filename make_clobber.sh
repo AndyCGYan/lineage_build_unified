@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 source build/envsetup.sh
 source vendor/lineage/vars/aosp_target_release

@@ -5,20 +5,20 @@ Set up your environment by referring to [LineageOS Wiki](https://wiki.lineageos.
 
 Create a new working directory for your LineageOS build and navigate to it:
 
-    mkdir lineage-21-build-gsi; cd lineage-21-build-gsi
+    mkdir lineage-21-pre-qpr2-build-gsi; cd lineage-21-pre-qpr2-build-gsi
 
 Initialize your LineageOS workspace:
 
-    repo init -u https://github.com/LineageOS/android.git -b lineage-21.0 --git-lfs
+    repo init -u https://github.com/LOS21-pre-QPR2/android.git -b lineage-21.0 --git-lfs
 
 Clone both this and the patches repos:
 
-    git clone https://github.com/AndyCGYan/lineage_build_unified lineage_build_unified -b lineage-21-light
-    git clone https://github.com/AndyCGYan/lineage_patches_unified lineage_patches_unified -b lineage-21-light
+    git clone https://github.com/AndyCGYan/lineage_build_unified lineage_build_unified -b lineage-21-pre-qpr2-light
+    git clone https://github.com/AndyCGYan/lineage_patches_unified lineage_patches_unified -b lineage-21-pre-qpr2-light
 
 Finally, start the build script - for example, to build for all supported archs:
 
-    bash lineage_build_unified/buildbot_unified.sh treble 64VN 64VS 64GN
+    bash lineage_build_unified/build_unified.sh treble 64VN 64GN
 
 Be sure to update the cloned repos from time to time!
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 echo ""
-echo "LineageOS 21 Unified Buildbot"
+echo "LineageOS 21 Unified Build Script"
 echo "Executing in 5 seconds - CTRL-C to exit"
 echo ""
 sleep 5
@@ -22,6 +22,7 @@ fi
 
 NOSYNC=false
 PERSONAL=false
+SIGNABLE=true
 for var in "${@:2}"
 do
     if [ ${var} == "nosync" ]
@@ -31,8 +32,14 @@ do
     if [ ${var} == "personal" ]
     then
         PERSONAL=true
+        SIGNABLE=false
     fi
 done
+if [ ! -d "$HOME/.android-certs" ]; then
+    read -n1 -r -p $"\$HOME/.android-certs not found - CTRL-C to exit, or any other key to continue"
+    echo ""
+    SIGNABLE=false
+fi
 
 # Abort early on error
 set -eE
@@ -62,10 +69,7 @@ prep_build() {
     mkdir -p ~/build-output
     echo ""
 
-    repopick -t 21-snet -r -f
-    repopick 321337 -r -f # Deprioritize important developer notifications
-    repopick 321338 -r -f # Allow disabling important developer notifications
-    repopick 321339 -r -f # Allow disabling USB notifications
+    # Make picks here only if the target repo uses its original remote
     repopick 368923 -r -f # Launcher3: Show clear all button in recents overview
 }
 
@@ -92,6 +96,14 @@ finalize_treble() {
     git clean -fdx
     bash generate.sh lineage
     cd ../../..
+    cd treble_app
+    bash build.sh release
+    cp TrebleApp.apk ../vendor/hardware_overlay/TrebleApp/app.apk
+    cd ..
+    cd vendor/hardware_overlay
+    git add TrebleApp/app.apk
+    git commit -m "[TEMP] Up TrebleApp to $BUILD_DATE"
+    cd ../..
 }
 
 build_device() {
@@ -102,17 +114,24 @@ build_device() {
 build_treble() {
     case "${1}" in
         ("A64VN") TARGET=a64_bvN;;
-        ("A64VS") TARGET=a64_bvS;;
         ("A64GN") TARGET=a64_bgN;;
         ("64VN") TARGET=arm64_bvN;;
-        ("64VS") TARGET=arm64_bvS;;
         ("64GN") TARGET=arm64_bgN;;
         (*) echo "Invalid target - exiting"; exit 1;;
     esac
     lunch lineage_${TARGET}-userdebug
     make installclean
-    make -j$(lscpu -b -p=Core,Socket | grep -v '^#' | sort -u | wc -l) systemimage
-    mv $OUT/system.img ~/build-output/lineage-21.0-$BUILD_DATE-UNOFFICIAL-${TARGET}$(${PERSONAL} && echo "-personal" || echo "").img
+    WITH_ADB_INSECURE=true make -j$(lscpu -b -p=Core,Socket | grep -v '^#' | sort -u | wc -l) systemimage
+    SIGNED=false
+    if [ ${SIGNABLE} = true ] && [[ ${TARGET} == *_bg? ]]
+    then
+        WITH_ADB_INSECURE=true make -j$(lscpu -b -p=Core,Socket | grep -v '^#' | sort -u | wc -l) target-files-package otatools
+        bash ./lineage_build_unified/sign_target_files.sh $OUT/signed-target_files.zip
+        unzip -joq $OUT/signed-target_files.zip IMAGES/system.img -d $OUT
+        SIGNED=true
+        echo ""
+    fi
+    mv $OUT/system.img ~/build-output/lineage-21.0-$BUILD_DATE-UNOFFICIAL-${TARGET}$(${PERSONAL} && echo "-personal" || echo "")$(${SIGNED} && echo "-signed" || echo "").img
     #make vndk-test-sepolicy
 }
 

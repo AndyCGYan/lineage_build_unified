@@ -71,6 +71,7 @@ prep_build() {
 
     # Make picks here only if the target repo uses its original remote
     repopick 368923 -r -f # Launcher3: Show clear all button in recents overview
+    repopick 384301 -r -f # Don't disable mobile data, AOSP has props for this
 }
 
 apply_patches() {
